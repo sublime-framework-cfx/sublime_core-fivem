@@ -31,7 +31,7 @@ local function InverseHeading(heading)
     return (heading + 180) % 360
 end
 
---- sl.math.twodigits : retourne une valeur sur 2 digit (exemple 1 retourne 01)
+--- sl.math.two_digits : retourne une valeur sur 2 digit (exemple 1 retourne 01)
 ---@param number number
 ---@return string
 local function DeuxDigits(number)
@@ -80,7 +80,7 @@ local function DateFormat(sec, value)
         return DeuxDigits(mm), DeuxDigits(ss)
     elseif value == 'seconde' then
         ss = sec
-        DeuxDigits(ss)
+        return DeuxDigits(ss)
     end
 end
 
