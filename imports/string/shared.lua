@@ -1,22 +1,25 @@
 
---- sl.string_firstToUpper
+--- sl.string.FirstToUpper
 ---@param string_ string
-sl.string_firstToUpper = function(string_)
-    return (string_:gsub("^%l", string.upper))
+---@return string
+local function FirstToUpper(_string)
+    return (_string:gsub("^%l", string.upper))
 end
 
---- sl.string_moneyFormat
+--- sl.string.MoneyFormat
 ---@param amount number
 ---@param stepper string
-sl.string_moneyFormat = function(amount, stepper)
+---@return string
+local function MoneyFormat(amount, stepper)
     local left <const>, center <const>, right <const> = string.match(math.floor(amount), "^([^%d]*%d)(%d*)(.-)$")
 	return (left .. string.reverse(string.gsub(string.reverse(center), "(%d%d%d)", "%1" .. (stepper or " "))) .. right)
 end
 
---- sl.string_random
+--- sl.string.Random
 ---@param length number
 ---@param randomTemplate string
-sl.string_random = function(length, randomTemplate)
+---@return string
+local function Random(length, randomTemplate)
     local charset <const> = (randomTemplate or "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
     local randomString = ""
     for i = 1, (length or 10) do
@@ -26,26 +29,28 @@ sl.string_random = function(length, randomTemplate)
     return (randomString)
 end
 
---- sl.string_contains
+--- sl.string.Contains
 ---@param stringToFind string
 ---@param pattern string
-sl.string_contains = function(stringToFind, pattern)
+---@return string
+local function Contains(stringToFind, pattern)
     return (stringToFind:find(pattern) ~= nil)
 end
 
---- sl.string_replaceAll
+--- sl.string.ReplaceAll
 ---@param str string
 ---@param find string
 ---@param replace string
-sl.string_replaceAll = function(str, find, replace)
+---@return string
+local function ReplaceAll(str, find, replace)
     return (str:gsub(find, replace))
 end
-
 
 --- sl.string_split
 ---@param str string
 ---@param delimiter string
-sl.string_split = function(str, delimiter)
+---@return string
+local function Split(str, delimiter)
 	if (not (str)) then return {} end
 	local result = {}
 	for match in (str .. delimiter):gmatch("(.-)" .. delimiter) do
@@ -54,16 +59,19 @@ sl.string_split = function(str, delimiter)
 	return (result)
 end
 
-
---- sl.string_prefixFormat
----@param string string
-sl.string_prefixFormat = function(string)
-    return ("sl_%s"):format(sl.string_hash(string))
-end
-
-
 --- sl.string_hash
 ---@param string string
-sl.string_hash = function(string)
+---@return string
+local function Hash(string)
     return GetHashKey(string)
 end
+
+return {
+    first_to_upper = FirstToUpper,
+    money_format = MoneyFormat,
+    random = Random,
+    contains = Contains,
+    replace_all = ReplaceAll,
+    split = Split,
+    hash = Hash
+}
