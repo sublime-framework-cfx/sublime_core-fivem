@@ -18,17 +18,19 @@ local function load_module(self, index)
     local shared <const> = LoadResourceFile(sublime_core, ('%s/shared.lua'):format(dir))
     local func, err
 
-    if shared then
-        func, err = load(shared, ('@@%s/%s/%s'):format(sublime_core, index, 'shared'))
-    else
-        func, err = load(chunk, ('@@%s/%s/%s'):format(sublime_core, index, service))
+    if chunk or shared then
+        if shared then
+            func, err = load(shared, ('@@%s/%s/%s'):format(sublime_core, index, 'shared'))
+        else
+            func, err = load(chunk, ('@@%s/%s/%s'):format(sublime_core, index, service))
+        end
+
+        if not func or err then return error(("Erreur pendant le chargement du module\n- Provenant de : %s\n- Modules : %s\n- Service : %s\n - Erreur : %s"):format(dir, index, service, err), 3) end
+
+        local result = func()
+        self[index] = result
+        return self[index]
     end
-
-    if not func or err then return error(("Erreur pendant le chargement du module\n- Provenant de : %s\n- Modules : %s\n- Service : %s\n - Erreur : %s"):format(dir, index, service, err), 3) end
-
-    local result = func()
-    self[index] = result
-    return self[index]
 end
 
 local function call_module(self, index, ...)
