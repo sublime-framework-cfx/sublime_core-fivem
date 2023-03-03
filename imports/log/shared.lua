@@ -1,24 +1,20 @@
+local log_types <const> = {
+    [1] = "^2SUCCESS^7",
+    [2] = "^3WARNING^7",
+    [3] = "^1ERROR^7",
+    [4] = "^5INFO^7",
+}
 
---- log
----@param type number
+--- sl.log.print
+---@param id integer
 ---@param message string
 ---@param ... any
-local log = function(type, message, ...)
-    if (message ~= nil or message ~= "") then
-        local rssName <const> = "Sublime"
-        local type <const> = string.upper(sl.table_findValueByIndex(sl.log_type, type))
-        if (...) then
-            message = (message):format(...)
-        end
-        print(('[^6%s^7] | [^6%s^7] %s^7'):format(rssName, type, message))
-    end
+local function Log(id, message)
+    if type(message) ~= 'string' and #message < 1 then return end
+    if ... then message = (message):format(...) end
+    print(('[^6%s^7] | [^6%s^7] %s^7'):format(sl.invoke, log_types[id], message))
 end
 
-
---- sl.log
----@param type number
----@param message string
----@param ... any
-sl.log = function(type, message, ...)
-    log(type, message,...)
-end
+return {
+    print = Log
+}
