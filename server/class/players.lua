@@ -26,6 +26,20 @@ local function EditPassword(self, password)
     end
 end
 
+--- player:getName
+---@param self object
+---@return string
+local function GetName(self)
+    return self.name
+end
+
+--- player:getIdentifier
+---@param self object
+---@return string
+local function GetIdentifier(self)
+    return self.identifier
+end
+
 ---@param source integer
 ---@param data table
 ---@return object
@@ -47,6 +61,8 @@ local function CreatePlayerObj(source, data)
     self.editPassword = EditPassword
     self.addChar = AddChar
     self.removeChar = RemoveChar
+    self.getName = GetName
+    self.getIdentifier = GetIdentifier
 
     players.id[self.source] = self
     players.identifier[self.identifier] = self
