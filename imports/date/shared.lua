@@ -18,7 +18,7 @@ local function DateFormat(sec, value)
         reste = (reste % 3600)
         mm = math.floor(reste / 60)
         ss = (reste % 60)
-        return sem, jj, DeuxDigits(hh), DeuxDigits(mm), DeuxDigits(ss)
+        return sem, jj, sl.math.DeuxDigits(hh), sl.math.DeuxDigits(mm), sl.math.DeuxDigits(ss)
     elseif value == 'jour' or value == 'day' then
         jj = math.floor(sec / (60 * 60 * 24))
         reste = (sec % 86400)
@@ -26,21 +26,21 @@ local function DateFormat(sec, value)
         reste = (reste % 3600)
         mm = math.floor(reste / 60)
         ss = (reste % 60)
-        return jj, DeuxDigits(hh), DeuxDigits(mm), DeuxDigits(ss)
+        return jj, sl.math.DeuxDigits(hh), sl.math.DeuxDigits(mm), sl.math.DeuxDigits(ss)
     elseif value == 'heure' or value == 'hours' then
         hh = math.floor(sec / (60 * 60))
         reste = (sec % 3600)
         mm = math.floor(reste / 60)
         ss = (reste % 60)
-        return DeuxDigits(hh), DeuxDigits(mm), DeuxDigits(ss)
+        return sl.math.DeuxDigits(hh), sl.math.DeuxDigits(mm), sl.math.DeuxDigits(ss)
     elseif value == 'minute' then
         mm = math.floor(sec / 60)
         reste = (sec % 60)
         ss = (reste)
-        return DeuxDigits(mm), DeuxDigits(ss)
+        return sl.math.DeuxDigits(mm), sl.math.DeuxDigits(ss)
     elseif value == 'seconde' then
         ss = sec
-        return DeuxDigits(ss)
+        return sl.math.DeuxDigits(ss)
     end
 end
 
