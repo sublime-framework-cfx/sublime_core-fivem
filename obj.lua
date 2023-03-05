@@ -53,4 +53,4 @@ local function call_module(self, index, ...)
     end
 end
 
-sl = setmetatable({service = service, invoke = GetInvokingResource()}, {__index = call_module, __call = call_module})
+sl = setmetatable({service = service, name = GetCurrentResourceName()}, {__index = call_module, __call = call_module})
