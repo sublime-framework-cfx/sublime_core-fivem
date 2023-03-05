@@ -13,6 +13,7 @@ shared_script '_g.lua'
 shared_script 'obj.lua'
 
 server_script 'server/*.lua'
+server_script 'server/**/*.lua'
 
 files {
     'import.lua',
