@@ -9,10 +9,10 @@ local log_types <const> = {
 ---@param id integer
 ---@param message string
 ---@param ... any
-local function Log(id, message)
+local function Log(id, message, ...)
     if type(message) ~= 'string' and #message < 1 then return end
     if ... then message = (message):format(...) end
-    print(('[^6%s^7] | [^6%s^7] %s^7'):format(sl.invoke, log_types[id], message))
+    print(('[^6%s^7] | [^6%s^7] %s^7'):format(sl.name, log_types[id], message))
 end
 
 return {
