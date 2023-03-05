@@ -12,6 +12,8 @@ description 'Un framework pour tout type de serveur'
 shared_script '_g.lua'
 shared_script 'obj.lua'
 
+server_script 'server/*.lua'
+
 files {
     'import.lua',
     'imports/**/shared.lua',
