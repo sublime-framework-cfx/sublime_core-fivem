@@ -5,7 +5,7 @@ local log_types <const> = {
     [4] = "^5INFO^7",
 }
 
---- sl.log.print
+--- sl.log.print: print a message in the console
 ---@param id integer
 ---@param message string
 ---@param ... any
