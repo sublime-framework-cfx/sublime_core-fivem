@@ -1,4 +1,4 @@
---- sl.date.format_date : convertit un temps (en seconde) en SEM JJ HH MM SS
+--- sl.date.format : convertit un temps (en seconde) en SEM JJ HH MM SS
 ---@param sec number
 ---@param value? string
 ---@return integer|nil
@@ -44,7 +44,7 @@ local function DateFormat(sec, value)
     end
 end
 
---- sl.date.date_valid : vérifie si une date est valide
+--- sl.date.valid : vérifie si une date est valide
 ---@param strDate string
 ---@return boolean
 local function DateValid(strDate)
@@ -72,6 +72,6 @@ end
 
 
 return {
-    date_format = DateFormat,
-    date_valid = DateValid
+    format = DateFormat,
+    valid = DateValid
 }
