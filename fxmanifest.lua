@@ -15,8 +15,12 @@ shared_script '_g.lua'
 server_script 'server/*.lua'
 server_script 'server/**/*.lua'
 
+ui_page 'web/build/index.html'
+
 files {
     'import.lua',
     'imports/**/shared.lua',
     'imports/**/client.lua',
+    'web/build/index.html',
+    'web/build/**/*'
 }
