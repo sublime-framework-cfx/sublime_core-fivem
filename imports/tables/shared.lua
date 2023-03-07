@@ -204,7 +204,7 @@ local function clone(t)
     local target = {}
     for k,v in pairs(t) do
         if type(v) == 'table' then
-            target[k] = sl.table.clone(v)
+            target[k] = clone(v)
         else
             target[k] = v
         end
@@ -218,7 +218,7 @@ end
 ---@param t2 table
 ---@return table
 local function concat(t1, t2)
-    local t3 = sl.table.clone(t1)
+    local t3 = clone(t1)
     for i=1, #t2, 1 do
         table.insert(t3, t2[i])
     end
@@ -285,7 +285,7 @@ local function dump(table, nb)
             for i = 1, nb, 1 do
                 s = s .. "    "
             end
-            s = s .. '['..k..'] = ' .. sl.table.dump(v, nb + 1) .. ',\n'
+            s = s .. '['..k..'] = ' .. dump(v, nb + 1) .. ',\n'
         end
         for i = 1, nb, 1 do
             s = s .. "    "
@@ -296,7 +296,32 @@ local function dump(table, nb)
     end
 end
 
+
+--- sl.table.serialize : serialize table to write table in .lua file
+---@param t any
+---@return string
+local function serializeTable(t)
+    local result = {}
+    for k,v in pairs(t) do
+        local key = k
+        local value = v
+        if type(k) == "string" then
+            key = string.format("%q", k)
+        end
+        if type(v) == "table" then
+            value = serializeTable(v)
+        elseif type(v) == "string" then
+            value = string.format("%q", v)
+        elseif type(v) == "boolean" then
+            value = v and "true" or "false"
+        end
+        table.insert(result, "[" .. key .. "] =" .. value)
+    end
+    return "{" .. table.concat(result, ",") .. "}"
+end
+
 return {
+    serialize = serializeTable,
 	pair_by_keys = pairByKeys,
 	sort_alphabetically = sortAlphabetically,
 	count = count,

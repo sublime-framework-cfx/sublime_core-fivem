@@ -9,8 +9,8 @@ version '0.0.0'
 repository 'https://github.com/SUBLiME-Association/sublime_core'
 description 'Un framework pour tout type de serveur'
 
-shared_script '_g.lua'
 shared_script 'obj.lua'
+shared_script '_g.lua'
 
 server_script 'server/*.lua'
 server_script 'server/**/*.lua'
