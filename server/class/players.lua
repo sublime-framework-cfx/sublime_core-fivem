@@ -1,3 +1,10 @@
+--[[
+    fr:
+        `players` est le profile du joueur
+    en:
+        `players` is profil of player
+]]
+
 local players = {
     id = {},
     identifier = {}
@@ -26,43 +33,59 @@ local function EditPassword(self, password)
     end
 end
 
---- player:getName
----@param self object
----@return string
-local function GetName(self)
-    return self.name
+local function SetPermission(self, name, rank)
+    if type(name) == 'string' and type(rank) == 'number' and math.type(rank) == 'integer' then
+        self.permission = {name = name, rank = rank}
+    else
+        self.permission = false
+    end
 end
 
---- player:getIdentifier
----@param self object
----@return string
-local function GetIdentifier(self)
-    return self.identifier
+local function UpdatePlayer(self)
+    -- self.new
+    -- player export from sublime_sql... write soon
+end
+
+local function Delete(self)
+    -- write soon need more work on sublime_sql (delete player in database)
+    self:remove()
+end
+
+--- player:remove => remove player of table when he log out
+---@return nil
+local function Remove(self)
+    players.id[self.source] = nil
+    players.identifier[self.identifier] = nil
+    return nil, collectgarbage()
 end
 
 ---@param source integer
 ---@param data table
 ---@return object
-local function CreatePlayerObj(source, data)
+local function CreatePlayerObj(source, data, isNew)
     local self = {}
 
     self.source = source ---@type integer
     self.identifier = data.identifier ---@type string
-    self.name = data.name or '' ---@type string
-    self.password = data.password or '' ---@type string
-    self.permission = data.permission or false ---@type table|boolean
+    self.user = data.user or "" ---@type string
+    self.password = data.password or "" ---@type string
+    self.permission = data.permission or {name = 'player', rank = 1} ---@type table
     self.char = data.char or {} ---@type table
+    self.stats = data.stats or {} ---@type table
+    self.new = isNew or false ---@type boolean
 
     local sbag = Player(self.source).state
     sbag:set('source', self.source, true)
     sbag:set('identifier', self.identifier, true)
-    sbag:set('profil_name', self.name, true)
+    sbag:set('user', self.user, true)
 
     self.editPassword = EditPassword
     self.addChar = AddChar
     self.removeChar = RemoveChar
-    self.getName = GetName
-    self.getIdentifier = GetIdentifier
+    self.setPermission = SetPermission
+    self.update = UpdatePlayer -- can be rewrite soon (sublime_sql)
+    self.delete = Delete -- can be rewrite soon (sublime_sql)
+    self.remove = Remove
 
     players.id[self.source] = self
     players.identifier[self.identifier] = self
@@ -83,7 +106,7 @@ end
 ---@param source integer
 ---@param data table
 ---@return object
-function sl.create_player_obj(source, data)
+function sl.create_player_obj(source, data, isNew)
     if not source and not next(data) then return end
-    return CreatePlayerObj(source, data)
+    return CreatePlayerObj(source, data, isNew)
 end
