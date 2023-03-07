@@ -31,7 +31,7 @@ end
 ---@return any
 local function Model(modelHash, cb)
 	sl.visual.loading(true, ("Chargement du modèle %s"):format(modelHash), 4)
-    modelHash = (type(modelHash) == "number" and modelHash or GetHashKey(modelHash))
+    modelHash = (type(modelHash) == "number" and modelHash or joaat(modelHash))
 	if (not (IsModelInCdimage(modelHash))) then
         return sl.log.print(1, 'Modèle non trouvé %s', modelHash)
     end
