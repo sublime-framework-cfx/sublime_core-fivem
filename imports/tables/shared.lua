@@ -268,7 +268,7 @@ end
 
 --- sl.table.dump: convert a table to a string representation with indentation for nested tables
 ---@param table table
----@param nb any
+---@param nb number
 ---@return string
 local function dump(table, nb)
     if nb == nil then
@@ -298,7 +298,7 @@ end
 
 
 --- sl.table.serialize : serialize table to write table in .lua file
----@param t any
+---@param t table
 ---@return string
 local function serializeTable(t)
     local result = {}
