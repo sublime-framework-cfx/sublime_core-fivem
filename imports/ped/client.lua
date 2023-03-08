@@ -111,6 +111,17 @@ local function CreateNpc(model, coords, heading, properties, cb, netWork)
 
     ::continue::
     SetModelAsNoLongerNeeded(model)
+    SetEntityAsMissionEntity(npc)
+    SetEntityInvincible(npc, true)
+    FreezeEntityPosition(npc, properties.freeze or false)
+    SetBlockingOfNonTemporaryEvents(npc, properties.ai or true)
+    if properties.weapon then
+        GiveWeaponToPed(npc, properties.weapon, 1000, false, true)
+        SetCurrentPedWeapon(npc, properties.weapon, true)
+    end
+    if properties.scenario then
+        TaskStartScenarioInPlace(npc, properties.scenario, 0, true)
+    end
     if cb then cb(npc) end
     return npc
 end
