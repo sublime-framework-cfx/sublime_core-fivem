@@ -106,6 +106,7 @@ local function CreateNpc(model, coords, heading, properties, cb, netWork)
     else
         npc = CreatePed(1, model, coords.x, coords.y, coords.z, heading, false, true)
         while not DoesEntityExist(npc) do Wait(50) end
+        goto continue
     end
 
     ::continue::
