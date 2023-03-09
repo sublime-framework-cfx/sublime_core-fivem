@@ -73,6 +73,7 @@ local function Settings(npcId, args)
         return sl.log.print(3, "Ped didnt exist (Function : ^5%s^7, From : [^5%s^7 : %s])", debug(1, "n").name, debug(2, "Sl").short_src, debug(2, "Sl").currentline)
     end
     
+
     if args.weapon then
         SetWeapon(args.weapon)
     end
@@ -86,7 +87,11 @@ local function Settings(npcId, args)
         SetSoldier(npcId)
     end
     if args.randomprops then
+        SetPedRandomComponentVariation(npcId, 0)
         SetPedRandomProps(npcId)
+    end
+    if args.godmode then
+        SetEntityInvincible(npcId, args.godmode)
     end
     if not args.ai then
         SetBlockingOfNonTemporaryEvents(npcId, true)
