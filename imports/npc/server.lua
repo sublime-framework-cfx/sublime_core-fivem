@@ -6,35 +6,33 @@
 ---@param cb any
 local function CreateSyncNpc(model, coords, heading, cb)
     model = type(model) == 'string' and joaat(model) or model
-    local netWorkNpc, npc
     CreateThread(function()
-        npc = CreatePed(0, model, coords.x, coords.y, coords.z, heading, true, true)
+        local npc <const> = CreatePed(0, model, coords.x, coords.y, coords.z, heading, true, true)
         while not DoesEntityExist(npc) do Wait(50) end
-        netWorkNpc = NetworkGetNetworkIdFromEntity(npc)
+        local netWorkNpc <const> = NetworkGetNetworkIdFromEntity(npc)
         if cb then
-            cb(netWorkNpc, npc)
+            cb(npc, netWorkNpc)
         end
     end)
-    while not DoesEntityExist(npc) do Wait(50) end
-    return netWorkNpc, npc
 end
 
---- sl:createNpc
+--- sl:createNpc [[CALLBACK]]
 ---@param source number
 ---@param model string|number
 ---@param coords vector3|table
 ---@param heading number
 ---@return number
 sl.callback.register("sl:createNpc", function(source, model, coords, heading)
-    local netWorkNpc, npc = CreateSyncNpc(model, coords, heading)
-    while not DoesEntityExist(npc) do 
+    local spawned_npc
+    CreateSyncNpc(model, coords, heading, function(npc)
+        spawned_npc = npc
+    end)
+    while not DoesEntityExist(spawned_npc) do 
         Wait(100)
     end
-    return netWorkNpc
+    return NetworkGetNetworkIdFromEntity(spawned_npc)
 end)
-
 
 return {
     create_sync_npc = CreateSyncNpc,
-    
 }
