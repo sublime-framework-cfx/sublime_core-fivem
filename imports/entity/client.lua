@@ -194,6 +194,7 @@ local function GetType(entityId)
 
     local entityType <const> = GetEntityType(entityId)
     local type <const> = {
+        [0] = "None",
         [1] = "Ped",
         [2] = "Vehicle",
         [3] = "Object",

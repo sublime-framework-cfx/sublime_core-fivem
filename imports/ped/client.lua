@@ -84,46 +84,22 @@ local function WalkToPosition(pedId, coords, speed, duration, heading, distanceT
     TaskGoStraightToCoord(pedId, coords, speed, duration, heading, distanceToSlide)
 end
 
---- CreateNpc
----@param model string|number
----@param coords vector3|number
----@param heading number
----@param properties table
----@param cb function
----@param netWork boolean
----@return any
-local function CreateNpc(model, coords, heading, properties, cb, netWork)
-    assert(type(model) == "string" or type(model) == "number")
-    netWork = netWork == nil and true or false
-    local npc
-    sl.request.model(model)
-    if netWork then
-        sl.callback.trigger("sl:createNpc", function(netnpc)
-            while not NetworkDoesNetworkIdExist(netnpc) do Wait(100) end
-            npc = NetToPed(netnpc)
-            goto continue
-        end, model, coords, heading)
-    else
-        npc = CreatePed(1, model, coords.x, coords.y, coords.z, heading, false, true)
-        while not DoesEntityExist(npc) do Wait(50) end
-        goto continue
+--- PermanentlyFollowEntity
+---@param pedId number
+---@param entityId number
+---@param speed number
+local function PermanentlyFollowEntity(pedId, entityId, speed)
+    if not DoesEntityExist(pedId) then
+        local debug <const> = debug.getinfo
+        return sl.log.print(3, "Ped didnt exist (Function : ^5%s^7, From : [^5%s^7 : %s])", debug(1, "n").name, debug(2, "Sl").short_src, debug(2, "Sl").currentline)
+    end
+    if not DoesEntityExist(entityId) then
+        local debug <const> = debug.getinfo
+        return sl.log.print(3, "Entity didnt exist (Function : ^5%s^7, From : [^5%s^7 : %s])", debug(1, "n").name, debug(2, "Sl").short_src, debug(2, "Sl").currentline)
     end
 
-    ::continue::
-    SetModelAsNoLongerNeeded(model)
-    SetEntityAsMissionEntity(npc)
-    SetEntityInvincible(npc, true)
-    FreezeEntityPosition(npc, properties.freeze or false)
-    SetBlockingOfNonTemporaryEvents(npc, properties.ai or true)
-    if properties.weapon then
-        GiveWeaponToPed(npc, properties.weapon, 1000, false, true)
-        SetCurrentPedWeapon(npc, properties.weapon, true)
-    end
-    if properties.scenario then
-        TaskStartScenarioInPlace(npc, properties.scenario, 0, true)
-    end
-    if cb then cb(npc) end
-    return npc
+    TaskGoToEntity(pedId, entityId, -1, 0.00001, speed or 2, 1073741824.0, 0)
+    SetPedKeepTask(pedId, true)
 end
 
 return {
@@ -133,5 +109,5 @@ return {
     leave_vehicle = LeaveVehicle,
     enter_vehicle = EnterVehicle,
     walk_to_position = WalkToPosition,
-    create_npc = CreateNpc,
+    permanently_follow_entity = PermanentlyFollowEntity,
 }
