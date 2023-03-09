@@ -106,7 +106,7 @@ end
 ---@param properties table
 ---@param cb function
 ---@param netWork boolean
-local function Create(model, coords, heading, settings, cb, netWork)
+local function Create(model, coords, settings, cb, netWork)
     netWork = netWork == nil and true or false
     sl.request.model(model)
     if netWork then
@@ -116,10 +116,10 @@ local function Create(model, coords, heading, settings, cb, netWork)
             SetEntityAsMissionEntity(npc, true, true)
             Settings(npc, settings)
             if cb then cb(npc) end
-        end, model, coords, heading)
+        end, model, coords)
     else
         CreateThread(function()
-            local npc <const> = CreatePed(1, model, coords.x, coords.y, coords.z, heading, false, true)
+            local npc <const> = CreatePed(1, model, coords.x, coords.y, coords.z, coords.w, false, true)
             while not DoesEntityExist(npc) do Wait(50) end
             SetEntityAsMissionEntity(npc, true, true)
             if settings then Settings(npc, settings) end

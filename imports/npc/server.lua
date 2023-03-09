@@ -4,10 +4,10 @@
 ---@param coords any
 ---@param heading any
 ---@param cb any
-local function CreateSyncNpc(model, coords, heading, cb)
+local function CreateSyncNpc(model, coords, cb)
     model = type(model) == 'string' and joaat(model) or model
     CreateThread(function()
-        local npc <const> = CreatePed(0, model, coords.x, coords.y, coords.z, heading, true, true)
+        local npc <const> = CreatePed(0, model, coords.x, coords.y, coords.z, coords.w, true, true)
         while not DoesEntityExist(npc) do Wait(50) end
         local netWorkNpc <const> = NetworkGetNetworkIdFromEntity(npc)
         if cb then
@@ -22,9 +22,10 @@ end
 ---@param coords vector3|table
 ---@param heading number
 ---@return number
-sl.callback.register("sl:createNpc", function(source, model, coords, heading)
+sl.callback.register("sl:createNpc", function(source, model, coords)
+    print('receive')
     local spawned_npc
-    CreateSyncNpc(model, coords, heading, function(npc)
+    CreateSyncNpc(model, coords, function(npc)
         spawned_npc = npc
     end)
     while not DoesEntityExist(spawned_npc) do 

@@ -17,7 +17,7 @@ local function load_module(self, index)
     local chunk <const> = LoadResourceFile(sublime_core, ('%s/%s.lua'):format(dir, service))
     local shared <const> = LoadResourceFile(sublime_core, ('%s/shared.lua'):format(dir))
     local func, err
-
+    
     if chunk or shared then
         if shared then
             func, err = load(shared, ('@@%s/%s/%s'):format(sublime_core, index, 'shared'))
