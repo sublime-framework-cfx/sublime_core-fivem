@@ -1,5 +1,5 @@
 
---- Clean
+--- sl.vehicle.clean : clean the vehicle
 ---@param vehicleId number
 local function Clean(vehicleId)
     if not DoesEntityExist(vehicleId) then
@@ -11,7 +11,7 @@ local function Clean(vehicleId)
     WashDecalsFromVehicle(vehicleId, 1.0)
 end
 
---- Delete
+--- sl.vehicle.delete : delete the vehicle
 ---@param vehicleId number
 local function Delete(vehicleId)
     if not DoesEntityExist(vehicleId) then
@@ -23,7 +23,7 @@ local function Delete(vehicleId)
     DeleteVehicle(vehicleId)
 end
 
---- GetFuelLevel
+--- sl.vehicle.get_fuel_level : get fuel level of vehicle
 ---@param vehicleId number
 ---@return number
 local function GetFuelLevel(vehicleId)
@@ -35,7 +35,7 @@ local function GetFuelLevel(vehicleId)
     return GetVehicleFuelLevel(vehicleId)
 end
 
---- GetFuelTank
+--- sl.vehicle.get_fuel_tank : get fuel tank of vehicle
 ---@param vehicleId number
 ---@return number
 local function GetFuelTank(vehicleId)
@@ -49,7 +49,7 @@ local function GetFuelTank(vehicleId)
     return fuel
 end
 
---- ModelName
+--- sl.vehicle.model_name : get vehicle name
 ---@param vehicleId number
 ---@return string
 local function ModelName(vehicleId)
@@ -63,7 +63,7 @@ local function ModelName(vehicleId)
     return model
 end
 
---- GetPlate
+--- sl.vehicle.get_plate : get vehicle plate
 ---@param vehicleId number
 ---@return string|number
 local function GetPlate(vehicleId)
@@ -76,7 +76,7 @@ local function GetPlate(vehicleId)
     return plate
 end
 
---- GetStates
+--- sl.vehicle.get_states : get vehicle state 
 ---@param vehicleId number
 ---@return table
 local function GetStates(vehicleId)
@@ -96,7 +96,7 @@ local function GetStates(vehicleId)
     return vehicleState
 end
 
---- OpenDoor
+--- sl.vehicle.open_door : open vehicle door
 ---@param vehicleId number
 local function OpenDoor(vehicleId, doorId, canBeClosed, instantly)
     if not DoesEntityExist(vehicleId) then
@@ -113,7 +113,7 @@ local function OpenDoor(vehicleId, doorId, canBeClosed, instantly)
     end
 end
 
---- Lock
+--- sl.vehicle.lock : lock or unlock vehicle door
 ---@param vehicleId number
 ---@param state boolean
 local function Lock(vehicleId, state)
@@ -125,7 +125,7 @@ local function Lock(vehicleId, state)
     SetVehicleDoorsLocked(vehicleId, state and 2 or 1)
 end
 
---- Repair
+--- sl.vehicle.repair : repair vehicle
 ---@param vehicleId number
 local function Repair(vehicleId)
     if not DoesEntityExist(vehicleId) then
@@ -138,7 +138,7 @@ local function Repair(vehicleId)
     SetVehicleDeformationFixed(vehicleId)
 end
 
---- SetFuel
+--- sl.vehicle.set_fuel : set vehicle fuel
 ---@param vehicleId number
 ---@param fuel number
 local function SetFuel(vehicleId, fuel)
@@ -150,7 +150,7 @@ local function SetFuel(vehicleId, fuel)
     return SetVehicleFuelLevel(vehicleId, fuel)
 end
 
---- GetType
+--- sl.vehicle.get_type : get vehicle type
 ---@param model string
 ---@return string
 local function GetType(model)
@@ -175,7 +175,7 @@ local function GetType(model)
     return type
 end
 
---- IsEmpty
+--- sl.vehicle.is_empty : is vehicle empty
 ---@param vehicleId number
 ---@return boolean
 local function IsEmpty(vehicleId)

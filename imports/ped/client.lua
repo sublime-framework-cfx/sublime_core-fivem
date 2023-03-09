@@ -1,5 +1,5 @@
 
---- Clear
+--- sl.ped.clear : clear ped
 ---@param pedId number
 local function Clear(pedId)
     if not DoesEntityExist(pedId) then
@@ -12,7 +12,7 @@ local function Clear(pedId)
     ClearPedTasksImmediately(pedId)
 end
 
---- GetMugshot
+--- sl.ped.get_mugshot : get ped selfie
 ---@param pedId number
 ---@param transparentBackground boolean
 ---@return any|string
@@ -27,7 +27,7 @@ local function GetMugshot(pedId, transparentBackground)
     return headshot, GetPedheadshotTxdString(headshot)
 end
 
---- IsDriver
+--- sl.ped.is_driver : is ped a driver actually
 ---@param pedId number
 ---@return boolean
 local function IsDriver(pedId)
@@ -39,7 +39,7 @@ local function IsDriver(pedId)
     return IsPedInAnyVehicle(pedId, false) and GetPedInVehicleSeat(GetVehiclePedIsIn(pedId, false), -1) == pedId
 end
 
---- LeaveVehicle
+--- sl.ped.leave_vehicle : ped leave the vehicle
 ---@param pedId number
 ---@param instant boolean
 local function LeaveVehicle(pedId, instant)
@@ -51,7 +51,7 @@ local function LeaveVehicle(pedId, instant)
     TaskLeaveAnyVehicle(pedId, 0, instant and 16 or 0)
 end
 
---- EnterVehicle
+--- sl.ped.enter_vehicle : ped enter in vehicle
 ---@param pedId number
 ---@param vehicleId number
 ---@param seat number
@@ -68,7 +68,7 @@ local function EnterVehicle(pedId, vehicleId, seat)
     TaskWarpPedIntoVehicle(pedId, vehicleId, seat or -1)
 end
 
---- WalkToPosition
+--- sl.ped.walk_to_position : ped walk to position
 ---@param pedId number
 ---@param coords vector3|table
 ---@param speed number
@@ -84,7 +84,7 @@ local function WalkToPosition(pedId, coords, speed, duration, heading, distanceT
     TaskGoStraightToCoord(pedId, coords, speed, duration, heading, distanceToSlide)
 end
 
---- PermanentlyFollowEntity
+--- sl.ped.permanently_follow_entity : ped follow a entity
 ---@param pedId number
 ---@param entityId number
 ---@param speed number

@@ -3,7 +3,7 @@
 --TODO
 -- end
 
---- sl.npc.say
+--- sl.npc.say : npc talk and say speech
 ---@param npcId number
 ---@param speech string
 ---@param param table
@@ -16,7 +16,7 @@ local function Say(npcId, speech, param)
     PlayAmbientSpeech1(npcId, speech, param)
 end
 
---- sl.npc.set_soldier
+--- sl.npc.set_soldier : set npc like a soldier
 ---@param npcId any
 local function SetSoldier(npcId)
     if not DoesEntityExist(npcId) then
@@ -33,7 +33,7 @@ local function SetSoldier(npcId)
     SetPedAccuracy(npcId, 100)
 end
 
---- sl.npc.set_scenario
+--- sl.npc.set_scenario : set start a scenario
 ---@param npcId number
 ---@param scenario string
 ---@param instantly boolean
@@ -51,9 +51,9 @@ local function SetScenario(npcId, scenario, instantly)
     TaskStartScenarioInPlace(npcId, scenario, 0, not instantly)
 end
 
---- sl.npc.set_weapon
+--- sl.npc.set_weapon : give weapon to npc
 ---@param npcId number
----@param weapon string|weaponhash
+---@param weapon string|weaponhash 
 local function SetWeapon(npcId, weapon)
     if not DoesEntityExist(npcId) then
         local debug <const> = debug.getinfo
@@ -64,7 +64,7 @@ local function SetWeapon(npcId, weapon)
     SetCurrentPedWeapon(npcId, weapon, true)
 end
 
---- sl.npc.settings
+--- sl.npc.settings : setting of npc
 ---@param npcId number
 ---@param args table
 local function Settings(npcId, args)
@@ -85,13 +85,16 @@ local function Settings(npcId, args)
     if args.soldier then
         SetSoldier(npcId)
     end
+    if args.randomprops then
+        SetPedRandomProps(npcId)
+    end
     if not args.ai then
         SetBlockingOfNonTemporaryEvents(npcId, true)
         SetPedFleeAttributes(npcId, 0, 0)
     end
 end
 
---- sl.npc.create
+--- sl.npc.create : create npc in coords and set settings
 ---@param model string|number
 ---@param coords vector3|number
 ---@param heading number

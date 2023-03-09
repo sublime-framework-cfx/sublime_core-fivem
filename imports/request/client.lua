@@ -1,5 +1,5 @@
 
---- AnimDict
+--- sl.request.anim_dict
 ---@param animDict string
 ---@param cb function
 local function AnimDict(animDict, cb)
@@ -12,7 +12,7 @@ local function AnimDict(animDict, cb)
     if cb then cb() end
 end
 
---- AnimSet
+--- sl.request.anim_set
 ---@param animSet string
 ---@param cb function
 local function AnimSet(animSet, cb)
@@ -25,7 +25,7 @@ local function AnimSet(animSet, cb)
 	if cb then cb() end
 end
 
---- Model
+--- sl.request.model
 ---@param modelHash any
 ---@param cb function
 ---@return any
@@ -49,7 +49,7 @@ local function Model(modelHash, cb)
     return modelHash
 end
 
---- Movie
+--- sl.request.movie
 ---@param movieName any
 ---@param cb function
 ---@return any
@@ -61,7 +61,7 @@ local function Movie(movieName, cb)
     return scaleform
 end
 
---- NamedPtfxAsset
+--- sl.request.named_pftx_asset
 ---@param assetName string
 ---@param cb function
 local function NamedPtfxAsset(assetName, cb)
@@ -74,7 +74,7 @@ local function NamedPtfxAsset(assetName, cb)
 	if cb then cb() end
 end
 
---- StreamedTextureDict
+--- sl.request.streamed_texture_dict
 ---@param textureDict string
 ---@param cb function
 local function StreamedTextureDict(textureDict, cb)
@@ -87,7 +87,7 @@ local function StreamedTextureDict(textureDict, cb)
 	if cb then cb() end
 end
 
---- WeaponAsset
+--- sl.request.weapon_asset
 ---@param weaponHash any
 ---@param cb function
 local function WeaponAsset(weaponHash, cb)

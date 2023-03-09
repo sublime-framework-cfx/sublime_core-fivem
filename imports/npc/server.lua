@@ -1,5 +1,5 @@
 
---- CreateNPC
+--- sl.npc.create_sync_npc : create synced npc
 ---@param model any
 ---@param coords any
 ---@param heading any

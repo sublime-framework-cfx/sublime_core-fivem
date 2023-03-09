@@ -1,5 +1,5 @@
 
---- FloatHelpText
+--- sl.visual.float_text : create floating information notification
 ---@param text string
 ---@param pos vector3
 local function FloatHelpText(text, pos)
@@ -10,14 +10,14 @@ local function FloatHelpText(text, pos)
     EndTextCommandDisplayHelp(2, false, false, -1)
 end
 
---- HelpText
+--- sl.visual.help_text : create help notification
 ---@param text string
 local function HelpText(text)
     AddTextEntry("HelpText", text)
     DisplayHelpTextThisFrame("HelpText", false)
 end
 
---- HelpSubText
+--- sl.visual.help_subtext : create 2d text in bottom of screen 
 ---@param text string
 ---@param time number
 local function HelpSubText(text, time)
@@ -27,7 +27,7 @@ local function HelpSubText(text, time)
     EndTextCommandPrint(time and math.ceil(time) or 0, true)
 end
 
---- KeyboardInput
+--- sl.visual.keyboard : create keyboard input
 ---@param textEntry string
 ---@param exampleText string
 ---@param maxInputLength number
@@ -49,7 +49,7 @@ local function KeyboardInput(textEntry, exampleText, maxInputLength)
     return Citizen.Await(p)
 end
 
---- Draw3DText
+--- sl.visual.draw3d_text : create 3d native text 
 ---@param coords vector3
 ---@param text string
 ---@param size number
@@ -72,7 +72,7 @@ local function Draw3DText(coords, text, size, font)
     ClearDrawOrigin()
 end
 
---- Loading
+--- sl.visual.loading : create loading notification
 ---@param show boolean
 ---@param loadingText string
 ---@param spinnerType number
@@ -89,7 +89,7 @@ local function Loading(show, loadingText, spinnerType)
     end
 end
 
---- ScreenFade
+--- sl.visual.screen_fade : fade in or out the screen
 ---@param show boolean
 ---@param duration number
 ---@param waitUntilFinished boolean
