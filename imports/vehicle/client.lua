@@ -1,86 +1,87 @@
 
---- sl.vehicle.clean : clean the vehicle
----@param vehicleId number
-local function Clean(vehicleId)
-    if not DoesEntityExist(vehicleId) then
-        local debug <const> = debug.getinfo
-        return sl.log.print(3, "Vehicle didnt exist (Function : ^5%s^7, From : [^5%s^7 : %s])", debug(1, "n").name, debug(2, "Sl").short_src, debug(2, "Sl").currentline)
-    end
-
-    SetVehicleDirtLevel(vehicleId, 0.0)
-    WashDecalsFromVehicle(vehicleId, 1.0)
-end
-
 --- sl.vehicle.delete : delete the vehicle
 ---@param vehicleId number
-local function Delete(vehicleId)
-    if not DoesEntityExist(vehicleId) then
+local function Delete(self)
+    if not DoesEntityExist(self.vehicle) then
         local debug <const> = debug.getinfo
         return sl.log.print(3, "Vehicle didnt exist (Function : ^5%s^7, From : [^5%s^7 : %s])", debug(1, "n").name, debug(2, "Sl").short_src, debug(2, "Sl").currentline)
     end
 
-    SetEntityAsMissionEntity(vehicleId, 0, 1)
-    DeleteVehicle(vehicleId)
+    SetEntityAsMissionEntity(self.vehicle, 0, 1)
+    DeleteVehicle(self.vehicle)
+    return nil, collectgarbage()
+end
+
+--- sl.vehicle.clean : clean the vehicle
+---@param vehicleId number
+local function Clean(self)
+    if not DoesEntityExist(self.vehicle) then
+        local debug <const> = debug.getinfo
+        return sl.log.print(3, "Vehicle didnt exist (Function : ^5%s^7, From : [^5%s^7 : %s])", debug(1, "n").name, debug(2, "Sl").short_src, debug(2, "Sl").currentline)
+    end
+
+    SetVehicleDirtLevel(self.vehicle, 0.0)
+    WashDecalsFromVehicle(self.vehicle, 1.0)
 end
 
 --- sl.vehicle.get_fuel_level : get fuel level of vehicle
 ---@param vehicleId number
 ---@return number
-local function GetFuelLevel(vehicleId)
-    if not DoesEntityExist(vehicleId) then
+local function GetFuelLevel(self)
+    if not DoesEntityExist(self.vehicle) then
         local debug <const> = debug.getinfo
         return sl.log.print(3, "Vehicle didnt exist (Function : ^5%s^7, From : [^5%s^7 : %s])", debug(1, "n").name, debug(2, "Sl").short_src, debug(2, "Sl").currentline)
     end
 
-    return GetVehicleFuelLevel(vehicleId)
+    return GetVehicleFuelLevel(self.vehicle)
 end
 
 --- sl.vehicle.get_fuel_tank : get fuel tank of vehicle
 ---@param vehicleId number
 ---@return number
-local function GetFuelTank(vehicleId)
-    if not DoesEntityExist(vehicleId) then
+local function GetFuelTank(self)
+    if not DoesEntityExist(self.vehicle) then
         local debug <const> = debug.getinfo
         return sl.log.print(3, "Vehicle didnt exist (Function : ^5%s^7, From : [^5%s^7 : %s])", debug(1, "n").name, debug(2, "Sl").short_src, debug(2, "Sl").currentline)
     end
 
     ---@type number
-    local fuel <const> = GetVehicleHandlingFloat(vehicleId, "CHandlingData", "fPetrolTankVolume")
+    local fuel <const> = GetVehicleHandlingFloat(self.vehicle, "CHandlingData", "fPetrolTankVolume")
     return fuel
 end
 
 --- sl.vehicle.model_name : get vehicle name
 ---@param vehicleId number
 ---@return string
-local function ModelName(vehicleId)
-    if not DoesEntityExist(vehicleId) then
+local function ModelName(self)
+    if not DoesEntityExist(self.vehicle) then
         local debug <const> = debug.getinfo
         return sl.log.print(3, "Vehicle didnt exist (Function : ^5%s^7, From : [^5%s^7 : %s])", debug(1, "n").name, debug(2, "Sl").short_src, debug(2, "Sl").currentline)
     end
 
     ---@type string
-    local model <const> = GetDisplayNameFromVehicleModel(GetEntityModel(vehicleId))
+    local model <const> = GetDisplayNameFromVehicleModel(GetEntityModel(self.vehicle))
     return model
 end
 
 --- sl.vehicle.get_plate : get vehicle plate
 ---@param vehicleId number
 ---@return string|number
-local function GetPlate(vehicleId)
-    if not DoesEntityExist(vehicleId) then
+local function GetPlate(self)
+    if not DoesEntityExist(self.vehicle) then
         local debug <const> = debug.getinfo
         return sl.log.print(3, "Vehicle didnt exist (Function : ^5%s^7, From : [^5%s^7 : %s])", debug(1, "n").name, debug(2, "Sl").short_src, debug(2, "Sl").currentline)
     end
 
-    local plate <const> = GetVehicleNumberPlateText(vehicleId)
+    local plate <const> = GetVehicleNumberPlateText(self.vehicle)
     return plate
 end
 
 --- sl.vehicle.get_states : get vehicle state 
 ---@param vehicleId number
 ---@return table
-local function GetStates(vehicleId)
-    if not DoesEntityExist(vehicleId) then
+local function GetStates(self)
+    if not DoesEntityExist(self.vehicle) then
         local debug <const> = debug.getinfo
         return sl.log.print(3, "Vehicle didnt exist (Function : ^5%s^7, From : [^5%s^7 : %s])", debug(1, "n").name, debug(2, "Sl").short_src, debug(2, "Sl").currentline)
     end
@@ -88,66 +89,66 @@ local function GetStates(vehicleId)
 --TODO IMPROVE THIS FUNCTION
 
     local vehicleState <const> = {
-        engineHealth = GetVehicleEngineHealth(vehicleId),
-        vehicleBodyHealth = GetVehicleBodyHealth(vehicleId),
-        dirtLevel = GetVehicleDirtLevel(vehicleId),
-        engineState = (GetIsVehicleEngineRunning(vehicleId) == 1)
+        engineHealth = GetVehicleEngineHealth(self.vehicle),
+        vehicleBodyHealth = GetVehicleBodyHealth(self.vehicle),
+        dirtLevel = GetVehicleDirtLevel(self.vehicle),
+        engineState = (GetIsVehicleEngineRunning(self.vehicle) == 1)
     }
     return vehicleState
 end
 
 --- sl.vehicle.open_door : open vehicle door
 ---@param vehicleId number
-local function OpenDoor(vehicleId, doorId, canBeClosed, instantly)
-    if not DoesEntityExist(vehicleId) then
+local function OpenDoor(self, doorId, canBeClosed, instantly)
+    if not DoesEntityExist(self.vehicle) then
         local debug <const> = debug.getinfo
         return sl.log.print(3, "Vehicle didnt exist (Function : ^5%s^7, From : [^5%s^7 : %s])", debug(1, "n").name, debug(2, "Sl").short_src, debug(2, "Sl").currentline)
     end
 
     if doorId == "all" then
         for i = 0, 5 do
-            SetVehicleDoorOpen(vehicleId, i, canBeClosed or false, instantly or false)
+            SetVehicleDoorOpen(self.vehicle, i, canBeClosed or false, instantly or false)
         end
     else
-        SetVehicleDoorOpen(vehicleId, doorId, canBeClosed or false, instantly or false)
+        SetVehicleDoorOpen(self.vehicle, doorId, canBeClosed or false, instantly or false)
     end
 end
 
 --- sl.vehicle.lock : lock or unlock vehicle door
 ---@param vehicleId number
 ---@param state boolean
-local function Lock(vehicleId, state)
-    if not DoesEntityExist(vehicleId) then
+local function Lock(self, state)
+    if not DoesEntityExist(self.vehicle) then
         local debug <const> = debug.getinfo
         return sl.log.print(3, "Vehicle didnt exist (Function : ^5%s^7, From : [^5%s^7 : %s])", debug(1, "n").name, debug(2, "Sl").short_src, debug(2, "Sl").currentline)
     end
 
-    SetVehicleDoorsLocked(vehicleId, state and 2 or 1)
+    SetVehicleDoorsLocked(self.vehicle, state and 2 or 1)
 end
 
 --- sl.vehicle.repair : repair vehicle
 ---@param vehicleId number
-local function Repair(vehicleId)
-    if not DoesEntityExist(vehicleId) then
+local function Repair(self)
+    if not DoesEntityExist(self.vehicle) then
         local debug <const> = debug.getinfo
         return sl.log.print(3, "Vehicle didnt exist (Function : ^5%s^7, From : [^5%s^7 : %s])", debug(1, "n").name, debug(2, "Sl").short_src, debug(2, "Sl").currentline)
     end
 
-    SetVehicleFixed(vehicleId)
-    SetVehicleDirtLevel(vehicleId, 0.0)
-    SetVehicleDeformationFixed(vehicleId)
+    SetVehicleFixed(self.vehicle)
+    SetVehicleDirtLevel(self.vehicle, 0.0)
+    SetVehicleDeformationFixed(self.vehicle)
 end
 
 --- sl.vehicle.set_fuel : set vehicle fuel
 ---@param vehicleId number
 ---@param fuel number
-local function SetFuel(vehicleId, fuel)
-    if not DoesEntityExist(vehicleId) then
+local function SetFuel(self, fuel)
+    if not DoesEntityExist(self.vehicle) then
         local debug <const> = debug.getinfo
         return sl.log.print(3, "Vehicle didnt exist (Function : ^5%s^7, From : [^5%s^7 : %s])", debug(1, "n").name, debug(2, "Sl").short_src, debug(2, "Sl").currentline)
     end
 
-    return SetVehicleFuelLevel(vehicleId, fuel)
+    return SetVehicleFuelLevel(self.vehicle, fuel)
 end
 
 --- sl.vehicle.get_type : get vehicle type
@@ -178,14 +179,14 @@ end
 --- sl.vehicle.is_empty : is vehicle empty
 ---@param vehicleId number
 ---@return boolean
-local function IsEmpty(vehicleId)
-    if not DoesEntityExist(vehicleId) then
+local function IsEmpty(self)
+    if not DoesEntityExist(self.vehicle) then
         local debug <const> = debug.getinfo
         return sl.log.print(3, "Vehicle didnt exist (Function : ^5%s^7, From : [^5%s^7 : %s])", debug(1, "n").name, debug(2, "Sl").short_src, debug(2, "Sl").currentline)
     end
     
-    local passengers = GetVehicleNumberOfPassengers(vehicleId)
-    local driverSeatFree = IsVehicleSeatFree(vehicleId, -1)
+    local passengers = GetVehicleNumberOfPassengers(self.vehicle)
+    local driverSeatFree = IsVehicleSeatFree(self.vehicle, -1)
     return passengers == 0 and driverSeatFree
 end
 
@@ -193,29 +194,29 @@ end
 --- sl.vehicle.get_vehicle_properties
 ---@param vehicle number
 ---@return table VehicleProperties?
-local function GetVehicleProperties(vehicle)
-    if not DoesEntityExist(vehicle) then
+local function GetVehicleProperties(self)
+    if not DoesEntityExist(self.vehicle) then
         local debug <const> = debug.getinfo
         return sl.log.print(3, "Vehicle didnt exist (Function : ^5%s^7, From : [^5%s^7 : %s])", debug(1, "n").name, debug(2, "Sl").short_src, debug(2, "Sl").currentline)
     end
 
-    local colorPrimary, colorSecondary = GetVehicleColours(vehicle)
-	local pearlescentColor, wheelColor = GetVehicleExtraColours(vehicle)
-	if GetIsVehiclePrimaryColourCustom(vehicle) then
-		colorPrimary = {GetVehicleCustomPrimaryColour(vehicle)}
+    local colorPrimary, colorSecondary = GetVehicleColours(self.vehicle)
+	local pearlescentColor, wheelColor = GetVehicleExtraColours(self.vehicle)
+	if GetIsVehiclePrimaryColourCustom(self.vehicle) then
+		colorPrimary = {GetVehicleCustomPrimaryColour(self.vehicle)}
 	end
-	if GetIsVehicleSecondaryColourCustom(vehicle) then
-		colorSecondary = {GetVehicleCustomSecondaryColour(vehicle)}
+	if GetIsVehicleSecondaryColourCustom(self.vehicle) then
+		colorSecondary = {GetVehicleCustomSecondaryColour(self.vehicle)}
 	end
 	local extras = {}
 	for i = 1, 15 do
-		if DoesExtraExist(vehicle, i) then
-			extras[i] = IsVehicleExtraTurnedOn(vehicle, i) and 0 or 1
+		if DoesExtraExist(self.vehicle, i) then
+			extras[i] = IsVehicleExtraTurnedOn(self.vehicle, i) and 0 or 1
 		end
 	end
-    local modLivery = GetVehicleMod(vehicle, 48)
+    local modLivery = GetVehicleMod(self.vehicle, 48)
 	if modLivery == -1 then
-		local modLivery2 = GetVehicleLivery(vehicle)
+		local modLivery2 = GetVehicleLivery(self.vehicle)
 		if modLivery2 ~= 0 then
 			modLivery = modLivery2
 		end
@@ -227,104 +228,104 @@ local function GetVehicleProperties(vehicle)
 	}
 	local windows = 0
 	for i = 0, 7 do
-		if not IsVehicleWindowIntact(vehicle, i) then
+		if not IsVehicleWindowIntact(self.vehicle, i) then
 			windows += 1
 			damage.windows[windows] = i
 		end
 	end
 	local doors = 0
 	for i = 0, 5 do
-		if IsVehicleDoorDamaged(vehicle, i) then
+		if IsVehicleDoorDamaged(self.vehicle, i) then
 			doors += 1
 			damage.doors[doors] = i
 		end
 	end
 	for i = 0, 5 do
-		if IsVehicleTyreBurst(vehicle, i, false) then
-			damage.tyres[i] = IsVehicleTyreBurst(vehicle, i, true) and 2 or 1
+		if IsVehicleTyreBurst(self.vehicle, i, false) then
+			damage.tyres[i] = IsVehicleTyreBurst(self.vehicle, i, true) and 2 or 1
 		end
 	end
 	local neons = {}
 	for i = 0, 3 do
-        neons[i + 1] = IsVehicleNeonLightEnabled(vehicle, i)
+        neons[i + 1] = IsVehicleNeonLightEnabled(self.vehicle, i)
 	end
 	return {
-		model = GetEntityModel(vehicle),
-		plate = GetVehicleNumberPlateText(vehicle),
-		plateIndex = GetVehicleNumberPlateTextIndex(vehicle),
-		bodyHealth = math.floor(GetVehicleBodyHealth(vehicle) + 0.5),
-		engineHealth = math.floor(GetVehicleEngineHealth(vehicle) + 0.5),
-		tankHealth = math.floor(GetVehiclePetrolTankHealth(vehicle) + 0.5),
-		fuelLevel = math.floor(GetVehicleFuelLevel(vehicle) + 0.5),
-		dirtLevel = math.floor(GetVehicleDirtLevel(vehicle) + 0.5),
+		model = GetEntityModel(self.vehicle),
+		plate = GetVehicleNumberPlateText(self.vehicle),
+		plateIndex = GetVehicleNumberPlateTextIndex(self.vehicle),
+		bodyHealth = math.floor(GetVehicleBodyHealth(self.vehicle) + 0.5),
+		engineHealth = math.floor(GetVehicleEngineHealth(self.vehicle) + 0.5),
+		tankHealth = math.floor(GetVehiclePetrolTankHealth(self.vehicle) + 0.5),
+		fuelLevel = math.floor(GetVehicleFuelLevel(self.vehicle) + 0.5),
+		dirtLevel = math.floor(GetVehicleDirtLevel(self.vehicle) + 0.5),
 		color1 = colorPrimary,
 		color2 = colorSecondary,
 		pearlescentColor = pearlescentColor,
-		interiorColor = GetVehicleInteriorColor(vehicle),
-		dashboardColor = GetVehicleDashboardColour(vehicle),
+		interiorColor = GetVehicleInteriorColor(self.vehicle),
+		dashboardColor = GetVehicleDashboardColour(self.vehicle),
 		wheelColor = wheelColor,
-        wheelWidth = GetVehicleWheelWidth(vehicle),
-        wheelSize = GetVehicleWheelSize(vehicle),
-		wheels = GetVehicleWheelType(vehicle),
-		windowTint = GetVehicleWindowTint(vehicle),
-		xenonColor = GetVehicleXenonLightsColor(vehicle),
+        wheelWidth = GetVehicleWheelWidth(self.vehicle),
+        wheelSize = GetVehicleWheelSize(self.vehicle),
+		wheels = GetVehicleWheelType(self.vehicle),
+		windowTint = GetVehicleWindowTint(self.vehicle),
+		xenonColor = GetVehicleXenonLightsColor(self.vehicle),
 		neonEnabled = neons,
-		neonColor = {GetVehicleNeonLightsColour(vehicle)},
+		neonColor = {GetVehicleNeonLightsColour(self.vehicle)},
 		extras = extras,
-		tyreSmokeColor = {GetVehicleTyreSmokeColor(vehicle)},
-		modSpoilers = GetVehicleMod(vehicle, 0),
-		modFrontBumper = GetVehicleMod(vehicle, 1),
-		modRearBumper = GetVehicleMod(vehicle, 2),
-		modSideSkirt = GetVehicleMod(vehicle, 3),
-		modExhaust = GetVehicleMod(vehicle, 4),
-		modFrame = GetVehicleMod(vehicle, 5),
-		modGrille = GetVehicleMod(vehicle, 6),
-		modHood = GetVehicleMod(vehicle, 7),
-		modFender = GetVehicleMod(vehicle, 8),
-		modRightFender = GetVehicleMod(vehicle, 9),
-		modRoof = GetVehicleMod(vehicle, 10),
-		modEngine = GetVehicleMod(vehicle, 11),
-		modBrakes = GetVehicleMod(vehicle, 12),
-		modTransmission = GetVehicleMod(vehicle, 13),
-		modHorns = GetVehicleMod(vehicle, 14),
-		modSuspension = GetVehicleMod(vehicle, 15),
-		modArmor = GetVehicleMod(vehicle, 16),
-		modNitrous = GetVehicleMod(vehicle, 17),
-		modTurbo = IsToggleModOn(vehicle, 18),
-		modSubwoofer = GetVehicleMod(vehicle, 19),
-		modSmokeEnabled = IsToggleModOn(vehicle, 20),
-		modHydraulics = IsToggleModOn(vehicle, 21),
-		modXenon = IsToggleModOn(vehicle, 22),
-		modFrontWheels = GetVehicleMod(vehicle, 23),
-		modBackWheels = GetVehicleMod(vehicle, 24),
-		modCustomTiresF = GetVehicleModVariation(vehicle, 23),
-		modCustomTiresR = GetVehicleModVariation(vehicle, 24),
-		modPlateHolder = GetVehicleMod(vehicle, 25),
-		modVanityPlate = GetVehicleMod(vehicle, 26),
-		modTrimA = GetVehicleMod(vehicle, 27),
-		modOrnaments = GetVehicleMod(vehicle, 28),
-		modDashboard = GetVehicleMod(vehicle, 29),
-		modDial = GetVehicleMod(vehicle, 30),
-		modDoorSpeaker = GetVehicleMod(vehicle, 31),
-		modSeats = GetVehicleMod(vehicle, 32),
-		modSteeringWheel = GetVehicleMod(vehicle, 33),
-		modShifterLeavers = GetVehicleMod(vehicle, 34),
-		modAPlate = GetVehicleMod(vehicle, 35),
-		modSpeakers = GetVehicleMod(vehicle, 36),
-		modTrunk = GetVehicleMod(vehicle, 37),
-		modHydrolic = GetVehicleMod(vehicle, 38),
-		modEngineBlock = GetVehicleMod(vehicle, 39),
-		modAirFilter = GetVehicleMod(vehicle, 40),
-		modStruts = GetVehicleMod(vehicle, 41),
-		modArchCover = GetVehicleMod(vehicle, 42),
-		modAerials = GetVehicleMod(vehicle, 43),
-		modTrimB = GetVehicleMod(vehicle, 44),
-		modTank = GetVehicleMod(vehicle, 45),
-		modWindows = GetVehicleMod(vehicle, 46),
-		modDoorR = GetVehicleMod(vehicle, 47),
+		tyreSmokeColor = {GetVehicleTyreSmokeColor(self.vehicle)},
+		modSpoilers = GetVehicleMod(self.vehicle, 0),
+		modFrontBumper = GetVehicleMod(self.vehicle, 1),
+		modRearBumper = GetVehicleMod(self.vehicle, 2),
+		modSideSkirt = GetVehicleMod(self.vehicle, 3),
+		modExhaust = GetVehicleMod(self.vehicle, 4),
+		modFrame = GetVehicleMod(self.vehicle, 5),
+		modGrille = GetVehicleMod(self.vehicle, 6),
+		modHood = GetVehicleMod(self.vehicle, 7),
+		modFender = GetVehicleMod(self.vehicle, 8),
+		modRightFender = GetVehicleMod(self.vehicle, 9),
+		modRoof = GetVehicleMod(self.vehicle, 10),
+		modEngine = GetVehicleMod(self.vehicle, 11),
+		modBrakes = GetVehicleMod(self.vehicle, 12),
+		modTransmission = GetVehicleMod(self.vehicle, 13),
+		modHorns = GetVehicleMod(self.vehicle, 14),
+		modSuspension = GetVehicleMod(self.vehicle, 15),
+		modArmor = GetVehicleMod(self.vehicle, 16),
+		modNitrous = GetVehicleMod(self.vehicle, 17),
+		modTurbo = IsToggleModOn(self.vehicle, 18),
+		modSubwoofer = GetVehicleMod(self.vehicle, 19),
+		modSmokeEnabled = IsToggleModOn(self.vehicle, 20),
+		modHydraulics = IsToggleModOn(self.vehicle, 21),
+		modXenon = IsToggleModOn(self.vehicle, 22),
+		modFrontWheels = GetVehicleMod(self.vehicle, 23),
+		modBackWheels = GetVehicleMod(self.vehicle, 24),
+		modCustomTiresF = GetVehicleModVariation(self.vehicle, 23),
+		modCustomTiresR = GetVehicleModVariation(self.vehicle, 24),
+		modPlateHolder = GetVehicleMod(self.vehicle, 25),
+		modVanityPlate = GetVehicleMod(self.vehicle, 26),
+		modTrimA = GetVehicleMod(self.vehicle, 27),
+		modOrnaments = GetVehicleMod(self.vehicle, 28),
+		modDashboard = GetVehicleMod(self.vehicle, 29),
+		modDial = GetVehicleMod(self.vehicle, 30),
+		modDoorSpeaker = GetVehicleMod(self.vehicle, 31),
+		modSeats = GetVehicleMod(self.vehicle, 32),
+		modSteeringWheel = GetVehicleMod(self.vehicle, 33),
+		modShifterLeavers = GetVehicleMod(self.vehicle, 34),
+		modAPlate = GetVehicleMod(self.vehicle, 35),
+		modSpeakers = GetVehicleMod(self.vehicle, 36),
+		modTrunk = GetVehicleMod(self.vehicle, 37),
+		modHydrolic = GetVehicleMod(self.vehicle, 38),
+		modEngineBlock = GetVehicleMod(self.vehicle, 39),
+		modAirFilter = GetVehicleMod(self.vehicle, 40),
+		modStruts = GetVehicleMod(self.vehicle, 41),
+		modArchCover = GetVehicleMod(self.vehicle, 42),
+		modAerials = GetVehicleMod(self.vehicle, 43),
+		modTrimB = GetVehicleMod(self.vehicle, 44),
+		modTank = GetVehicleMod(self.vehicle, 45),
+		modWindows = GetVehicleMod(self.vehicle, 46),
+		modDoorR = GetVehicleMod(self.vehicle, 47),
 		modLivery = modLivery,
-        modRoofLivery = GetVehicleRoofLivery(vehicle),
-		modLightbar = GetVehicleMod(vehicle, 49),
+        modRoofLivery = GetVehicleRoofLivery(self.vehicle),
+		modLightbar = GetVehicleMod(self.vehicle, 49),
 		windows = damage.windows,
 		doors = damage.doors,
 		tyres = damage.tyres,
@@ -339,263 +340,264 @@ end
 ---@param vehicle number
 ---@param props table
 ---@return boolean
-local function SetVehicleProperties(vehicle, props)
-    if not DoesEntityExist(vehicle) then
+local function SetVehicleProperties(self, props)
+    if not DoesEntityExist(self.vehicle) then
         local debug <const> = debug.getinfo
         return sl.log.print(3, "Vehicle didnt exist (Function : ^5%s^7, From : [^5%s^7 : %s])", debug(1, "n").name, debug(2, "Sl").short_src, debug(2, "Sl").currentline)
     end
-
-    local colorPrimary, colorSecondary = GetVehicleColours(vehicle)
-    local pearlescentColor, wheelColor = GetVehicleExtraColours(vehicle)
-    SetVehicleModKit(vehicle, 0)
-    SetVehicleAutoRepairDisabled(vehicle, true)
+    if not props then return end
+    
+    local colorPrimary, colorSecondary = GetVehicleColours(self.vehicle)
+    local pearlescentColor, wheelColor = GetVehicleExtraColours(self.vehicle)
+    SetVehicleModKit(self.vehicle, 0)
+    SetVehicleAutoRepairDisabled(self.vehicle, true)
     if props.plate then
-        SetVehicleNumberPlateText(vehicle, props.plate)
+        SetVehicleNumberPlateText(self.vehicle, props.plate)
     end
     if props.plateIndex then
-        SetVehicleNumberPlateTextIndex(vehicle, props.plateIndex)
+        SetVehicleNumberPlateTextIndex(self.vehicle, props.plateIndex)
     end
     if props.bodyHealth then
-        SetVehicleBodyHealth(vehicle, props.bodyHealth + 0.0)
+        SetVehicleBodyHealth(self.vehicle, props.bodyHealth + 0.0)
     end
     if props.engineHealth then
-        SetVehicleEngineHealth(vehicle, props.engineHealth + 0.0)
+        SetVehicleEngineHealth(self.vehicle, props.engineHealth + 0.0)
     end
     if props.tankHealth  then
-        SetVehiclePetrolTankHealth(vehicle, props.tankHealth + 0.0)
+        SetVehiclePetrolTankHealth(self.vehicle, props.tankHealth + 0.0)
     end
     if props.fuelLevel then
-        SetVehicleFuelLevel(vehicle, props.fuelLevel + 0.0)
+        SetVehicleFuelLevel(self.vehicle, props.fuelLevel + 0.0)
     end
     if props.oilLevel then
-        SetVehicleOilLevel(vehicle, props.oilLevel + 0.0)
+        SetVehicleOilLevel(self.vehicle, props.oilLevel + 0.0)
     end
     if props.dirtLevel then
-        SetVehicleDirtLevel(vehicle, props.dirtLevel + 0.0)
+        SetVehicleDirtLevel(self.vehicle, props.dirtLevel + 0.0)
     end
     if props.color1 then
         if type(props.color1) == 'number' then
-            SetVehicleColours(vehicle, props.color1, colorSecondary)
+            SetVehicleColours(self.vehicle, props.color1, colorSecondary)
         else
-            SetVehicleCustomPrimaryColour(vehicle, props.color1[1], props.color1[2], props.color1[3])
+            SetVehicleCustomPrimaryColour(self.vehicle, props.color1[1], props.color1[2], props.color1[3])
         end
     end
     if props.color2 then
         if type(props.color2) == 'number' then
-            SetVehicleColours(vehicle, props.color1 or colorPrimary, props.color2)
+            SetVehicleColours(self.vehicle, props.color1 or colorPrimary, props.color2)
         else
-            SetVehicleCustomSecondaryColour(vehicle, props.color2[1], props.color2[2], props.color2[3])
+            SetVehicleCustomSecondaryColour(self.vehicle, props.color2[1], props.color2[2], props.color2[3])
         end
     end
     if props.pearlescentColor or props.wheelColor then
-        SetVehicleExtraColours(vehicle, props.pearlescentColor or pearlescentColor, props.wheelColor or wheelColor)
+        SetVehicleExtraColours(self.vehicle, props.pearlescentColor or pearlescentColor, props.wheelColor or wheelColor)
     end
     if props.interiorColor then
-        SetVehicleInteriorColor(vehicle, props.interiorColor)
+        SetVehicleInteriorColor(self.vehicle, props.interiorColor)
     end
     if props.dashboardColor then
-        SetVehicleDashboardColor(vehicle, props.dashboardColor)
+        SetVehicleDashboardColor(self.vehicle, props.dashboardColor)
     end
     if props.wheels then
-        SetVehicleWheelType(vehicle, props.wheels)
+        SetVehicleWheelType(self.vehicle, props.wheels)
     end
     if props.wheelSize then
-        SetVehicleWheelSize(vehicle, props.wheelSize)
+        SetVehicleWheelSize(self.vehicle, props.wheelSize)
     end
     if props.wheelWidth then
-        SetVehicleWheelWidth(vehicle, props.wheelWidth)
+        SetVehicleWheelWidth(self.vehicle, props.wheelWidth)
     end
     if props.windowTint then
-        SetVehicleWindowTint(vehicle, props.windowTint)
+        SetVehicleWindowTint(self.vehicle, props.windowTint)
     end
     if props.neonEnabled then
         for i = 1, #props.neonEnabled do
-            SetVehicleNeonLightEnabled(vehicle, i - 1, props.neonEnabled[i])
+            SetVehicleNeonLightEnabled(self.vehicle, i - 1, props.neonEnabled[i])
         end
     end
     if props.extras then
         for id, state in pairs(props.extras) do
-            SetVehicleExtra(vehicle, id, state)
+            SetVehicleExtra(self.vehicle, id, state)
         end
     end
     if props.windows then
         for i = 1, #props.windows do
-            SmashVehicleWindow(vehicle, props.windows[i])
+            SmashVehicleWindow(self.vehicle, props.windows[i])
         end
     end
     if props.doors then
         for i = 1, #props.doors do
-            SetVehicleDoorBroken(vehicle, props.doors[i], true)
+            SetVehicleDoorBroken(self.vehicle, props.doors[i], true)
         end
     end
     if props.tyres then
         for tyre, state in pairs(props.tyres) do
             if state == 1 then
-                SetVehicleTyreBurst(vehicle, tyre, false, 1000.0)
+                SetVehicleTyreBurst(self.vehicle, tyre, false, 1000.0)
             else
-                SetVehicleTyreBurst(vehicle, tyre, true)
+                SetVehicleTyreBurst(self.vehicle, tyre, true)
             end
         end
     end
     if props.neonColor then
-        SetVehicleNeonLightsColour(vehicle, props.neonColor[1], props.neonColor[2], props.neonColor[3])
+        SetVehicleNeonLightsColour(self.vehicle, props.neonColor[1], props.neonColor[2], props.neonColor[3])
     end
     if props.modSmokeEnabled then
-        ToggleVehicleMod(vehicle, 20, true)
+        ToggleVehicleMod(self.vehicle, 20, true)
     end
     if props.tyreSmokeColor then
-        SetVehicleTyreSmokeColor(vehicle, props.tyreSmokeColor[1], props.tyreSmokeColor[2], props.tyreSmokeColor[3])
+        SetVehicleTyreSmokeColor(self.vehicle, props.tyreSmokeColor[1], props.tyreSmokeColor[2], props.tyreSmokeColor[3])
     end
     if props.modSpoilers then
-        SetVehicleMod(vehicle, 0, props.modSpoilers, false)
+        SetVehicleMod(self.vehicle, 0, props.modSpoilers, false)
     end
     if props.modFrontBumper then
-        SetVehicleMod(vehicle, 1, props.modFrontBumper, false)
+        SetVehicleMod(self.vehicle, 1, props.modFrontBumper, false)
     end
     if props.modRearBumper then
-        SetVehicleMod(vehicle, 2, props.modRearBumper, false)
+        SetVehicleMod(self.vehicle, 2, props.modRearBumper, false)
     end
     if props.modSideSkirt then
-        SetVehicleMod(vehicle, 3, props.modSideSkirt, false)
+        SetVehicleMod(self.vehicle, 3, props.modSideSkirt, false)
     end
     if props.modExhaust then
-        SetVehicleMod(vehicle, 4, props.modExhaust, false)
+        SetVehicleMod(self.vehicle, 4, props.modExhaust, false)
     end
     if props.modFrame then
-        SetVehicleMod(vehicle, 5, props.modFrame, false)
+        SetVehicleMod(self.vehicle, 5, props.modFrame, false)
     end
     if props.modGrille then
-        SetVehicleMod(vehicle, 6, props.modGrille, false)
+        SetVehicleMod(self.vehicle, 6, props.modGrille, false)
     end
     if props.modHood then
-        SetVehicleMod(vehicle, 7, props.modHood, false)
+        SetVehicleMod(self.vehicle, 7, props.modHood, false)
     end
     if props.modFender then
-        SetVehicleMod(vehicle, 8, props.modFender, false)
+        SetVehicleMod(self.vehicle, 8, props.modFender, false)
     end
     if props.modRightFender then
-        SetVehicleMod(vehicle, 9, props.modRightFender, false)
+        SetVehicleMod(self.vehicle, 9, props.modRightFender, false)
     end
     if props.modRoof then
-        SetVehicleMod(vehicle, 10, props.modRoof, false)
+        SetVehicleMod(self.vehicle, 10, props.modRoof, false)
     end
     if props.modEngine then
-        SetVehicleMod(vehicle, 11, props.modEngine, false)
+        SetVehicleMod(self.vehicle, 11, props.modEngine, false)
     end
     if props.modBrakes then
-        SetVehicleMod(vehicle, 12, props.modBrakes, false)
+        SetVehicleMod(self.vehicle, 12, props.modBrakes, false)
     end
     if props.modTransmission then
-        SetVehicleMod(vehicle, 13, props.modTransmission, false)
+        SetVehicleMod(self.vehicle, 13, props.modTransmission, false)
     end
     if props.modHorns then
-        SetVehicleMod(vehicle, 14, props.modHorns, false)
+        SetVehicleMod(self.vehicle, 14, props.modHorns, false)
     end
     if props.modSuspension then
-        SetVehicleMod(vehicle, 15, props.modSuspension, false)
+        SetVehicleMod(self.vehicle, 15, props.modSuspension, false)
     end
     if props.modArmor then
-        SetVehicleMod(vehicle, 16, props.modArmor, false)
+        SetVehicleMod(self.vehicle, 16, props.modArmor, false)
     end
     if props.modNitrous then
-        SetVehicleMod(vehicle, 17, props.modNitrous, false)
+        SetVehicleMod(self.vehicle, 17, props.modNitrous, false)
     end
     if props.modTurbo then
-        ToggleVehicleMod(vehicle, 18, props.modTurbo)
+        ToggleVehicleMod(self.vehicle, 18, props.modTurbo)
     end
     if props.modSubwoofer then
-        ToggleVehicleMod(vehicle, 19, props.modSubwoofer)
+        ToggleVehicleMod(self.vehicle, 19, props.modSubwoofer)
     end
     if props.modHydraulics then
-        ToggleVehicleMod(vehicle, 21, props.modHydraulics)
+        ToggleVehicleMod(self.vehicle, 21, props.modHydraulics)
     end
     if props.modXenon then
-        ToggleVehicleMod(vehicle, 22, props.modXenon)
+        ToggleVehicleMod(self.vehicle, 22, props.modXenon)
     end
     if props.xenonColor then
-        SetVehicleXenonLightsColor(vehicle, props.xenonColor)
+        SetVehicleXenonLightsColor(self.vehicle, props.xenonColor)
     end
     if props.modFrontWheels then
-        SetVehicleMod(vehicle, 23, props.modFrontWheels, props.modCustomTiresF)
+        SetVehicleMod(self.vehicle, 23, props.modFrontWheels, props.modCustomTiresF)
     end
     if props.modBackWheels then
-        SetVehicleMod(vehicle, 24, props.modBackWheels, props.modCustomTiresR)
+        SetVehicleMod(self.vehicle, 24, props.modBackWheels, props.modCustomTiresR)
     end
     if props.modPlateHolder then
-        SetVehicleMod(vehicle, 25, props.modPlateHolder, false)
+        SetVehicleMod(self.vehicle, 25, props.modPlateHolder, false)
     end
     if props.modVanityPlate then
-        SetVehicleMod(vehicle, 26, props.modVanityPlate, false)
+        SetVehicleMod(self.vehicle, 26, props.modVanityPlate, false)
     end
     if props.modTrimA then
-        SetVehicleMod(vehicle, 27, props.modTrimA, false)
+        SetVehicleMod(self.vehicle, 27, props.modTrimA, false)
     end
     if props.modOrnaments then
-        SetVehicleMod(vehicle, 28, props.modOrnaments, false)
+        SetVehicleMod(self.vehicle, 28, props.modOrnaments, false)
     end
     if props.modDashboard then
-        SetVehicleMod(vehicle, 29, props.modDashboard, false)
+        SetVehicleMod(self.vehicle, 29, props.modDashboard, false)
     end
     if props.modDial then
-        SetVehicleMod(vehicle, 30, props.modDial, false)
+        SetVehicleMod(self.vehicle, 30, props.modDial, false)
     end
     if props.modDoorSpeaker then
-        SetVehicleMod(vehicle, 31, props.modDoorSpeaker, false)
+        SetVehicleMod(self.vehicle, 31, props.modDoorSpeaker, false)
     end
     if props.modSeats then
-        SetVehicleMod(vehicle, 32, props.modSeats, false)
+        SetVehicleMod(self.vehicle, 32, props.modSeats, false)
     end
     if props.modSteeringWheel then
-        SetVehicleMod(vehicle, 33, props.modSteeringWheel, false)
+        SetVehicleMod(self.vehicle, 33, props.modSteeringWheel, false)
     end
     if props.modShifterLeavers then
-        SetVehicleMod(vehicle, 34, props.modShifterLeavers, false)
+        SetVehicleMod(self.vehicle, 34, props.modShifterLeavers, false)
     end
     if props.modAPlate then
-        SetVehicleMod(vehicle, 35, props.modAPlate, false)
+        SetVehicleMod(self.vehicle, 35, props.modAPlate, false)
     end
     if props.modSpeakers then
-        SetVehicleMod(vehicle, 36, props.modSpeakers, false)
+        SetVehicleMod(self.vehicle, 36, props.modSpeakers, false)
     end
     if props.modTrunk then
-        SetVehicleMod(vehicle, 37, props.modTrunk, false)
+        SetVehicleMod(self.vehicle, 37, props.modTrunk, false)
     end
     if props.modHydrolic then
-        SetVehicleMod(vehicle, 38, props.modHydrolic, false)
+        SetVehicleMod(self.vehicle, 38, props.modHydrolic, false)
     end
     if props.modEngineBlock then
-        SetVehicleMod(vehicle, 39, props.modEngineBlock, false)
+        SetVehicleMod(self.vehicle, 39, props.modEngineBlock, false)
     end
     if props.modAirFilter then
-        SetVehicleMod(vehicle, 40, props.modAirFilter, false)
+        SetVehicleMod(self.vehicle, 40, props.modAirFilter, false)
     end
     if props.modStruts then
-        SetVehicleMod(vehicle, 41, props.modStruts, false)
+        SetVehicleMod(self.vehicle, 41, props.modStruts, false)
     end
     if props.modArchCover then
-        SetVehicleMod(vehicle, 42, props.modArchCover, false)
+        SetVehicleMod(self.vehicle, 42, props.modArchCover, false)
     end
     if props.modAerials then
-        SetVehicleMod(vehicle, 43, props.modAerials, false)
+        SetVehicleMod(self.vehicle, 43, props.modAerials, false)
     end
     if props.modTrimB then
-        SetVehicleMod(vehicle, 44, props.modTrimB, false)
+        SetVehicleMod(self.vehicle, 44, props.modTrimB, false)
     end
     if props.modTank then
-        SetVehicleMod(vehicle, 45, props.modTank, false)
+        SetVehicleMod(self.vehicle, 45, props.modTank, false)
     end
     if props.modWindows then
-        SetVehicleMod(vehicle, 46, props.modWindows, false)
+        SetVehicleMod(self.vehicle, 46, props.modWindows, false)
     end
     if props.modDoorR then
-        SetVehicleMod(vehicle, 47, props.modDoorR, false)
+        SetVehicleMod(self.vehicle, 47, props.modDoorR, false)
     end
     if props.modLivery then
-        SetVehicleMod(vehicle, 48, props.modLivery, false)
-        SetVehicleLivery(vehicle, props.modLivery)
+        SetVehicleMod(self.vehicle, 48, props.modLivery, false)
+        SetVehicleLivery(self.vehicle, props.modLivery)
     end
     if props.modLightbar then
-        SetVehicleMod(vehicle, 49, props.modLightbar, false)
+        SetVehicleMod(self.vehicle, 49, props.modLightbar, false)
     end
     return true
 end
@@ -617,41 +619,61 @@ end)
 --- sl.vehicle.create
 ---@param model number
 ---@param coords vec3|table
----@param heading number
----@param properties table
+---@param args table
 ---@param cb function
 ---@param netWork boolean
-local function Create(model, coords, heading, properties, cb, netWork)
-    netWork = netWork == nil and true or false
-    sl.request.model(model)
-    if netWork then
+local function Create(model, coords, args, cb)
+    local self = {}
+    self.model = model
+    self.coords = coords
+    self.args = args
+    self.netWork = args == nil or args.netWork == nil and true or false
+    sl.request.model(self.model)
+
+    if self.netWork then
         sl.callback.trigger("sl:createVehicle", function(netvehicle)
             while not NetworkDoesNetworkIdExist(netvehicle) do Wait(100) end
             local vehicle <const> = NetToVeh(netvehicle)
-            SetEntityAsMissionEntity(vehicle, true, true)
-            SetEntityCoordsNoOffset(vehicle, coords.x, coords.y, coords.z + 0.5, 0.0, 0.0, 0.0)
-            SetVehicleOnGroundProperly(vehicle)
-            SetEntityHeading(vehicle, heading)
-            SetVehicleHasBeenOwnedByPlayer(vehicle, true)
-            SetVehRadioStation(vehicle, 'OFF')
-            if properties then SetVehicleProperties(vehicle, properties) end
-            if cb then cb(vehicle) end
-        end, model, coords, heading)
+            self.vehicle = vehicle
+        end, self.model, self.coords)
     else
         CreateThread(function()
-            local vehicle <const> = CreateVehicle(model, coords, heading, netWork, false)
+            local vehicle <const> = CreateVehicle(self.model, self.coords.xyzw, self.netWork, false)
             while not DoesEntityExist(vehicle) do Wait(50) end
-            SetEntityAsMissionEntity(vehicle, true, true)
-            SetEntityCoordsNoOffset(vehicle, coords.x, coords.y, coords.z + 0.5, 0.0, 0.0, 0.0)
-            SetVehicleOnGroundProperly(vehicle)
-            SetEntityHeading(vehicle, heading)
-            SetVehicleHasBeenOwnedByPlayer(vehicle, true)
-            SetVehRadioStation(vehicle, 'OFF')
-            if properties then SetVehicleProperties(properties) end
-            if cb then cb(vehicle) end
+            self.vehicle = vehicle
         end)
     end
+    while not DoesEntityExist(self.vehicle) do Wait(50) end
+
+    SetEntityAsMissionEntity(self.vehicle, true, true)
+    SetEntityCoordsNoOffset(self.vehicle, self.coords.x, self.coords.y, self.coords.z + 0.5, 0.0, 0.0, 0.0)
+    SetVehicleOnGroundProperly(self.vehicle)
+    SetVehicleHasBeenOwnedByPlayer(self.vehicle, true)
+    SetVehRadioStation(self.vehicle, 'OFF')
+
+    self.clean = Clean
+    self.delete = Delete
+    self.get_fuel_level = GetFuelLevel
+    self.get_fuel_tank = GetFuelTank
+    self.model_name = ModelName
+    self.get_plate = GetPlate
+    self.get_states = GetStates
+    self.open_door = OpenDoor
+    self.lock = Lock
+    self.repair = Repair
+    self.set_fuel = SetFuel
+    self.get_type = GetType
+    self.is_empty = IsEmpty
+    self.get_vehicle_properties = GetVehicleProperties
+    self.set_vehicle_properties = SetVehicleProperties
+
+    self:set_vehicle_properties(self.args)
+
+    if cb then
+        cb(self)
+    end
     SetModelAsNoLongerNeeded(model)
+    return self
 end
 
 --- sl:returnVehicleType [[CALLBACK]]
@@ -661,8 +683,8 @@ sl.callback.register("sl:returnVehicleType", function(model)
 end)
 
 return {
-    clean = Clean,
     delete = Delete,
+    clean = Clean,
     get_fuel_level = GetFuelLevel,
     get_fuel_tank = GetFuelTank,
     model_name = ModelName,

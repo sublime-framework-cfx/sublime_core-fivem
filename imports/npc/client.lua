@@ -7,95 +7,96 @@
 ---@param npcId number
 ---@param speech string
 ---@param param table
-local function Say(npcId, speech, param)
-    if not DoesEntityExist(npcId) then
+local function Say(self, speech, param)
+    if not DoesEntityExist(self.ped) then
         local debug <const> = debug.getinfo
         return sl.log.print(3, "Ped didnt exist (Function : ^5%s^7, From : [^5%s^7 : %s])", debug(1, "n").name, debug(2, "Sl").short_src, debug(2, "Sl").currentline)
     end
 
-    PlayAmbientSpeech1(npcId, speech, param)
+    PlayPedAmbientSpeechNative(self.ped, speech, param)
 end
 
 --- sl.npc.set_soldier : set npc like a soldier
 ---@param npcId any
-local function SetSoldier(npcId)
-    if not DoesEntityExist(npcId) then
+local function SetSoldier(self)
+    if not DoesEntityExist(self.ped) then
         local debug <const> = debug.getinfo
         return sl.log.print(3, "Ped didnt exist (Function : ^5%s^7, From : [^5%s^7 : %s])", debug(1, "n").name, debug(2, "Sl").short_src, debug(2, "Sl").currentline)
     end
 
-    SetPedSeeingRange(npcId, 100.0)
-    SetPedHearingRange(npcId, 100.0)
-    SetPedCombatAttributes(npcId, 46, 1)
-    SetPedFleeAttributes(npcId, 0, true)
-    SetPedCombatRange(npcId,2)
-    SetPedArmour(npcId, 100)
-    SetPedAccuracy(npcId, 100)
+    SetPedSeeingRange(self.ped, 100.0)
+    SetPedHearingRange(self.ped, 100.0)
+    SetPedCombatAttributes(self.ped, 46, 1)
+    SetPedFleeAttributes(self.ped, 0, true)
+    SetPedCombatRange(self.ped,2)
+    SetPedArmour(self.ped, 100)
+    SetPedAccuracy(self.ped, 100)
 end
 
 --- sl.npc.set_scenario : set start a scenario
 ---@param npcId number
 ---@param scenario string
 ---@param instantly boolean
-local function SetScenario(npcId, scenario, instantly)
-    if not DoesEntityExist(npcId) then
+local function SetScenario(self, scenario, instantly)
+    if not DoesEntityExist(self.ped) then
         local debug <const> = debug.getinfo
         return sl.log.print(3, "Ped didnt exist (Function : ^5%s^7, From : [^5%s^7 : %s])", debug(1, "n").name, debug(2, "Sl").short_src, debug(2, "Sl").currentline)
     end
 
     if instantly then
-        ClearPedTasksImmediately(npcId)
+        ClearPedTasksImmediately(self.ped)
     else
-        ClearPedTasks(npcId)
+        ClearPedTasks(self.ped)
     end
-    TaskStartScenarioInPlace(npcId, scenario, 0, not instantly)
+    TaskStartScenarioInPlace(self.ped, scenario, 0, not instantly)
 end
 
 --- sl.npc.set_weapon : give weapon to npc
 ---@param npcId number
 ---@param weapon string|weaponhash 
-local function SetWeapon(npcId, weapon)
-    if not DoesEntityExist(npcId) then
+local function SetWeapon(self, weapon)
+    if not DoesEntityExist(self.ped) then
         local debug <const> = debug.getinfo
         return sl.log.print(3, "Ped didnt exist (Function : ^5%s^7, From : [^5%s^7 : %s])", debug(1, "n").name, debug(2, "Sl").short_src, debug(2, "Sl").currentline)
     end
 
-    GiveWeaponToPed(npcId, weapon, 1000, false, true)
-    SetCurrentPedWeapon(npcId, weapon, true)
+    GiveWeaponToPed(self.ped, weapon, 1000, false, true)
+    SetCurrentPedWeapon(self.ped, weapon, true)
 end
 
 --- sl.npc.settings : setting of npc
 ---@param npcId number
 ---@param args table
-local function Settings(npcId, args)
-    if not DoesEntityExist(npcId) then
+local function Settings(self, args)
+    if not DoesEntityExist(self.ped) then
         local debug <const> = debug.getinfo
         return sl.log.print(3, "Ped didnt exist (Function : ^5%s^7, From : [^5%s^7 : %s])", debug(1, "n").name, debug(2, "Sl").short_src, debug(2, "Sl").currentline)
     end
-    
 
+    if not args then return end
+
+    if not args.ai then
+        SetBlockingOfNonTemporaryEvents(self.ped, true)
+        SetPedFleeAttributes(self.ped, 0, 0)
+    end
     if args.weapon then
-        SetWeapon(args.weapon)
+        SetWeapon(self, args.weapon)
     end
     if args.freeze then
-        sl.entity.set_freeze(npcId, true)
+        sl.entity.set_freeze(self.ped, true)
     end
     if args.scenario then
-        SetScenario(npcId, args.scenario.name, args.scenario.instantly)
+        SetScenario(self, args.scenario.name, args.scenario.instantly)
     end
     if args.soldier then
-        SetSoldier(npcId)
+        SetSoldier(self)
     end
     if args.randomprops then
-        SetPedRandomComponentVariation(npcId, 0)
-        SetPedRandomProps(npcId)
+        SetPedRandomComponentVariation(self.ped, 0)
+        SetPedRandomProps(self.ped)
     end
     if args.godmode then
-        SetEntityInvincible(npcId, args.godmode)
-    end
-    if not args.ai then
-        SetBlockingOfNonTemporaryEvents(npcId, true)
-        SetPedFleeAttributes(npcId, 0, 0)
+        SetEntityInvincible(self.ped, args.godmode)
     end
 end
 
@@ -106,27 +107,45 @@ end
 ---@param properties table
 ---@param cb function
 ---@param netWork boolean
-local function Create(model, coords, settings, cb, netWork)
-    netWork = netWork == nil and true or false
+local function Create(model, coords, args, cb)
+    local self = {}
+    self.model = model 
+    self.coords = coords
+    self.args = args
+    self.netWork = args.netWork == nil and true or false
     sl.request.model(model)
-    if netWork then
+
+    if self.netWork then
         sl.callback.trigger("sl:createNpc", function(netnpc)
             while not NetworkDoesNetworkIdExist(netnpc) do Wait(100) end
             local npc <const> = NetToPed(netnpc)
-            SetEntityAsMissionEntity(npc, true, true)
-            Settings(npc, settings)
-            if cb then cb(npc) end
-        end, model, coords)
+            self.ped = npc
+        end, self.model, self.coords)
     else
         CreateThread(function()
-            local npc <const> = CreatePed(1, model, coords.x, coords.y, coords.z, coords.w, false, true)
+            local npc <const> = CreatePed(_, self.model, self.coords.xyzw, false, true)
             while not DoesEntityExist(npc) do Wait(50) end
-            SetEntityAsMissionEntity(npc, true, true)
-            if settings then Settings(npc, settings) end
-            if cb then cb(npc) end
+            self.ped = npc
         end)
     end
+    while not DoesEntityExist(self.ped) do Wait(50) end
+
+    SetEntityAsMissionEntity(self.ped, true, true)
+    SetEntityCoordsNoOffset(self.ped, self.coords.x, self.coords.y, self.coords.z, 0.0, 0.0, 0.0)
+
+    self.say = Say
+    self.set_soldier = SetSoldier
+    self.set_scenario = SetScenario
+    self.set_weapon = SetWeapon
+    self.settings = Settings
+
+    self:settings(self.args)
+
+    if cb then
+        cb(self)
+    end
     SetModelAsNoLongerNeeded(model)
+    return self
 end
 
 return {

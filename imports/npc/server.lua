@@ -22,8 +22,8 @@ end
 ---@param coords vector3|table
 ---@param heading number
 ---@return number
+--TODO A METTRE PLUS TARD DANS RESSOURCE EX : utils.LUA
 sl.callback.register("sl:createNpc", function(source, model, coords)
-    print('receive')
     local spawned_npc
     CreateSyncNpc(model, coords, function(npc)
         spawned_npc = npc
@@ -35,5 +35,5 @@ sl.callback.register("sl:createNpc", function(source, model, coords)
 end)
 
 return {
-    create_sync_npc = CreateSyncNpc,
+    createped_sync = CreateSyncNpc,
 }

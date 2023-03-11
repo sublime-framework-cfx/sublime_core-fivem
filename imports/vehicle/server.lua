@@ -13,14 +13,13 @@ end
 ---@param source number
 ---@param model number
 ---@param coords vec3
----@param heading number
 ---@param cb function
-local function CreateSyncVehicle(source, model, coords, heading, cb)
+local function CreateSyncVehicle(source, model, coords, cb)
     model = type(model) == 'string' and joaat(model) or model
     CreateThread(function()
         GetType(source, model, function(Type)
             if Type then
-                local vehicle <const> = CreateVehicleServerSetter(model, Type, coords, heading)
+                local vehicle <const> = CreateVehicleServerSetter(model, Type, coords.x, coords.y, coords.z, coords.w)
                 while not DoesEntityExist(vehicle) do Wait(100) end
                 local netWorkVehicle <const> = NetworkGetNetworkIdFromEntity(vehicle)
                 if cb then
@@ -39,9 +38,9 @@ end
 ---@param coords vector3|table
 ---@param heading number
 ---@return number
-sl.callback.register("sl:createVehicle", function(source, model, coords, heading)
+sl.callback.register("sl:createVehicle", function(source, model, coords)
     local spawned_vehicle
-    CreateSyncVehicle(source, model, coords, heading, function(vehicle)
+    CreateSyncVehicle(source, model, coords, function(vehicle)
         spawned_vehicle = vehicle
     end)
     while not DoesEntityExist(spawned_vehicle) do 
@@ -52,5 +51,5 @@ end)
 
 return {
     get_type = GetType,
-    create_sync_vehicle = CreateSyncVehicle,
+    createvehicle_sync = CreateSyncVehicle,
 }
