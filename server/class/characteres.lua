@@ -24,9 +24,9 @@ local function CreateCharObj(source, data)
 end
 
 function sl.chars(filter, key)
-    if filter and not char[filter] then return sl.log.print(3, 'function sl.chars filter (%s) not found', filter) end
-    if filter and key and not char[filter][key] then return sl.log.print(3, 'function sl.chars key (%s) not found', key) else return char[filter][key] end
-    return char[filter] or char.id
+    --if filter and not char[filter] then return sl.log.print(3, 'function sl.chars filter (%s) not found', filter) end
+    --if filter and key and not char[filter][key] then return sl.log.print(3, 'function sl.chars key (%s) not found', key) else return char[filter][key] end
+    return char[filter] or char.id or nil
 end
 
 function sl.create_char_obj(source, data)
