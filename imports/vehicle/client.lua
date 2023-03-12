@@ -618,10 +618,10 @@ end)
 
 --- sl.vehicle.create
 ---@param model number
----@param coords vec3|table
+---@param coords vec4|table
 ---@param args table
 ---@param cb function
----@param netWork boolean
+---@return self
 local function Create(model, coords, args, cb)
     local self = {}
     self.model = model

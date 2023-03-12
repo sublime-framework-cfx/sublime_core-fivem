@@ -102,11 +102,10 @@ end
 
 --- sl.npc.create : create npc in coords and set settings
 ---@param model string|number
----@param coords vector3|number
----@param heading number
----@param properties table
+---@param coords vec4
+---@param args table
 ---@param cb function
----@param netWork boolean
+---@return self
 local function Create(model, coords, args, cb)
     local self = {}
     self.model = model 
