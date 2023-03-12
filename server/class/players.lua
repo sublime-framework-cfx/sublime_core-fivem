@@ -7,7 +7,7 @@
 
 local players = {
     id = {},
-    identifier = {}
+    --identifier = {}
 }
 
 --- player:addChar
@@ -99,7 +99,7 @@ end
 function sl.players(filter, key)
     if filter and not players[filter] then return sl.log.print(3, 'function sl.players filter (%s) not found', filter) end
     if filter and key and not players[filter][key] then return sl.log.print(3, 'function sl.players key (%s) not found', key) else return players[filter][key] end
-    return players[filter] or players.id
+    return players[filter] or players.id or nil
 end
 
 --- sl.create_player_obj
