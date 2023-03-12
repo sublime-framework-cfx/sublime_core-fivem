@@ -1,12 +1,12 @@
 
---- sl.string.FirstToUpper: convert the first character of a string to uppercase
+--- sl.string.first_to_upperv: convert the first character of a string to uppercase
 ---@param _string string
 ---@return string
 local function FirstToUpper(_string)
     return (_string:gsub("^%l", string.upper))
 end
 
---- sl.string.MoneyFormat: format a number to a money format
+--- sl.string.money_format: format a number to a money format
 ---@param amount number
 ---@param stepper string
 ---@return string
@@ -15,7 +15,7 @@ local function MoneyFormat(amount, stepper)
 	return (left .. string.reverse(string.gsub(string.reverse(center), "(%d%d%d)", "%1" .. (stepper or " "))) .. right)
 end
 
---- sl.string.Random: generate a random string
+--- sl.string.random: generate a random string
 ---@param length number
 ---@param randomTemplate string
 ---@return string
@@ -29,7 +29,7 @@ local function Random(length, randomTemplate)
     return (randomString)
 end
 
---- sl.string.Contains: check if a string contains a pattern
+--- sl.string.contains: check if a string contains a pattern
 ---@param stringToFind string
 ---@param pattern string
 ---@return string
@@ -37,7 +37,7 @@ local function Contains(stringToFind, pattern)
     return (stringToFind:find(pattern) ~= nil)
 end
 
---- sl.string.ReplaceAll: replace all occurences of a pattern in a string
+--- sl.string.replace_all: replace all occurences of a pattern in a string
 ---@param str string
 ---@param find string
 ---@param replace string
@@ -46,7 +46,7 @@ local function ReplaceAll(str, find, replace)
     return (str:gsub(find, replace))
 end
 
---- sl.string_split: split a string by a delimiter
+--- sl.string.split: split a string by a delimiter
 ---@param str string
 ---@param delimiter string
 ---@return string
@@ -59,7 +59,7 @@ local function Split(str, delimiter)
 	return (result)
 end
 
---- sl.string_hash: get the hash of a string
+--- sl.string.hash: get the hash of a string
 ---@param string string
 ---@return string
 local function Hash(string)

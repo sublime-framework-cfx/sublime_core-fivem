@@ -1,9 +1,10 @@
 local events = {}
+local cbEvent = ('__sl_cb_%s')
 
 --- sl:callbacks
 ---@param key any
 ---@return function
-RegisterNetEvent("sl:callbacks", function(key, ...)
+RegisterNetEvent(cbEvent:format("sublime_core"), function(key, ...)
 	local cb <const> = events[key]
 	return cb and cb(...)
 end)
@@ -14,9 +15,9 @@ end)
 ---@param cb function or boolean
 ---@param ... any
 ---@return ...
-local function TriggerClientCallback(_, event, playerId, cb, ...)
+local function TriggerClientCallback(event, playerId, cb, ...)
 	local key repeat key = ('%s:%s:%s'):format(event, math.random(0, 100000), playerId) until not events[key]
-	TriggerClientEvent(("sl:%s_cb"):format(event), playerId, key, ...)
+	TriggerClientEvent(cbEvent:format(event), playerId, "sublime_core", key, ...)
 	---@type boolean or promise
 	local promise = not cb and promise.new()
 	events[key] = function(response, ...)
@@ -40,7 +41,7 @@ end
 ---@param ... any
 ---@return function
 local function TriggerClientAwaitCallback(event, playerId, ...)
-	return TriggerClientCallback(nil, event, playerId, false, ...)
+	return TriggerClientCallback(event, playerId, false, ...)
 end
 
 --- CallbackResponse
@@ -64,8 +65,8 @@ local pcall <const> = pcall
 ---@param name string
 ---@param cb function
 local function Register(name, cb)
-	RegisterNetEvent(("sl:%s_cb"):format(name), function(resource, key, ...)
-		TriggerClientEvent(("sl:%s_cb"):format(resource), key, CallbackResponse(pcall(cb, ...)))
+	RegisterNetEvent(cbEvent:format(name), function(resource, key, ...)
+		TriggerClientEvent(cbEvent:format(resource), source, key, CallbackResponse(pcall(cb, source, ...)))
 	end)
 end
 

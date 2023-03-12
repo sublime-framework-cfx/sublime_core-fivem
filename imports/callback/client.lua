@@ -1,9 +1,10 @@
 local events = {}
+local cbEvent = ('__sl_cb_%s')
 
 --- sl:callbacks
 ---@param key any
 ---@return function
-RegisterNetEvent("sl:callbacks", function(key, ...)
+RegisterNetEvent(cbEvent:format("sublime_core"), function(key, ...)
 	local cb <const> = events[key]
 	return cb and cb(...)
 end)
@@ -14,9 +15,10 @@ end)
 ---@param cb function or boolean
 ---@param ... any
 ---@return ...
-local function TriggerServerCallback(_, event, cb, ...)
-	local key repeat key = ('%s:%s'):format(event, math.random(0, 100000)) until not events[key]
-	TriggerServerEvent(("sl:%s_cb"):format(event), key, ...)
+local function TriggerServerCallback(event, cb, ...)
+	local key
+	repeat key = ('%s:%s'):format(event, math.random(0, 100000)) until not events[key]
+	TriggerServerEvent(cbEvent:format(event), "sublime_core", key, ...)
     ---@type boolean or promise
 	local promise = not cb and promise.new()
 	events[key] = function(response, ...)
@@ -38,7 +40,7 @@ end
 ---@param event string
 ---@return function
 local function TriggerServerAwaitCallback(event, ...)
-	return TriggerServerCallback(nil, event, false, ...)
+	return TriggerServerCallback(event, false, ...)
 end
 
 --- CallbackResponse
@@ -62,8 +64,8 @@ local pcall <const> = pcall
 ---@param name string
 ---@param cb function
 local function Register(name, cb)
-    RegisterNetEvent(("sl:%s_cb"):format(name), function(resource, key, ...)
-        TriggerServerEvent(("sl:%s_cb"):format(resource), key, CallbackResponse(pcall(cb, ...)))
+    RegisterNetEvent(cbEvent:format(name), function(resource, key, ...)
+        TriggerServerEvent(cbEvent:format(resource), key, CallbackResponse(pcall(cb, ...)))
     end)
 end
 
