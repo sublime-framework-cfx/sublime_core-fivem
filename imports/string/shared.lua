@@ -51,12 +51,12 @@ end
 ---@param delimiter string
 ---@return string
 local function Split(str, delimiter)
-	if (not (str)) then return {} end
+	if not str then return {} end
 	local result = {}
 	for match in (str .. delimiter):gmatch("(.-)" .. delimiter) do
 		result[#result + 1] = match
 	end
-	return (result)
+	return result
 end
 
 --- sl.string.hash: get the hash of a string
