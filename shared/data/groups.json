@@ -1,0 +1,13 @@
+{
+    "police": {
+        "label": "Police",
+        "types": 1,
+        "grades": {
+            "1": {
+                "grade": 1,
+                "grade_label": "Recrue",
+                "grade_name": "recruit"
+            }
+        }
+    } 
+}
