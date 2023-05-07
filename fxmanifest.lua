@@ -1,7 +1,7 @@
 fx_version 'cerulean'
-use_experimental_fxv2_oal 'yes'
-game 'gta5'
+games {'gta5', 'rdr3'}
 lua54 'yes'
+use_experimental_fxv2_oal 'yes'
 
 name 'sublime_core'
 author 'SUBLiME'
@@ -10,7 +10,6 @@ repository 'https://github.com/SUBLiME-Association/sublime_core'
 description 'Un framework pour tout type de serveur'
 
 shared_script '_g.lua' -- need to be init first
-
 shared_scripts {
     'config/shared/*.lua', -- on top
     'shared/handlers/*.lua',
@@ -18,6 +17,7 @@ shared_scripts {
 
 client_scripts {
     'config/client/*.lua', -- on top
+    'client/*.lua'
 }
 
 server_scripts {
