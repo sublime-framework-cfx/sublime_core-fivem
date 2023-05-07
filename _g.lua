@@ -51,7 +51,7 @@ end})
 
 require = sl.require.load
 
-sl.locale.init()
+sl.locales.init()
 
 if sl.service == 'server' then
     sl.version.check('github', nil, 500)
