@@ -3,10 +3,13 @@ local IsDuplicityVersion <const> = IsDuplicityVersion
 local LoadResourceFile <const> = LoadResourceFile
 local GetResourceState <const> = GetResourceState
 local GetGameName <const> = GetGameName
-local GetCurrentResourceName <const> = GetCurrentResourceName
+local GetCurrentResourceName <const>, AddEventHandler <const> = GetCurrentResourceName, AddEventHandler
 local export = exports[sl_core]
+local service <const>, joaat <const> = (IsDuplicityVersion() and 'server') or 'client', joaat
 
-local service <const> = (IsDuplicityVersion() and 'server') or 'client'
+local function FormatedEvent(name, from)
+    return ('%s:%s:%s'):format(sl_core, from or service, joaat(name))
+end
 
 if not _VERSION:find('5.4') then
     error("^1 Vous devez activer Lua 5.4 dans la resources où vous utilisez l'import, (lua54 'yes') dans votre fxmanifest!^0", 2)
@@ -66,7 +69,7 @@ sl = setmetatable({
     config = {},
     await = Citizen.Await,
     updateCache = function(key, cb)
-        AddEventHandler(('sl_core:cache:%s'):format(key), cb)
+        AddEventHandler(FormatedEvent(('cache:%s'):format(key)), cb)
     end
 },
 { 
@@ -77,7 +80,7 @@ sl = setmetatable({
 if sl.service == 'client' then
     setmetatable(sl.cache, {
         __index = function(self, key)
-            AddEventHandler(('sl_core:cache:%s'):format(key), function(value)
+            AddEventHandler(FormatedEvent(('cache:%s'):format(key)), function(value)
                 self[key] = value
                 return self[key]
             end)
