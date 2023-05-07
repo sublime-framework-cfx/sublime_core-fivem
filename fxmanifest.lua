@@ -13,6 +13,7 @@ shared_script '_g.lua' -- need to be init first
 
 shared_scripts {
     'config/shared/*.lua', -- on top
+    'shared/handlers/*.lua',
 }
 
 client_scripts {
