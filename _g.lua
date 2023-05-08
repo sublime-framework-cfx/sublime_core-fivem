@@ -4,7 +4,7 @@ local service <const> = (IsDuplicityVersion() and 'server') or 'client'
 local GetGameName <const> = GetGameName
 local GetCurrentResourceName <const> = GetCurrentResourceName
 
-local function load_module(self, index)
+local function load_module(index, service)
     local dir <const> = ("imports/%s"):format(index)
     local chunk <const> = LoadResourceFile(sl_core, ('%s/%s.lua'):format(dir, service))
     local shared <const> = LoadResourceFile(sl_core, ('%s/shared.lua'):format(dir))
@@ -20,19 +20,12 @@ local function load_module(self, index)
         if not func or err then return error(("Erreur pendant le chargement du module\n- Provenant de : %s\n- Modules : %s\n- Service : %s\n - Erreur : %s"):format(dir, index, service, err), 3) end
 
         local result = func()
-        self[index] = result
-        return self[index]
+        return result
     end
 end
 
-local function call_module(self, index, ...)
-    local module = rawget(self, index)
-
-    if not module then
-        module = load_module(self, index)
-        return module
-    end
-end
+require = load_module('require').load
+require('imports.locales.shared').init()
 
 sl = setmetatable({
     service = service, 
@@ -42,17 +35,12 @@ sl = setmetatable({
     await = Citizen.Await,
     lang = GetConvar('sl:locale', 'fr')
 }, {
-    __index = call_module, 
-    __call = call_module, 
     __newindex = function(self, name, func)
     rawset(self, name, func)
     exports(name, func)
 end})
 
-require = sl.require.load
-
-sl.locales.init()
-
 if sl.service == 'server' then
-    sl.version.check('github', nil, 500)
+    require('imports.version.server').check('github', nil, 500)
+    require('imports.mysql.server').init()
 end
