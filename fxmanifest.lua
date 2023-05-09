@@ -23,6 +23,7 @@ client_scripts {
 server_scripts {
     'config/server/*.lua', -- on top
     'server/sql/*.lua',
+    'server/*.lua'
 }
 
 -- ui_page 'web/build/index.html'
