@@ -4,5 +4,9 @@
 
     "d_see_you_soon": "Thanks for using our services. See you soon!",
     "d_passwords_not_match": "Passwords do not match",
-    "d_missing_fields": "Please fill in all the fields"
+    "d_missing_fields": "Please fill in all the fields",
+    "d_user_already_exist": "User already exist",
+    "d_account_created": "Attempt to create account...",
+    "d_wrong_password": "Incorrect password",
+    "d_user_not_exist": "User does not exist"
 }

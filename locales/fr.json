@@ -4,5 +4,9 @@
 
     "d_see_you_soon": "Merci de la visite, à bientôt !",
     "d_passwords_not_match": "Les mots de passe ne correspondent pas",
-    "d_missing_fields": "Veuillez remplir tous les champs"
+    "d_missing_fields": "Veuillez remplir tous les champs",
+    "d_user_already_exist": "L'utilisateur existe déjà",
+    "d_account_created": "Création de votre compte...",
+    "d_wrong_password": "Mot de passe incorrect",
+    "d_user_not_exist": "L'utilisateur n'existe pas"
 }
