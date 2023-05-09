@@ -39,11 +39,11 @@ local function Load(modname)
 
         for path in package.path:gmatch('[^;]+') do
             local scriptPath = path:gsub('?', modpath):gsub('%.+%/+', '')
-            local resourceFile = LoadResourceFile(supv.env, scriptPath)
+            local resourceFile = LoadResourceFile(sl.env or GetCurrentResourceName(), scriptPath)
 
             if resourceFile then
                 loaded[modname] = false
-                scriptPath = ('@@%s/%s'):format(supv.env, scriptPath)
+                scriptPath = ('@@%s/%s'):format(sl.env or GetCurrentResourceName(), scriptPath)
 
                 local chunk, err = load(resourceFile, scriptPath)
 
