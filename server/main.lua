@@ -23,9 +23,14 @@ end
 
 ---@param name string
 ---@param setKickReason string
----@param deferrals any
+---@param deferrals table
 AddEventHandler('playerConnecting', function(name, setKickReason, deferrals) ---@type void
     local _source = source
+
+    if connect.useWhitelist then
+        ---@todo Not implemented yet
+        return deferrals.done('Whitelist is enabled, please try again later.')
+    end
 
     if connect.useDeferral then
         local d <const> = require 'server.modules.deferrals'
