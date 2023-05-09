@@ -1,4 +1,5 @@
 local data = {} ---@type { [string]: string}
+local j <const> = sl.json or require(('imports.json.%s'):format(sl.service))
 
 ---@param str string
 ---@param ... any
@@ -17,7 +18,7 @@ end
 
 --- sl.locale.init
 local function Initialize()
-    local env = sl.json.load(('locales/%s'):format(sl.lang))
+    local env = j.load(('locales/%s'):format(sl.lang))
     if not env then
        return warn(("Impossible de chargé locales/%s.json dans l'environnement : %s"):format(sl.lang, sl.env))
     end
@@ -64,7 +65,7 @@ local function LoadExternal(resource, path, ext)
         result = func()
     elseif ext == 'json' then
         filePath = filePath:gsub('%.json', '')
-        result = sl.json.load(filePath, folder)
+        result = j.load(filePath, folder)
     end
 
     if type(result) ~= 'table' then
