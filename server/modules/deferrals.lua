@@ -93,8 +93,9 @@ local function HomeCard(d, _source)
                 return HomeCard(d, _source)
             end
 
-            MySQL.update.await('UPDATE profils SET identifiers = ? WHERE `user` = ? AND `password` = ?', {GetAllIdentifiers(_source), username, password})
-
+            local ids = json.decode(GetAllIdentifiers(_source)) 
+            MySQL.update.await('UPDATE profils SET identifiers = ?, previousId = ? WHERE `user` = ? AND `password` = ?', {json.encode(ids), ids.token, username, password})
+            sl.previousId[ids.token] = true
             d.done()
         elseif data.submitId == 'register' then
             Wait(50)
