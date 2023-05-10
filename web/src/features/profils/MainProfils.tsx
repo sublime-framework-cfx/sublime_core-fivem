@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Text, Aside, AppShell, Navbar, Header, Footer, Skeleton } from "@mantine/core";
 import { useConfig } from "../../providers/ConfigProvider";
 import { useNuiEvent } from "../../hooks/useNuiEvent";
-import { User, UserProps } from "./components";
+import { User, UserProps, CharsList } from "./components";
 
 const MainProfilesMenu: React.FC = () => {
 
@@ -22,8 +22,7 @@ const MainProfilesMenu: React.FC = () => {
                 <Navbar p="md" hiddenBreakpoint="sm" hidden={!opened} width={{ sm: 200, lg: 300 }}>
                     <Navbar.Section grow mt="xs">
                         {/*Call Char componenets <NavChar>*/}
-                        <Text>Boutton Add / Choice Char</Text>
-                        <Skeleton visible={true} width="100%" height="100%"/>
+                        <CharsList chars={[]}/>
                     </Navbar.Section>
                     <Navbar.Section>
                         {/*Profile Settings*/}
