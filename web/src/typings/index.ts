@@ -8,3 +8,4 @@ export * from './Modal';
 // configuration
 export * from './config/notifications';
 export * from './config/emojipicker';
+export * from './config/modals';

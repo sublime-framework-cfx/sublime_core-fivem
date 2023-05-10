@@ -1,3 +1,5 @@
+import {ModalsProviderProps} from "./config/modals";
+
 export interface ModalProps {
 
     type: string // type of the modal (confirm, input, etc..) !important
@@ -7,5 +9,6 @@ export interface ModalProps {
     // used by : confirm
     subtitle?: string; // subtitle of the modal
     description?: string; // description of the modal
-    style?: React.CSSProperties 
+    style?: React.CSSProperties ;
+    classes?: ModalsProviderProps;
 }

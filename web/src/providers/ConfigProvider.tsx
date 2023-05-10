@@ -3,17 +3,20 @@ import { MantineColor } from '@mantine/core';
 import { fetchNui } from '../utils/fetchNui';
 import { 
   NotificationConfigProviderProps,
-  EmojiPickerProps
+  EmojiPickerProps,
+  ModalsProviderProps
 } from '../typings';
 import {
   NotificationConfigDev,
-  ConfigEmojiPicker
+  ConfigEmojiPicker,
+  ModalsConfigDev
 } from '../dev/config';
 
 interface Config {
   primaryColor: MantineColor;
   primaryShade: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
   notificationStyles: NotificationConfigProviderProps;
+  modalsStyles: ModalsProviderProps;
   emojiPicker: EmojiPickerProps;
 }
 
@@ -29,6 +32,7 @@ const ConfigProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =
     primaryColor: 'blue',
     primaryShade: 6,
     notificationStyles: NotificationConfigDev,
+    modalsStyles: ModalsConfigDev,
     emojiPicker: ConfigEmojiPicker,
   });
 
