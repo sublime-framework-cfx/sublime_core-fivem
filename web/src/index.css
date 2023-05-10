@@ -1,0 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
+
+html {
+  color-scheme: normal !important;
+}
+
+body {
+  background: none !important;
+  user-select: none;
+  overflow: hidden !important;
+  font-family: 'Ubuntu', sans-serif;
+}
+
+#root {
+  height: 100%;
+}

@@ -26,13 +26,15 @@ server_scripts {
     'server/*.lua'
 }
 
--- ui_page 'web/build/index.html'
+ui_page 'web/build/index.html'
 
 files {
     'obj.lua',
     'locales/*',
     'imports/**/shared.lua',    
     'imports/**/client.lua',
+    'web/build/index.html',
+    'web/build/**/*'
 }
 
 
