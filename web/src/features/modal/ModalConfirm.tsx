@@ -11,9 +11,10 @@ export interface ModalConfirmProps {
     subtitle?: string;
     description?: string;
     handleClose: () => void;
+    style?: React.CSSProperties;
 }
   
-export const OpenModalConfirm: React.FC<ModalConfirmProps> = ({ title, subtitle, description, handleClose }) => {
+export const OpenModalConfirm: React.FC<ModalConfirmProps> = ({ title, subtitle, description, handleClose, style }) => {
 
     const handleConfirm = (value: boolean) => {
         //console.log(value, 'value')
@@ -22,7 +23,7 @@ export const OpenModalConfirm: React.FC<ModalConfirmProps> = ({ title, subtitle,
     }
 
     return (
-        <Modal opened={true} onClose={handleClose} size="md" padding="md" radius="md" shadow="md">
+        <Modal opened={true} onClose={handleClose} size="md" padding="md" radius="md" shadow="md" style={style}>
             <Title order={1} align='center' mb="xs" underline={true}> {title} </Title>
             <Title order={2} align={!title ? 'center' : 'left'} mb="xs" weight={1} italic={true}> {subtitle} </Title>
             <Divider />

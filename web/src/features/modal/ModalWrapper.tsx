@@ -23,7 +23,7 @@ const ModalWrapper: React.FC = () => {
         <>
             {opened && (
                 data.type === "confirm" ? 
-                    <OpenModalConfirm title={data.title} subtitle={data.subtitle} description={data.description} handleClose={close} />
+                    <OpenModalConfirm title={data.title} subtitle={data.subtitle} description={data.description} handleClose={close} style={data.style} />
                 : null
             )}
         </>
