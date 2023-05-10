@@ -2,6 +2,7 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronUp, faChevronLeft, faPersonWalkingDashedLineArrowRight, faUserPen } from '@fortawesome/free-solid-svg-icons';
 import { UnstyledButton, Group, Avatar, Text, Box, useMantineTheme, rem, Menu } from '@mantine/core';
+import style from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark';
 
 export interface UserProps {
     username: string;
@@ -19,7 +20,7 @@ export const User: React.FC<UserProps> = ({ username, permission, logo }) => {
             <Box
                 sx={{
                     paddingTop: theme.spacing.sm,
-                    borderTop: `${rem(1)} solid ${theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[2]}`,
+                    borderTop: `${rem(1)} solid ${theme.colorScheme === 'dark' ? theme.colors.teal[6] : theme.colors.gray[2]}`,
                 }}
             >
                 <UnstyledButton
@@ -31,8 +32,8 @@ export const User: React.FC<UserProps> = ({ username, permission, logo }) => {
                         color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.black,
 
                         '&:hover': {
-                            backgroundColor:
-                                theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
+                            backgroundColor: theme.colorScheme === 'dark' ? theme.colors.teal[6] : theme.colors.gray[0],
+                            opacity: 0.75,  
                         },
                     }}
                     onClick={handleToggle}
@@ -43,7 +44,7 @@ export const User: React.FC<UserProps> = ({ username, permission, logo }) => {
                             radius="xl"
                         />
                         <Box sx={{ flex: 1 }}>
-                            <Text size="sm" weight={500}>
+                            <Text size="sm" weight={500} color='white'>
                                 {username}
                             </Text>
                             <Text color="dimmed" size="xs">
