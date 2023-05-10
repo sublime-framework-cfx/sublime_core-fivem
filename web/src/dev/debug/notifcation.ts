@@ -7,10 +7,18 @@ export const debugNotification = () => {
       action: 'supv:notification:send',
       data: {
         //id: '1',
-        //title: 'Whereas recognition of the inherent dignity',
+        title: 'Titre de la notification',
         description: 'Notif',
-        type: 'warning',
+        type: 'info',
         position: 'top-right',
+        style: {
+          backgroundImage: `linear-gradient(to left bottom, rgba(39,54,102,0.38), rgba(36,51,98,0.38), rgba(34,48,94,0.38), rgba(31,46,90,0.38), rgba(29,43,86,0.38), rgba(31,40,81,0.38), rgba(32,36,75,0.38), rgba(32,33,70,0.38), rgba(34,29,62,0.38), rgba(34,24,54,0.38), rgba(33,21,46,0.38), rgba(31,17,39,0.38))`,
+          transition: 'all 0.3s ease-in-out',
+          color: '#0FBA81',
+          borderRadius: '5px',
+          boxShadow: '0 0 10px 0 rgba(0,0,0,0.2)',
+          
+        }
         //duration: 5000,
         //progress: true,
         //closable: true,
@@ -139,7 +147,7 @@ export const debugNotification = () => {
         icon: 'code',
         closable: true,
         style: {
-          backgroundColor: 'rgba(0,0,0,0.25)',
+          backgroundColor: 'rgba(0,0,0,0.385)',
         }
       } as NotificationProps,
     }
