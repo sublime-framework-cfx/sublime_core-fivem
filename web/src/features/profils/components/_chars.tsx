@@ -1,31 +1,29 @@
 import React from 'react';
 import { UnstyledButton, Box, Group, useMantineTheme, rem, Avatar, Skeleton, Text } from '@mantine/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 
-
-interface CharListProps {
-    chars: Array<string[]>;
+export interface CharListProps {
+    firstname: string;
+    lastname: string;
+    age: number;
+    sex: string;
 }
 
-export const CharsList: React.FC<CharListProps> = ({chars}) => {
-    const theme = useMantineTheme();
+interface InCharListProps {
+    chars: CharListProps;
+    index: number;
+}
 
+export const CharsList: React.FC<InCharListProps> = ({chars, index}) => {
+    const theme = useMantineTheme();
     return (
         <Box
             sx={{
                 paddingTop: theme.spacing.sm,
-                borderTop: `${rem(1)} solid ${theme.colorScheme === 'dark' ? theme.colors.teal[6] : theme.colors.gray[2]}`,
+                //borderTop: `${rem(1)} solid ${theme.colorScheme === 'dark' ? theme.colors.teal[6] : theme.colors.gray[2]}`,
             }}
         >
-            { // soon to be replaced by a map
-                chars.map((char, index) => (
-                    <UnstyledButton>
-
-                    </UnstyledButton>
-                ))
-                
-            }
             <UnstyledButton
                 sx={{
                     display: 'block',
@@ -44,11 +42,14 @@ export const CharsList: React.FC<CharListProps> = ({chars}) => {
                 <Group>
                     <Skeleton height={45} circle mb="xs" />
                     <Box sx={{ flex: 1 }}>
+                        <Text color="white" weight={500} size="sm">
+                            {chars.firstname} {chars.lastname}
+                        </Text>
                         <Text color="dimmed" size="xs">
-                            Add a new character
+                            {chars.age} "{chars.sex}"
                         </Text>
                     </Box>
-                    <FontAwesomeIcon icon={faPlus} style={{bottom: 0, right: 0}}/> 
+                    <FontAwesomeIcon icon={faChevronRight} style={{right: 0}}/> 
                 </Group>
                 
             </UnstyledButton>
