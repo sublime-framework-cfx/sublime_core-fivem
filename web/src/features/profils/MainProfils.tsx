@@ -1,14 +1,23 @@
 import React, { useState } from "react";
-import { Text, Aside, AppShell, Navbar, Header, Footer, Skeleton } from "@mantine/core";
+import { Text, Aside, AppShell, Navbar, Header, Group, Footer, Skeleton, UnstyledButton, Box, useMantineTheme, rem } from "@mantine/core";
 import { useConfig } from "../../providers/ConfigProvider";
 import { useNuiEvent } from "../../hooks/useNuiEvent";
-import { User, UserProps, CharsList } from "./components";
+import { User, UserProps, CharsList, CharListProps } from "./components";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+
+// dev
+const characters: CharListProps[] = [
+    { firstname: 'Jean', lastname: 'Michel', age: 60, sex: 'H' },
+    { firstname: 'Thérèse', lastname: 'Marie', age: 31, sex: 'F' },
+];
 
 const MainProfilesMenu: React.FC = () => {
-
+    const theme = useMantineTheme();
     const [data, setData] = useState<UserProps>({ username: "", permission: "" });
-
+    const [chars, setChars] = useState<CharListProps[]>(characters);
     const [opened, setOpened] = useState(true); // on true per default during dev
+
     return (
         <AppShell
             styles={{
@@ -21,8 +30,43 @@ const MainProfilesMenu: React.FC = () => {
             navbar={
                 <Navbar p="md" hiddenBreakpoint="sm" hidden={!opened} width={{ sm: 200, lg: 300 }}>
                     <Navbar.Section grow mt="xs">
-                        {/*Call Char componenets <NavChar>*/}
-                        <CharsList chars={[]}/>
+                        <Box
+                            sx={{
+                                paddingTop: theme.spacing.sm,
+                                borderTop: `${rem(1)} solid ${theme.colorScheme === 'dark' ? theme.colors.teal[6] : theme.colors.gray[2]}`,
+                            }}
+                        >
+                            {
+                                characters.map((char, index) => (
+                                    <CharsList chars={char} index={index}/>
+                                ))
+                            }
+                            <UnstyledButton
+                                sx={{
+                                    display: 'block',
+                                    width: '100%',
+                                    padding: theme.spacing.xs,
+                                    borderRadius: theme.radius.sm,
+                                    color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.black,
+                                    borderTop: `${rem(1)} solid ${theme.colorScheme === 'dark' ? theme.colors.teal[6] : theme.colors.gray[2]}`,
+                                
+                                    '&:hover': {
+                                        backgroundColor: theme.colorScheme === 'dark' ? theme.colors.teal[6] : theme.colors.gray[0],
+                                        opacity: 0.75,  
+                                    },
+                                }}
+                            >
+                                <Group>
+                                    <Skeleton height={45} circle mb="xs" />
+                                    <Box sx={{ flex: 1 }}>
+                                        <Text color="dimmed" size="xs">
+                                            Add a new character
+                                        </Text>
+                                    </Box>
+                                    <FontAwesomeIcon icon={faPlus} style={{bottom: 0, right: 0}}/> 
+                                </Group>
+                            </UnstyledButton>
+                        </Box>
                     </Navbar.Section>
                     <Navbar.Section>
                         {/*Profile Settings*/}
