@@ -10,7 +10,7 @@ import ConvertUnixTime from './features/tool/ConvertUnix';
 import SimpleNotifications from './features/notify/SimpleNotifyWrapp';
 import ModalWrapper from './features/modal/ModalWrapper';
 //import ChatText from './features/chat/Chat';
-import MainProfilesMenu from './features/profils/MainProfils';
+import {MainProfilesMenu, Login} from './features/profils/index';
 
 import DevTool from './dev/DevEnv';
 
@@ -24,6 +24,7 @@ const App: React.FC = () => {
             <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
                 <MantineProvider theme={{colorScheme, ...themeOverride}} withGlobalStyles withNormalizeCSS>
                     {/*<ChatText />*/}
+                    <Login />
                     <MainProfilesMenu />
                     <ConvertUnixTime />
                     <ModalWrapper />
