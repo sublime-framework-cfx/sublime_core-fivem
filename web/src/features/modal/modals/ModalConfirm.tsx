@@ -2,8 +2,8 @@ import { Modal, Title, Divider, Group, Text } from '@mantine/core';
 import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { fetchNui } from '../../utils/fetchNui';
-import AnimatedButton from './components/buttons';
+import { fetchNui } from '../../../utils/fetchNui';
+import AnimatedButton from '../components/buttons';
 
 
 export interface ModalConfirmProps {
@@ -15,7 +15,7 @@ export interface ModalConfirmProps {
   
 export const OpenModalConfirm: React.FC<ModalConfirmProps> = ({ title, subtitle, description, handleClose }) => {
 
-    const handleConfirm = (value: boolean) => {
+    const handleConfirm = async (value: boolean) => {
         //console.log(value, 'value')
         fetchNui('supv:modal:closed', value);
         handleClose();
@@ -44,5 +44,3 @@ export const OpenModalConfirm: React.FC<ModalConfirmProps> = ({ title, subtitle,
         </Modal>
     );
 }
-
-export default OpenModalConfirm;
