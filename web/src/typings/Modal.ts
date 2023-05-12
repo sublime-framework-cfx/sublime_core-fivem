@@ -11,4 +11,5 @@ export interface ModalProps {
     description?: string; // description of the modal
     style?: React.CSSProperties ;
     classes?: ModalsProviderProps;
+    options?: any; // options of the modal
 }
