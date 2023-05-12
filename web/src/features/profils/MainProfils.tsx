@@ -12,7 +12,7 @@ const characters: CharListProps[] = [
     { firstname: 'Thérèse', lastname: 'Marie', age: 31, sex: 'F' },
 ];
 
-const MainProfilesMenu: React.FC = () => {
+export const MainProfilesMenu: React.FC = () => {
     const theme = useMantineTheme();
     const [data, setData] = useState<UserProps>({ username: "", permission: "" });
     const [chars, setChars] = useState<CharListProps[]>(characters);
@@ -99,5 +99,3 @@ const MainProfilesMenu: React.FC = () => {
         </AppShell>
     );
 }
-
-export default MainProfilesMenu;
