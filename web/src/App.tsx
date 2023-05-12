@@ -2,16 +2,18 @@ import React, { useState } from 'react';
 import { MantineProvider, ColorSchemeProvider, ColorScheme } from '@mantine/core';
 import { themeOverride } from './theme';
 
+// Features //
 //import {useConfig} from './providers/ConfigProvider'; // TODO: use config
-import { isEnvBrowser } from './utils/misc';
-
-import ConvertUnixTime from './features/tool/ConvertUnix';
-//import DialogComponent from './features/dialog/Dialog';
-import SimpleNotifications from './features/notify/SimpleNotifyWrapp';
+import NotificationsWrapper from './features/notify/NotificationsWrapper';
 import ModalWrapper from './features/modal/ModalWrapper';
-//import ChatText from './features/chat/Chat';
 import {MainProfilesMenu, Login} from './features/profils/index';
+import ConvertUnixTime from './features/tool/ConvertUnix';
 
+//import ChatText from './features/chat/Chat';
+//import DialogComponent from './features/dialog/Dialog';
+
+// Dev //
+import { isEnvBrowser } from './utils/misc';
 import DevTool from './dev/DevEnv';
 
 const App: React.FC = () => {
@@ -28,7 +30,7 @@ const App: React.FC = () => {
                     <MainProfilesMenu />
                     <ConvertUnixTime />
                     <ModalWrapper />
-                    <SimpleNotifications />
+                    <NotificationsWrapper />
                     {isEnvBrowser() && <DevTool />}
                 </MantineProvider>
             </ColorSchemeProvider>
