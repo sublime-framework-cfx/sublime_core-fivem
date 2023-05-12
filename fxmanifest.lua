@@ -31,6 +31,7 @@ ui_page 'web/build/index.html'
 files {
     'obj.lua',
     'locales/*',
+    'client/modules/*.lua',
     'imports/**/shared.lua',    
     'imports/**/client.lua',
     'web/build/index.html',
