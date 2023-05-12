@@ -1,13 +1,21 @@
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLaugh, faHeart, faThumbsUp, faAngry } from '@fortawesome/free-regular-svg-icons';
+import {
+  faLaugh,
+  faHeart,
+  faThumbsUp,
+  faAngry,
+} from '@fortawesome/free-regular-svg-icons';
 
 interface EmojiReactionProps {
   reactions: { [key: string]: number };
   onReactionClick: (reaction: string, operation: number) => void;
 }
 
-const EmojiReaction: React.FC<EmojiReactionProps> = ({ reactions, onReactionClick }) => {
+const EmojiReaction: React.FC<EmojiReactionProps> = ({
+  reactions,
+  onReactionClick,
+}) => {
   const [hoveredReaction, setHoveredReaction] = useState<string | null>(null);
 
   const handleReactionClick = (reaction: string) => {
@@ -33,20 +41,28 @@ const EmojiReaction: React.FC<EmojiReactionProps> = ({ reactions, onReactionClic
   const getColor = (reaction: string) => {
     switch (reaction) {
       case 'thumbs-up':
-        return reactions[reaction] || hoveredReaction === reaction ? '#007aff' : '#888';
+        return reactions[reaction] || hoveredReaction === reaction
+          ? '#007aff'
+          : '#888';
       case 'heart':
-        return reactions[reaction] || hoveredReaction === reaction ? '#ff4d4f' : '#888';
+        return reactions[reaction] || hoveredReaction === reaction
+          ? '#ff4d4f'
+          : '#888';
       case 'laugh':
-        return reactions[reaction] || hoveredReaction === reaction ? '#ffd60a' : '#888';
+        return reactions[reaction] || hoveredReaction === reaction
+          ? '#ffd60a'
+          : '#888';
       case 'angry':
-        return reactions[reaction] || hoveredReaction === reaction ? '#ff5349' : '#888';
+        return reactions[reaction] || hoveredReaction === reaction
+          ? '#ff5349'
+          : '#888';
       default:
         return '#888';
     }
   };
-  
+
   return (
-    <div style={{ display: 'flex', alignItems: 'center', userSelect: 'none'}}>
+    <div style={{ display: 'flex', alignItems: 'center', userSelect: 'none' }}>
       <FontAwesomeIcon
         icon={faThumbsUp}
         style={{ cursor: 'pointer', marginRight: 8 }}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { toast, Toaster/*, useToasterStore */} from 'react-hot-toast';
+import { toast, Toaster /*, useToasterStore */ } from 'react-hot-toast';
 import ReactMarkdown from 'react-markdown';
 import { createStyles, Notification } from '@mantine/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -14,7 +14,7 @@ import { iconeAnimation } from '../../animation/icones';
 /**
  * Notifications - A component for displaying notifications
  * @example `lua`
- * 
+ *
  *supv.notify('simple', {
  *    id = 'notification_1',
  *    title = 'Notification title',
@@ -46,11 +46,10 @@ import { iconeAnimation } from '../../animation/icones';
  * @param {string?} data.id - Id of the notification
  * @returns {Toaster} notifications
  * @type {NotificationProps}
-*/
+ */
 const NotificationsWrapper: React.FC = () => {
-
   const { config } = useConfig();
-  const useStyles = createStyles((theme) => ({...config.notificationStyles}));
+  const useStyles = createStyles((theme) => ({ ...config.notificationStyles }));
   const { classes } = useStyles();
   //const { toasts, pausedAt } = useToasterStore(); // A utiliser plus tards pour un système de queue!
 
@@ -66,30 +65,85 @@ const NotificationsWrapper: React.FC = () => {
       console.log('too many notifications');
     }:*/
 
-    let position = !data.position ? config.notificationStyles.container.position : data.position;
+    let position = !data.position
+      ? config.notificationStyles.container.position
+      : data.position;
     //position = 'bottom-right' //to test
-    if (!data.icon && data.type !== 'loading' && data.type) { data.icon = data.type === 'error' ? 'xmark' : data.type === 'success' ? 'check' : data.type === 'warning' ? 'exclamation' : 'info';};
-    let description: string = data.description ? data.description.replace('\n', '  \n  ') : '';
+    if (!data.icon && data.type !== 'loading' && data.type) {
+      data.icon =
+        data.type === 'error'
+          ? 'xmark'
+          : data.type === 'success'
+          ? 'check'
+          : data.type === 'warning'
+          ? 'exclamation'
+          : 'info';
+    }
+    let description: string = data.description
+      ? data.description.replace('\n', '  \n  ')
+      : '';
 
-    const { posEnter, posExit } = SelectAnime(data?.animation?.enter, data?.animation?.exit, position?.includes('bottom') ? 'bottom' : 'top', position?.includes('top') ? 'top' : position?.includes('right') ? 'right' : position?.includes('left') ? 'left' : 'right', 'top', undefined);
+    const { posEnter, posExit } = SelectAnime(
+      data?.animation?.enter,
+      data?.animation?.exit,
+      position?.includes('bottom') ? 'bottom' : 'top',
+      position?.includes('top')
+        ? 'top'
+        : position?.includes('right')
+        ? 'right'
+        : position?.includes('left')
+        ? 'left'
+        : 'right',
+      'top',
+      undefined
+    );
 
     toast.custom(
       (t) => (
-        <Notification withBorder={data.border} loading={data.type === 'loading'} {...data.icon ? {
-          icon:
-            <FontAwesomeIcon icon={data.icon} beat={iconeAnimation(data.iconAnim)} fade={iconeAnimation(data.iconAnim)} />
-        } : undefined}
-          title={data.title} radius='md' withCloseButton={data.closable || false} onClose={() => { data.closable && toast.dismiss(t.id)/*; onRemoveQueue()*/  }}
-          color={!data.type && !data.color ? 'dark' : data.color ? data.color : data.type === 'error' ? 'red' : data.type === 'success' ? 'teal' : data.type === 'warning' ? 'orange' : data.type === 'loading' ? 'white' : 'blue'} sx={{
+        <Notification
+          withBorder={data.border}
+          loading={data.type === 'loading'}
+          {...(data.icon
+            ? {
+                icon: (
+                  <FontAwesomeIcon
+                    icon={data.icon}
+                    beat={iconeAnimation(data.iconAnim)}
+                    fade={iconeAnimation(data.iconAnim)}
+                  />
+                ),
+              }
+            : undefined)}
+          title={data.title}
+          radius='md'
+          withCloseButton={data.closable || false}
+          onClose={() => {
+            data.closable && toast.dismiss(t.id); /*; onRemoveQueue()*/
+          }}
+          color={
+            !data.type && !data.color
+              ? 'dark'
+              : data.color
+              ? data.color
+              : data.type === 'error'
+              ? 'red'
+              : data.type === 'success'
+              ? 'teal'
+              : data.type === 'warning'
+              ? 'orange'
+              : data.type === 'loading'
+              ? 'white'
+              : 'blue'
+          }
+          sx={{
             animation: t.visible
               ? `${posEnter} 0.3s ease-out forwards`
               : `${posExit} 0.5s ease-in forwards`,
-          }} className={`${classes.container}`} style={data.style}>
-          {data.description && (
-            <ReactMarkdown>
-              {description}
-            </ReactMarkdown>
-          )}
+          }}
+          className={`${classes.container}`}
+          style={data.style}
+        >
+          {data.description && <ReactMarkdown>{description}</ReactMarkdown>}
         </Notification>
       ),
       {
@@ -100,7 +154,7 @@ const NotificationsWrapper: React.FC = () => {
     );
   });
 
-  return <Toaster/>;
+  return <Toaster />;
 };
 
 export default NotificationsWrapper;

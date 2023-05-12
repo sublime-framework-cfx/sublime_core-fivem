@@ -1,10 +1,34 @@
 import React, { useState, useRef, KeyboardEvent } from 'react';
-import { Container, Paper, Text, Grid, Divider, Input, Popover, ScrollArea, Burger, Menu, useMantineColorScheme } from '@mantine/core';
+import {
+  Container,
+  Paper,
+  Text,
+  Grid,
+  Divider,
+  Input,
+  Popover,
+  ScrollArea,
+  Burger,
+  Menu,
+  useMantineColorScheme,
+} from '@mantine/core';
 import { useListState, useDisclosure } from '@mantine/hooks';
 import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faTimes, faList, faVolumeMute, faVolumeUp, faArrowUp, faArrowDown, faArrowsLeftRight, faTrashArrowUp, faSun, faMoon } from '@fortawesome/free-solid-svg-icons';
-import EmojiReaction from './Reactions'
+import {
+  faCheck,
+  faTimes,
+  faList,
+  faVolumeMute,
+  faVolumeUp,
+  faArrowUp,
+  faArrowDown,
+  faArrowsLeftRight,
+  faTrashArrowUp,
+  faSun,
+  faMoon,
+} from '@fortawesome/free-solid-svg-icons';
+import EmojiReaction from './Reactions';
 import EmojiPickerButton from './Emoji';
 
 interface Message {
@@ -31,11 +55,41 @@ interface CommandProps {
 
 // Seulement pour tester
 const COMMANDS: CommandProps[] = [
-  { label: 'Help', description: 'Afficher l\'aide', icon: faCheck, value: '/help' },
-  { label: 'List', description: 'Liste des utilisateurs', icon: faList, value: '/list' },
-  { label: 'Mute', description: 'Mettre en sourdine', icon: faVolumeMute, value: '/mute', arguments: [{ name: 'playerId', type: 'number' }, { name: 'duration', type: 'number', optional: true }] },
-  { label: 'Unmute', description: 'Désactiver la sourdine', icon: faVolumeUp, value: '/unmute', arguments: [{ name: 'playerId', type: 'number' }] },
-  { label: 'Clear', description: 'Vider les messages du chat', icon: faTimes, value: '/clear' },
+  {
+    label: 'Help',
+    description: "Afficher l'aide",
+    icon: faCheck,
+    value: '/help',
+  },
+  {
+    label: 'List',
+    description: 'Liste des utilisateurs',
+    icon: faList,
+    value: '/list',
+  },
+  {
+    label: 'Mute',
+    description: 'Mettre en sourdine',
+    icon: faVolumeMute,
+    value: '/mute',
+    arguments: [
+      { name: 'playerId', type: 'number' },
+      { name: 'duration', type: 'number', optional: true },
+    ],
+  },
+  {
+    label: 'Unmute',
+    description: 'Désactiver la sourdine',
+    icon: faVolumeUp,
+    value: '/unmute',
+    arguments: [{ name: 'playerId', type: 'number' }],
+  },
+  {
+    label: 'Clear',
+    description: 'Vider les messages du chat',
+    icon: faTimes,
+    value: '/clear',
+  },
 ];
 
 const data = COMMANDS.map((item) => ({ ...item, value: item.value }));
@@ -51,7 +105,9 @@ const PopoverItem = ({ command, onClose, onSelect }: PopoverItemProps) => {
 
   let label = command.value;
   if (command.arguments) {
-    const args = command.arguments.map((arg) => `[${arg.name}: ${arg.type}]`).join(' ');
+    const args = command.arguments
+      .map((arg) => `[${arg.name}: ${arg.type}]`)
+      .join(' ');
     label += ` ${args}`;
   }
 
@@ -70,7 +126,7 @@ const PopoverItem = ({ command, onClose, onSelect }: PopoverItemProps) => {
 
   return (
     <div
-      className="command-item"
+      className='command-item'
       style={itemStyle}
       onClick={() => {
         onSelect(command.value);
@@ -79,22 +135,25 @@ const PopoverItem = ({ command, onClose, onSelect }: PopoverItemProps) => {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <Text size="sm" color="dimmed"> {command.description} </Text>
+      <Text size='sm' color='dimmed'>
+        {' '}
+        {command.description}{' '}
+      </Text>
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <FontAwesomeIcon icon={command.icon} style={{ marginRight: '8px' }} />
         <Text>{command.value}</Text>
       </div>
       {command.arguments && (
-        <Text size="sm" color="dimmed"> {label} </Text>
+        <Text size='sm' color='dimmed'>
+          {' '}
+          {label}{' '}
+        </Text>
       )}
     </div>
   );
 };
 
-
-
 const ChatText: React.FC = () => {
-
   const [chatVisible, setChatVisible] = useState<string>('visible'); // visible | hidden | onNewMessage + timer to hide
   const [message, setMessage] = useState<string>('');
   const [messages, handlers] = useListState<Message>([]);
@@ -109,9 +168,18 @@ const ChatText: React.FC = () => {
 
   //
 
-  const scrollToBottom = () => viewport.current?.scrollTo({ top: viewport.current.scrollHeight, behavior: 'smooth' });
-  const scrollToCenter = () => viewport.current?.scrollTo({ top: viewport.current.scrollHeight / 2, behavior: 'smooth' });
-  const scrollToTop = () => viewport.current?.scrollTo({ top: 0, behavior: 'smooth' });
+  const scrollToBottom = () =>
+    viewport.current?.scrollTo({
+      top: viewport.current.scrollHeight,
+      behavior: 'smooth',
+    });
+  const scrollToCenter = () =>
+    viewport.current?.scrollTo({
+      top: viewport.current.scrollHeight / 2,
+      behavior: 'smooth',
+    });
+  const scrollToTop = () =>
+    viewport.current?.scrollTo({ top: 0, behavior: 'smooth' });
 
   const sendMessage = () => {
     if (message.trim() !== '') {
@@ -119,8 +187,18 @@ const ChatText: React.FC = () => {
         // Exécuter la fonction correspondant à la commande
         handleCommand(message);
       } else {
-        handlers.append({ id: 'Auto gen par le server' || '', username: 'SUP2Ak' || '', content: message, timestamp: new Date().toLocaleTimeString(), reactions: {} });
-        if (viewport.current && (viewport.current.scrollHeight - viewport.current.scrollTop <= (viewport.current.clientHeight + 200))) {
+        handlers.append({
+          id: 'Auto gen par le server' || '',
+          username: 'SUP2Ak' || '',
+          content: message,
+          timestamp: new Date().toLocaleTimeString(),
+          reactions: {},
+        });
+        if (
+          viewport.current &&
+          viewport.current.scrollHeight - viewport.current.scrollTop <=
+            viewport.current.clientHeight + 200
+        ) {
           scrollToBottom();
         }
       }
@@ -136,7 +214,11 @@ const ChatText: React.FC = () => {
       handlers.setState([]); // reset
       setFilteredCommands([]);
     } else {
-      alert(`Commande : ${commandArgs[0]}, Arguments : ${commandArgs.slice(1).join(', ')}`);
+      alert(
+        `Commande : ${commandArgs[0]}, Arguments : ${commandArgs
+          .slice(1)
+          .join(', ')}`
+      );
     }
 
     //alert(`Commande : ${commandArgs[0]}, Arguments : ${commandArgs.slice(1).join(', ')} , args1: ${commandArgs[1]}, args2: ${commandArgs[2]}}`);
@@ -162,8 +244,8 @@ const ChatText: React.FC = () => {
     }
 
     if (command) {
-      const matchingCommands = data.filter(
-        (cmd) => cmd.value.startsWith(command.toLowerCase())
+      const matchingCommands = data.filter((cmd) =>
+        cmd.value.startsWith(command.toLowerCase())
       );
       setFilteredCommands(matchingCommands);
     } else if (value.startsWith('/') && value.length === 1) {
@@ -195,34 +277,60 @@ const ChatText: React.FC = () => {
     //setEmojiPickerOpen(false);
   };
 
-  const ToggleChat = (args: string) => { //A faire plus tard: visible | hidden | onNewMessage + timer to hide
+  const ToggleChat = (args: string) => {
+    //A faire plus tard: visible | hidden | onNewMessage + timer to hide
     setChatVisible(args);
-  }
+  };
 
   return (
     <>
-      <Container style={{ top: 10, left: 10, position: 'fixed',
+      <Container
+        style={{
+          top: 10,
+          left: 10,
+          position: 'fixed',
           visibility: chatVisible === 'visible' ? 'visible' : 'hidden',
           opacity: chatVisible === 'visible' ? 1 : 0,
-          transition: 'visibility 0s, opacity 0.5s linear' // Add transition later...
-        }}>
-        <Paper style={{ padding: '16px'/*, backgroundColor: 'rgba(0,0,0,0.75)'*/ }} shadow="xl">
-          <Grid grow gutter="xs">
+          transition: 'visibility 0s, opacity 0.5s linear', // Add transition later...
+        }}
+      >
+        <Paper
+          style={{ padding: '16px' /*, backgroundColor: 'rgba(0,0,0,0.75)'*/ }}
+          shadow='xl'
+        >
+          <Grid grow gutter='xs'>
             <Grid.Col span={12} style={{ paddingBottom: 10 }}>
-              <Text align="center" size="xl">
+              <Text align='center' size='xl'>
                 🇫🇷 Nom du serveur 🇫🇷
               </Text>
             </Grid.Col>
           </Grid>
           <Divider />
-          <Grid gutter="xs" style={{ paddingBottom: 10 }}>
+          <Grid gutter='xs' style={{ paddingBottom: 10 }}>
             <Grid.Col span={12}>
               <ScrollArea.Autosize mah={300} viewportRef={viewport}>
                 <div style={{ maxHeight: '300px', width: 500 }}>
                   {messages.map((msg, index) => (
-                    <Text key={index} style={{ wordWrap: 'break-word', maxWidth: '99%', userSelect: 'text' }}>
-                      <b>{`[${msg.timestamp}]`}</b><br /><b><u>{msg.username}:</u></b> {msg.content}
-                      <EmojiReaction reactions={msg.reactions} onReactionClick={(reaction: string) => handleReactionClick(index, reaction)} />
+                    <Text
+                      key={index}
+                      style={{
+                        wordWrap: 'break-word',
+                        maxWidth: '99%',
+                        userSelect: 'text',
+                      }}
+                    >
+                      <b>{`[${msg.timestamp}]`}</b>
+                      <br />
+                      <b>
+                        <u>{msg.username}:</u>
+                      </b>{' '}
+                      {msg.content}
+                      <EmojiReaction
+                        reactions={msg.reactions}
+                        onReactionClick={(reaction: string) =>
+                          handleReactionClick(index, reaction)
+                        }
+                      />
                     </Text>
                   ))}
                 </div>
@@ -233,22 +341,27 @@ const ChatText: React.FC = () => {
           <Grid style={{ display: 'flex', justifyContent: 'space-between' }}>
             <Grid.Col span={10} style={{ alignItems: 'center' }}>
               <Input
-                placeholder="Ecrivez votre message..."
+                placeholder='Ecrivez votre message...'
                 value={message}
-                onChange={(event) => handleInputChange(event.currentTarget.value)}
+                onChange={(event) =>
+                  handleInputChange(event.currentTarget.value)
+                }
                 onKeyDown={handleKeyPress}
                 style={{ width: '100%' }}
               />
             </Grid.Col>
-            <Grid.Col span={2} style={{ display: 'flex', justifyContent: 'center' }}>
-            <EmojiPickerButton onSelect={handleSelectEmoji} />
+            <Grid.Col
+              span={2}
+              style={{ display: 'flex', justifyContent: 'center' }}
+            >
+              <EmojiPickerButton onSelect={handleSelectEmoji} />
               <Menu
                 width={150}
-                shadow="md"
+                shadow='md'
                 defaultOpened={opened}
                 closeOnItemClick={false}
                 onClose={toggle}
-                position="right-start"
+                position='right-start'
                 transitionProps={{ transition: 'rotate-right', duration: 150 }}
               >
                 <Menu.Target>
@@ -257,32 +370,43 @@ const ChatText: React.FC = () => {
                 <Menu.Dropdown>
                   <Menu.Label>Scroll</Menu.Label>
                   <Menu.Item
-                    disabled={viewport.current && viewport.current.clientHeight < 300 ? true : false}
+                    disabled={
+                      viewport.current && viewport.current.clientHeight < 300
+                        ? true
+                        : false
+                    }
                     onClick={scrollToTop}
-                    color="blue"
+                    color='blue'
                     icon={<FontAwesomeIcon icon={faArrowUp} />}
                   >
                     Up
                   </Menu.Item>
                   <Menu.Item
-                    disabled={viewport.current && viewport.current.clientHeight < 300 ? true : false}
+                    disabled={
+                      viewport.current && viewport.current.clientHeight < 300
+                        ? true
+                        : false
+                    }
                     onClick={scrollToCenter}
-                    color="blue"
+                    color='blue'
                     icon={<FontAwesomeIcon icon={faArrowsLeftRight} />}
                   >
                     Center
                   </Menu.Item>
                   <Menu.Item
-                    disabled={viewport.current && viewport.current.clientHeight < 300 ? true : false}
+                    disabled={
+                      viewport.current && viewport.current.clientHeight < 300
+                        ? true
+                        : false
+                    }
                     onClick={scrollToBottom}
-                    color="blue"
+                    color='blue'
                     icon={<FontAwesomeIcon icon={faArrowDown} />}
                   >
                     Down
                   </Menu.Item>
                   <Menu.Label>Options</Menu.Label>
                   <Menu.Item
-                    
                     onClick={() => {
                       toggleColorScheme();
                     }}
@@ -296,7 +420,7 @@ const ChatText: React.FC = () => {
                     onClick={() => {
                       handlers.setState([]);
                     }}
-                    color="red"
+                    color='red'
                     icon={<FontAwesomeIcon icon={faTrashArrowUp} />}
                   >
                     Clear
@@ -312,7 +436,7 @@ const ChatText: React.FC = () => {
                 //target={<div />}
                 opened={Boolean(filteredCommands.length)}
                 onClose={() => setFilteredCommands([])}
-                position="bottom"
+                position='bottom'
                 withArrow
               >
                 <div style={{ maxHeight: '300px' }}>
