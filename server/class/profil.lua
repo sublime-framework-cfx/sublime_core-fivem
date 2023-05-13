@@ -46,14 +46,10 @@ local function GetProfilsDb(self, from)
             db.permission = result.permission
             db.stats = json.decode(result.stats)
             db.createdBy = json.decode(result.createdBy)
+            db.metadata = json.decode(result.metadata)
             return db
         end 
     end
-end
-
----@param reason string
-local function KickPlayer(self, reason)
-    DropPlayer(self.source, reason)
 end
 
 ---@return boolean
@@ -61,6 +57,18 @@ local function Disconnected(self)
     MySQL.update.await('UPDATE profils SET previousId = ? WHERE id = ?', {nil, self.id})
     sl.profils[self.source] = nil
     return true
+end
+
+---@param key string
+---@param value any
+local function SetMetadata(self, key, value)
+    self.metadata[key] = value
+end
+
+---@param key string
+---@return any
+local function GetMetadata(self, key)
+    return self.metadata[key]
 end
 
 ---@return loadNuiProfiles
@@ -79,15 +87,33 @@ local function LoadNuiProfiles(self)
             firstname = char.firstname,
             lastname = char.lastname,
             sex = char.sex,
-            dob = char.dateofbirth -- soon implemented,
+            dob = char.dateofbirth
         }
     end
 
     data.username = self.username
     data.permission = self.permission
     data.stats = self.stats
+    data.logo = self.metadata.logo
     
     return data
+end
+
+---@return void
+local function UpdateDb(self)
+    local query = 'UPDATE profils SET user = ?, password = ?, stats = ?, metadata = ? WHERE id = ?'
+    local update <const> = MySQL.update.await(query, {self.username, self.password, json.encode(self.stats or {}), json.encode(self.metadata), self.id})
+    if update then 
+        print('Update profil: '..self.username)
+    else
+        print('Error update profil: '..self.username)
+    end
+end
+
+---@param reason string
+local function KickPlayer(self, reason)
+    if self.save then self:save() end
+    DropPlayer(self.source, reason)
 end
 
 ---@param source integer
@@ -110,7 +136,10 @@ local function CreateProilsObj(source, username, password, external)
     local db = GetProfilsDb(self, external)
     if db then
         self.remove = Disconnected
+        self.save = UpdateDb
         self.loadNuiProfiles = LoadNuiProfiles
+        self.setMetadata = SetMetadata
+        self.getMetadata = GetMetadata
         self.spawned = false
         self.id = db.id
         self.username = db.username
@@ -118,6 +147,7 @@ local function CreateProilsObj(source, username, password, external)
         self.stats = db.stats
         self.permission = db.permission
         self.createdBy = db.createdBy
+        self.metadata = db.metadata
         sl.profils[source] = self
         sl.previousId[self.identifiers.token] = nil
         return self
