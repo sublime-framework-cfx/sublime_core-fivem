@@ -1,8 +1,20 @@
 local p, nui <const> = nil, require 'client.modules.nui'
 
 ---@param data boolean
-nui.RegisterReactCallback('sl:modal:closed', function(data, cb)
+nui.RegisterReactCallback('sl:modal:closedCondirm', function(data, cb)
     if p then p:resolve(data) end p = nil
+    cb(1)
+end, true)
+
+---@param data table
+nui.RegisterReactCallback('sl:modal:closedCustom', function(data, cb)
+    if p then
+        local temp = {}
+        for k, v in pairs(data) do
+            temp[tonumber(k)+1] = v
+        end
+        p:resolve(temp)
+    end p = nil
     cb(1)
 end, true)
 
