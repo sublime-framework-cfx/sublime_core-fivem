@@ -1,5 +1,18 @@
 sl.profils = {}
 
+---@class CharsProfilsNuiProps
+---@field firstname string
+---@field lastname string
+---@field sex string
+---@field age number
+---@field stats table
+
+---@class ProfileNuiProps
+---@field chars? CharsProfilsNuiProps
+---@field username string
+---@field stats table
+---@field permission string
+
 ---@param source integer
 ---@return table
 local function GetAllIdentifiers(self, source) ---@todo move in module
@@ -50,6 +63,33 @@ local function Disconnected(self)
     return true
 end
 
+---@return loadNuiProfiles
+local function LoadNuiProfiles(self)
+    local query <const> = MySQL.query.await('SELECT * FROM characters WHERE user = ?', {self.id})
+
+    if query == '[]' then return false end
+
+    local data = {}
+    data.chars = {}
+
+    for i = 1, #query do
+        local char <const> = query[i]
+
+        data.chars[i] = {
+            firstname = char.firstname,
+            lastname = char.lastname,
+            sex = char.sex,
+            age = 30 -- soon implemented,
+        }
+    end
+
+    data.username = self.username
+    data.permission = self.permission
+    data.stats = self.stats
+    
+    return data
+end
+
 ---@param source integer
 ---@param username string
 ---@param password string
@@ -70,6 +110,7 @@ local function CreateProilsObj(source, username, password, external)
     local db = GetProfilsDb(self, external)
     if db then
         self.remove = Disconnected
+        self.loadNuiProfiles = LoadNuiProfiles
         self.spawned = false
         self.id = db.id
         self.username = db.username
@@ -85,4 +126,9 @@ local function CreateProilsObj(source, username, password, external)
     end
 end
 
+local function GetProfile(source)
+    return sl.profils[source] or false
+end
+
 sl.createPlayerObj = CreateProilsObj
+sl.getProfileFromId = GetProfile
