@@ -1,6 +1,4 @@
-local config = {}
-
-config.components = {
+return {
     ['face_md_weight'] = {
         name = 'face_md_weight',
         label = translate('face_md_weight'),
