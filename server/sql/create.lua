@@ -15,6 +15,7 @@ local config <const> = {
                 `createdBy` longtext NOT NULL,
                 `stats` longtext DEFAULT NULL,
                 `lastUpdate` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+                `previousId` varchar(255) DEFAULT NULL,
                 PRIMARY KEY (`id`) USING BTREE,
                 UNIQUE INDEX `user` (`user`) USING BTREE
             )
