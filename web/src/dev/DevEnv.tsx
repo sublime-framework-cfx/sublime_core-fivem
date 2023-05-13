@@ -6,6 +6,8 @@ import {
   Stack,
   Divider,
   Button,
+  Flex,
+  Text
 } from '@mantine/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -13,9 +15,39 @@ import {
   faArrowLeft,
   faArrowRight,
 } from '@fortawesome/free-solid-svg-icons';
-
-import { debugModalsConfirm } from './debug/modals/confirm';
 import { debugNotification } from './debug/notifcation';
+import { debugModalsConfirm } from './debug/modals/confirm';
+import { debugModalsCustom } from './debug/modals/custom';
+
+
+interface Props {
+  text: string;
+  Clicked: () => void;
+  color: string;
+  isDisabled?: boolean;
+}
+
+const AnimatedButtons: React.FC<Props> = ({
+  text,
+  Clicked,
+  color,
+  isDisabled
+}) => {
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <Button
+      disabled={isDisabled}
+      variant='outline'
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      color={isHovered ? color : 'blue'}
+      onClick={Clicked}
+    >
+      {text}
+    </Button>
+  );
+};
 
 const DevTool: React.FC = () => {
   const [opened, setOpened] = useState<boolean>(false);
@@ -23,7 +55,7 @@ const DevTool: React.FC = () => {
 
   return (
     <>
-      <Tooltip label='Open [supv] Tool' position={'right'}>
+      <Tooltip label='Open [sublime] Tool' position={'right'}>
         <ActionIcon
           variant='outline'
           color='gray'
@@ -37,7 +69,7 @@ const DevTool: React.FC = () => {
       <Drawer
         opened={opened}
         onClose={() => setOpened(false)}
-        title='supv core tool dev'
+        title='sublime core tool dev'
         padding='md'
         size={300}
         position={side === 'left' ? 'right' : 'left'}
@@ -55,17 +87,19 @@ const DevTool: React.FC = () => {
             Side
           </Button>
           <Divider />
-          <Button
-            variant='outline'
-            color='blue'
-            fullWidth
-            onClick={() => {
-              debugModalsConfirm();
-              setOpened(false);
-            }}
+          <Flex
+            bg='dark.3'
+            gap='xs'
+            style={{ borderRadius: 4}}
+            justify='center'
+            align='center'
+            direction='row'
+            wrap='wrap'
           >
-            Dialog
-          </Button>
+            <Text>Modal: </Text>
+            <AnimatedButtons text='Confirm' Clicked={() => {debugModalsConfirm(); setOpened(false)}} color='dark.9'/>
+            <AnimatedButtons text='Custom' Clicked={() => {debugModalsCustom(); setOpened(false)}} color='dark.9'/>
+          </Flex>
           <Button
             variant='outline'
             color='red'
