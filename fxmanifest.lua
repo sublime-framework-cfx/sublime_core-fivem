@@ -17,7 +17,8 @@ shared_scripts {
 
 client_scripts {
     'config/client/*.lua', -- on top
-    'client/*.lua'
+    'client/*.lua',
+    'client/nui/*.lua'
 }
 
 server_scripts {
