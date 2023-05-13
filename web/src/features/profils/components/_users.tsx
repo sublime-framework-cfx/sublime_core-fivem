@@ -20,6 +20,7 @@ import {
   Button,
 } from '@mantine/core';
 import { firstToUpper } from '../../../function';
+import { fetchNui } from '../../../utils/fetchNui';
 
 export interface UserProps {
   username: string;
@@ -33,6 +34,11 @@ export const User: React.FC<UserProps> = ({ username, permission, logo }) => {
   const handleToggle = () => setOpened((opened) => !opened);
   const [newLogo, setNewLogo] = React.useState(logo);
   const [set, Set] = React.useState<boolean>(false);
+
+  const handleSet = async (key: string, value: any) => {
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    fetchNui('sl:profiles:onEdit', { edit: 'profile', key: key, value: value });
+  };
 
   return (
     <>
@@ -94,7 +100,7 @@ export const User: React.FC<UserProps> = ({ username, permission, logo }) => {
           </UnstyledButton>
         </Box>
         <Menu.Dropdown>
-          <Menu.Item icon={<FontAwesomeIcon icon={faUserPen} />} disabled>
+          <Menu.Item icon={<FontAwesomeIcon icon={faUserPen} />} disabled={permission !== 'owner'}>
             Changer son nom
           </Menu.Item>
           <Menu.Item icon={<FontAwesomeIcon icon={faUserPen} />} disabled>
@@ -131,7 +137,7 @@ export const User: React.FC<UserProps> = ({ username, permission, logo }) => {
             }
             placeholder="Copier ici l'URL de l'image..."
           />
-          <Button onClick={() => Set(false)} color='teal'>
+          <Button onClick={() => {Set(false); handleSet('logo', newLogo)}} color='teal'>
             Valider
           </Button>
         </Group>
