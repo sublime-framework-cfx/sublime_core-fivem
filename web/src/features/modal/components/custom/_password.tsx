@@ -2,7 +2,7 @@ import React from 'react';
 import { PasswordInput  } from '@mantine/core';
 
 interface Props {
-  key: number;
+  key: string;
   index: number;
   label?: string;
   data?: Data;

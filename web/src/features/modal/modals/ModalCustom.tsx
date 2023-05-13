@@ -3,6 +3,7 @@ import { Modal, TextInput, Select, Button, Stack, Group } from '@mantine/core';
 import { CheckboxField, InputField, PasswordField } from '../components/custom';
 import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
 import AnimatedButton from '../components/buttons';
+import { fetchNui } from '../../../utils/fetchNui';
 
 interface Option {
   type: string;
@@ -33,13 +34,13 @@ export const OpenModalCustom: React.FC<ModalPropsCustom> = ({
   options,
   handleClose,
 }) => {
-  const [formData, setFormData] = useState<Record<string, string | boolean>>(
+  const [formData, setFormData] = useState<Record<number, string | boolean | Array<any>>>(
     {}
   );
   const [areRequiredFieldsCompleted, setRequiredFieldsCompleted] =
     useState(true);
 
-  const handleInputChange = async (index: number, value: boolean | string) => {
+  const handleInputChange = (index: number, value: boolean | string) => {
     setFormData((prevData) => {
       const updatedData = { ...prevData };
       updatedData[index] = value;
@@ -49,7 +50,9 @@ export const OpenModalCustom: React.FC<ModalPropsCustom> = ({
 
   const handleSubmit = async () => {
     handleClose();
-    console.log(formData);
+    //console.log(formData);
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    fetchNui('sl:modal:closedCustom', formData);
   };
 
   const renderField = (field: Option, index: number) => {
@@ -57,7 +60,7 @@ export const OpenModalCustom: React.FC<ModalPropsCustom> = ({
       case 'input':
         return (
           <InputField
-            key={index}
+            key={String(index)}
             index={index}
             label={field.label}
             data={field as Data}
@@ -67,7 +70,7 @@ export const OpenModalCustom: React.FC<ModalPropsCustom> = ({
       case 'checkbox':
         return (
           <CheckboxField
-            key={index}
+            key={String(index)}
             index={index}
             label={field.label}
             defaultValue={
@@ -81,7 +84,7 @@ export const OpenModalCustom: React.FC<ModalPropsCustom> = ({
       case 'password':
         return (
           <PasswordField
-            key={index}
+            key={String(index)}
             index={index}   
             label={field.label}
             data={field as Data}
