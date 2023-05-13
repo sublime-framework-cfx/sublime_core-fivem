@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, TextInput, Select, Button, Stack, Group } from '@mantine/core';
-import { CheckboxField, InputField, Data } from '../components/custom';
+import { CheckboxField, InputField, PasswordField } from '../components/custom';
 import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
 import AnimatedButton from '../components/buttons';
 
@@ -75,6 +75,16 @@ export const OpenModalCustom: React.FC<ModalPropsCustom> = ({
               (field.default as boolean) ||
               false
             }
+            onChanged={handleInputChange}
+          />
+        );
+      case 'password':
+        return (
+          <PasswordField
+            key={index}
+            index={index}   
+            label={field.label}
+            data={field as Data}
             onChanged={handleInputChange}
           />
         );
