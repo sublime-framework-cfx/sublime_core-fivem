@@ -2,13 +2,15 @@ local connect <const> = require 'config.server.connect'
 sl.previousId = {}
 
 function sl.playerLoaded(source)
+    print(source)
     sl.emitNet('playerLoaded', source)
 end
 
 sl.onNet('playerLoaded', function(source)
+    print(source)
     local _source = source
-    sl.loadProfil(_source)
-    --sl.playerLoaded(_source)
+    --sl.loadProfil(_source)
+    sl.playerLoaded(_source)
 end)
 
 ---@param reason string
