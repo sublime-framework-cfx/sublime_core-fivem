@@ -22,10 +22,9 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 // dev
 const characters: CharListProps[] = [
-  { firstname: 'Jean', lastname: 'Michel', age: 60, sex: 'H' },
-  { firstname: 'Thérèse', lastname: 'Marie', age: 31, sex: 'F' },
+  { firstname: 'Jean', lastname: 'Michel', dob: '11/02/1986', sex: 'H' },
+  { firstname: 'Thérèse', lastname: 'Marie', dob: '12/12/2000', sex: 'F' },
 ];
-
 
 interface LoadProfilsProps {
   username: string;

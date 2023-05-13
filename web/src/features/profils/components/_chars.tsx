@@ -11,11 +11,12 @@ import {
 } from '@mantine/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { firstToUpper } from '../../../function';
 
 export interface CharListProps {
   firstname: string;
   lastname: string;
-  age: number;
+  dob: string;
   sex: string;
 }
 
@@ -56,10 +57,10 @@ export const CharsList: React.FC<InCharListProps> = ({ chars, index }) => {
           <Skeleton height={45} circle mb='xs' />
           <Box sx={{ flex: 1 }}>
             <Text color='white' weight={500} size='sm'>
-              {chars.firstname} {chars.lastname}
+              {firstToUpper(chars.firstname)} {firstToUpper(chars.lastname)}
             </Text>
             <Text color='dimmed' size='xs'>
-              {chars.age} "{chars.sex}"
+              {chars.sex} "{chars.dob}"
             </Text>
           </Box>
           <FontAwesomeIcon icon={faChevronRight} style={{ right: 0 }} />

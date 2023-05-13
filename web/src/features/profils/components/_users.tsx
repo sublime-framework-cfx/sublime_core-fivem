@@ -19,6 +19,7 @@ import {
   TextInput,
   Button,
 } from '@mantine/core';
+import { firstToUpper } from '../../../function';
 
 export interface UserProps {
   username: string;
@@ -79,7 +80,7 @@ export const User: React.FC<UserProps> = ({ username, permission, logo }) => {
                   {username}
                 </Text>
                 <Text color='dimmed' size='xs'>
-                  {permission}
+                  {firstToUpper(permission)}
                 </Text>
               </Box>
               {!opened ? (
