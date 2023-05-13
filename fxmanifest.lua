@@ -15,16 +15,16 @@ shared_scripts {
     'shared/handlers/*.lua',
 }
 
-client_scripts {
-    'config/client/*.lua', -- on top
-    'client/*.lua',
-    'client/nui/*.lua'
-}
-
 server_scripts {
     'config/server/*.lua', -- on top
     'server/sql/*.lua',
     'server/*.lua'
+}
+
+client_scripts {
+    'config/client/*.lua', -- on top
+    'client/*.lua',
+    'client/nui/*.lua'
 }
 
 ui_page 'web/build/index.html'
