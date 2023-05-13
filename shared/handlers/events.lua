@@ -130,11 +130,6 @@ function sl.onNet(name, cb, cooldown, global)
     end
 end
 
-function sl.emit(name, ...) -- @ TriggerEvent
-    if type(name) ~= 'string' then return end
-    TriggerEvent(FormatEvent(name), ...)
-end
-
 if sl.service == 'server' then
     local TriggerClientEvent <const> = TriggerClientEvent
 
@@ -149,4 +144,9 @@ elseif sl.service == 'client' then
         if type(name) ~= 'string' then return end
         TriggerServerEvent(FormatEvent(name, 'server'), ...)
     end
+end
+
+function sl.emit(name, ...) -- @ TriggerEvent
+    if type(name) ~= 'string' then return end
+    TriggerEvent(FormatEvent(name), ...)
 end
