@@ -40,6 +40,10 @@ end})
 require = load_module('require', 'shared').load
 require('imports.locales.shared').init()
 
+if sl.service == 'client' then
+    cache = {}
+end
+
 if sl.service == 'server' then
     require('imports.version.server').check('github', nil, 500)
     require('imports.mysql.server').init()
