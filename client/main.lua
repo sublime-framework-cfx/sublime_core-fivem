@@ -8,8 +8,10 @@ CreateThread(function()
 end)
 
 sl.onNet('playerLoaded', function(...)
-    print(cache.ped, cache.playerid, cache.serverid, cache.screen_x, cache.screen_y)
-    print('playerLoaded is Loaded?', ...)
+    --print(cache.ped, cache.playerid, cache.serverid, cache.screen_x, cache.screen_y)
+    --print('playerLoaded is Loaded?', ...)
+    local profile <const> = sl.openLogin()
+    print(profile)
 end)
 
 RegisterCommand('tt', function()
