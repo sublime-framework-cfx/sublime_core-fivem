@@ -1,4 +1,4 @@
-local sl_core <const> = 'sl_core'
+local sl_core <const> = 'sublime_core'
 local IsDuplicityVersion <const> = IsDuplicityVersion
 local LoadResourceFile <const> = LoadResourceFile
 local GetResourceState <const> = GetResourceState
@@ -8,7 +8,7 @@ local export = exports[sl_core]
 local service <const>, joaat <const> = (IsDuplicityVersion() and 'server') or 'client', joaat
 
 local function FormatedEvent(name, from)
-    return ('%s:%s:%s'):format(sl_core, from or service, joaat(name))
+    return ('%s:%s:%s'):format('__sl__', from or service, joaat(name))
 end
 
 if not _VERSION:find('5.4') then
@@ -16,7 +16,7 @@ if not _VERSION:find('5.4') then
 end
 
 if not GetResourceState(sl_core):find('start') then
-	error('^1sl_core doit être lancé avant cette ressource!^0', 2)
+	error('^1sublime_core doit être lancé avant cette ressource!^0', 2)
 end
 
 local function load_module(self, index)
