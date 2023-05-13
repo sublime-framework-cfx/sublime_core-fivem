@@ -51,3 +51,13 @@ AddEventHandler('onResourceStart', function(resourceName) ---@type void
         end
     end
 end)
+
+AddEventHandler('onResourceStop', function(resourceName) ---@type void
+    if resourceName ~= GetCurrentResourceName() then return end
+    local profiles = next(sl.profils) and sl.profils
+    if profiles then
+        for _,v in pairs(profiles) do
+            v:save()
+        end
+    end
+end)
