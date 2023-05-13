@@ -1,4 +1,4 @@
-local connect <const>, callback <const> = require 'config.server.connect', require 'imports.callback.server'
+local connect <const> = require 'config.server.connect'
 sl.previousId = {}
 
 function sl.playerLoaded(source)
@@ -50,15 +50,4 @@ AddEventHandler('onResourceStart', function(resourceName) ---@type void
             sl.playerLoaded(_source)
         end
     end
-end)
-
-callback.register('callback:getProfilesNui', function(source, data)
-    local player = sl.getProfileFromId(source)
-    if not player then return false end
-    return player:loadNuiProfiles()
-end)
-
-callback.register('callback:login', function(source, data)
-    local profile <const> = sl.createPlayerObj(source, data.username, data.password)
-    return profile?.username or false
 end)
