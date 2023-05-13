@@ -1,4 +1,4 @@
-local connect <const> = require 'config.server.connect'
+local connect <const>, callback <const> = require 'config.server.connect', require 'imports.callback.server'
 sl.previousId = {}
 
 function sl.playerLoaded(source)
@@ -38,4 +38,22 @@ AddEventHandler('playerConnecting', function(name, setKickReason, deferrals) ---
         local d <const> = require 'server.modules.deferrals'
         d(_source, name, setKickReason, deferrals)
     end
+end)
+
+AddEventHandler('onResourceStart', function(resourceName) ---@type void
+    if resourceName ~= GetCurrentResourceName() then return end
+    Wait(1000)
+    local players <const> = GetPlayers()
+    if #players > 0 then
+        for i = 1, #players do
+            local _source = players[i]
+            sl.playerLoaded(_source)
+        end
+    end
+end)
+
+callback.register('callback:login', function(source, data)
+    local _source = source
+    local profile <const> = sl.createPlayerObj(_source, data.username, data.password)
+    return profile?.username or false
 end)
