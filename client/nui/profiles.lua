@@ -15,6 +15,11 @@ end)
 ---@todo implement this to update the profile list profiles / char
 nui.RegisterReactCallback('sl:profiles:onEdit', function(data, cb)
     cb(1)
+    if data.edit == 'profile' then
+        sl.emitNet('profiles:edit', data.key, data.value)
+    elseif data.edit == 'char' then
+        -- sl.emitNet('characters:edit', data.key, data.value)
+    end
 end)
 
 function sl.openProfiles()
