@@ -68,9 +68,14 @@ local function RegisterReactCallback(name, cb, visible)
     end)
 end
 
+local function ResetFocus()
+    SetNuiFocus(false, false)
+end
+
 return {
     SendReactMessage = SendReactMessage,
-    RegisterReactCallback = RegisterReactCallback
+    RegisterReactCallback = RegisterReactCallback,
+    ResetFocus = ResetFocus
 }
 
 --[[
