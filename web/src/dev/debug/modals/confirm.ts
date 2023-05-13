@@ -15,6 +15,7 @@ export const debugModalsConfirm = () => {
         options: [
           { type: 'input', name: 'inputField', label: 'Input Field', required: true },
           { type: 'checkbox', name: 'checkboxField', label: 'Checkbox Field', required: false, default: true },
+          { type: 'password', name: 'inputField', label: 'Input Field', required: true },
         ]
       } as ModalProps,
     }]);

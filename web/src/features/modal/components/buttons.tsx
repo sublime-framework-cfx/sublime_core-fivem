@@ -25,6 +25,7 @@ const AnimatedButton: React.FC<Props> = ({
   return (
     <Button
       disabled={isDisabled}
+      size='xs'
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       rightIcon={
