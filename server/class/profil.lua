@@ -79,7 +79,7 @@ local function LoadNuiProfiles(self)
             firstname = char.firstname,
             lastname = char.lastname,
             sex = char.sex,
-            age = 30 -- soon implemented,
+            dob = char.dateofbirth -- soon implemented,
         }
     end
 
