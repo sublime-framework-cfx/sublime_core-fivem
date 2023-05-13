@@ -1,17 +1,15 @@
 local NetworkIsPlayerActive <const> = NetworkIsPlayerActive
 
-local loaded 
-loaded = SetInterval(function()
-    if cache.playerid and NetworkIsPlayerActive(cache.playerid) then
-        ClearInterval(loaded)
-        sl.emitNet('playerLoaded')
-        print(loaded)
+CreateThread(function()
+    while not cache.playerid or not NetworkIsPlayerActive(cache.playerid) do
+        Wait(500)
     end
-end, 1000)
+    sl.emitNet('playerLoaded')
+end)
 
 sl.onNet('playerLoaded', function(...)
     print(cache.ped, cache.playerid, cache.serverid, cache.screen_x, cache.screen_y)
-    print('playerLoaded', ...)
+    print('playerLoaded is Loaded?', ...)
 end)
 
 RegisterCommand('tt', function()
