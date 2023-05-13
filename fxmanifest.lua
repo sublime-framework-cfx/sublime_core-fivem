@@ -18,6 +18,7 @@ shared_scripts {
 server_scripts {
     'config/server/*.lua', -- on top
     'server/sql/*.lua',
+    'server/class/*.lua',
     'server/*.lua'
 }
 
