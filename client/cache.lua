@@ -1,7 +1,10 @@
 local cache = _ENV.cache
 
 function cache:set(key, value)
-    if not self[key] or self[key] ~= value then
+    if self[key] ~= value then
+        if cache.onUpdate[key] then
+            cache.onUpdate[key](value, self[key])
+        end
         self[key] = value
         sl.emit(('cache:%s'):format(key), value)
         return true
@@ -27,6 +30,7 @@ local size = 247
 
 SetInterval(function()
     cache:set('ped', PlayerPedId())
+
     if size > 250 then
         local screen_x, screen_y = GetActiveScreenResolution()
         cache:set('playerid', PlayerId())

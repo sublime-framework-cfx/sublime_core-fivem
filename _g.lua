@@ -41,7 +41,9 @@ require = load_module('require', 'shared').load
 require('imports.locales.shared').init()
 
 if sl.service == 'client' then
-    cache = {}
+    cache = {
+        onUpdate = {}
+    }
 end
 
 if sl.service == 'server' then
