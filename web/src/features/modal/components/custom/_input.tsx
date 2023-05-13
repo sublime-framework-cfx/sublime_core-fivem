@@ -1,14 +1,6 @@
 import React from 'react';
 import { TextInput } from '@mantine/core';
 
-export interface Data {
-  max: number;
-  min: number;
-  required: boolean;
-  placeholder: string;
-  description: string;
-}
-
 interface Props {
   key: number;
   index: number;
