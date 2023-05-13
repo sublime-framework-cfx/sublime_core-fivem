@@ -16,6 +16,7 @@ local config <const> = {
                 `stats` longtext DEFAULT NULL,
                 `lastUpdate` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
                 `previousId` varchar(255) DEFAULT NULL,
+                `metadata` LONGTEXT NULL DEFAULT '[]',
                 PRIMARY KEY (`id`) USING BTREE,
                 UNIQUE INDEX `user` (`user`) USING BTREE
             )
@@ -34,10 +35,10 @@ local config <const> = {
                 `height` varchar(100) NOT NULL,
                 `inventory` longtext NOT NULL DEFAULT '[]',
                 `lastUpdate` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-                `x` float NOT NULL,
-                `y` float NOT NULL,
-                `z` float NOT NULL,
-                `w` float NOT NULL,
+                `x` float NOT NULL DEFAULT 0,
+                `y` float NOT NULL DEFAULT 0,
+                `z` float NOT NULL DEFAULT 0,
+                `w` float NOT NULL DEFAULT 0,
                 `status` longtext NOT NULL DEFAULT '[]',
                 `instance` int(11) NOT NULL DEFAULT 0,
                 `skin` longtext NOT NULL DEFAULT '[]',
