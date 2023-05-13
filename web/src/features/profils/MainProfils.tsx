@@ -43,7 +43,7 @@ export const MainProfilesMenu: React.FC = () => {
     const user = data.username;
     const permission = data.permission;
     if (!user || !permission) return;
-    setData({ username: user, permission: permission });
+    setData({ username: user, permission: permission, logo: data.logo });
     setChars(data.chars || []);
     setOpened(true);
   });
