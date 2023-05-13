@@ -9,6 +9,7 @@ interface Props {
   onClick: Function;
   color: string;
   args: boolean;
+  isDisabled?: boolean;
 }
 
 const AnimatedButton: React.FC<Props> = ({
@@ -17,11 +18,13 @@ const AnimatedButton: React.FC<Props> = ({
   onClick,
   color,
   args,
+  isDisabled
 }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
     <Button
+      disabled={isDisabled}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       rightIcon={

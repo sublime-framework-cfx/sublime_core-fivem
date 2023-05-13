@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
-import { Modal, TextInput, Select, Button, Stack } from '@mantine/core';
+import React, { useState, useEffect } from 'react';
+import { Modal, TextInput, Select, Button, Stack, Group } from '@mantine/core';
 import { CheckboxField, InputField, Data } from '../components/custom';
+import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
+import AnimatedButton from '../components/buttons';
 
 interface Option {
   type: string;
@@ -17,8 +19,13 @@ interface Option {
 
 interface ModalPropsCustom {
   title?: string;
-  options: Option;
+  options: Option[];
   handleClose: () => void;
+}
+
+interface RenderedProps {
+  index: number;
+  field: Option;
 }
 
 export const OpenModalCustom: React.FC<ModalPropsCustom> = ({
@@ -29,8 +36,10 @@ export const OpenModalCustom: React.FC<ModalPropsCustom> = ({
   const [formData, setFormData] = useState<Record<string, string | boolean>>(
     {}
   );
+  const [areRequiredFieldsCompleted, setRequiredFieldsCompleted] =
+    useState(true);
 
-  const handleInputChange = (index: number, value: boolean | string) => {
+  const handleInputChange = async (index: number, value: boolean | string) => {
     setFormData((prevData) => {
       const updatedData = { ...prevData };
       updatedData[index] = value;
@@ -38,7 +47,7 @@ export const OpenModalCustom: React.FC<ModalPropsCustom> = ({
     });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     handleClose();
     console.log(formData);
   };
@@ -74,18 +83,61 @@ export const OpenModalCustom: React.FC<ModalPropsCustom> = ({
     }
   };
 
+  const renderedFields: RenderedProps[] = options.map(
+    (field: Option, index: number) => ({
+      index,
+      field,
+    })
+  );
+
+  useEffect(() => {
+    const requiredFields = renderedFields
+      .filter(({ field }) => field.required)
+      .map(({ index }) => index);
+    const areAllRequiredFieldsCompleted = requiredFields.every((index) => {
+      const fieldData = formData[index];
+      return typeof fieldData !== 'undefined' && fieldData !== '';
+    });
+    setRequiredFieldsCompleted(areAllRequiredFieldsCompleted);
+  }, [formData, renderedFields]);
+
   return (
     <>
-      <Modal opened={true} size='xs' onClose={handleClose} title={title}>
+      <Modal
+        opened={true}
+        size='xs'
+        onClose={handleClose}
+        title={title}
+        withCloseButton={false}
+        centered
+        withOverlay={false}
+        transitionProps={{
+          transition: 'skew-up',
+          duration: 300,
+          keepMounted: true,
+          timingFunction: 'ease-in-out',
+        }}
+      >
         <Stack style={{ padding: 10 }}>
-          {Array.isArray(options) &&
-            options.map((field: Option, index: number) =>
-              renderField(field, index)
-            )}
+          {renderedFields.map(({ field, index }) => renderField(field, index))}
         </Stack>
-        <Button style={{ padding: 10 }} onClick={handleSubmit}>
-          Soumettre
-        </Button>
+        <Group position='center'>
+          <AnimatedButton
+            iconAwesome={faXmark}
+            text='Annuler'
+            onClick={handleSubmit}
+            color='red'
+            args={false}
+          />
+          <AnimatedButton
+            iconAwesome={faCheck}
+            text='Valider'
+            onClick={handleSubmit}
+            color='green'
+            args={true}
+            isDisabled={!areRequiredFieldsCompleted}
+          />
+        </Group>
       </Modal>
     </>
   );
