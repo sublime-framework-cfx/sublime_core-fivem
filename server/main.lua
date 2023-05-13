@@ -52,8 +52,13 @@ AddEventHandler('onResourceStart', function(resourceName) ---@type void
     end
 end)
 
+callback.register('callback:getProfilesNui', function(source, data)
+    local player = sl.getProfileFromId(source)
+    if not player then return false end
+    return player:loadNuiProfiles()
+end)
+
 callback.register('callback:login', function(source, data)
-    local _source = source
-    local profile <const> = sl.createPlayerObj(_source, data.username, data.password)
+    local profile <const> = sl.createPlayerObj(source, data.username, data.password)
     return profile?.username or false
 end)
