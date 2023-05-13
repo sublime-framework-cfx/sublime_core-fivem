@@ -65,10 +65,10 @@ sl = setmetatable({
     game = GetGameName(),
     env = GetCurrentResourceName(),
     lang = GetConvar('sl:locale', 'fr'),
-    cache = {},
+    cache = service == 'client' and {},
     config = {},
     await = Citizen.Await,
-    updateCache = function(key, cb)
+    onCache = service == 'client' and function(key, cb)
         AddEventHandler(FormatedEvent(('cache:%s'):format(key)), cb)
     end
 },
