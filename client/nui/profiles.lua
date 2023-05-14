@@ -61,6 +61,8 @@ nui.RegisterReactCallback('sl:profiles:onSubmit', function (data, cb)
     cb(1)
     if data.submit == 'disconnect' then
         sl.emitNet('profiles:onSubmit', 'disconnect')
+    elseif data.submit == 'newChar' then
+        sl.emitNet('profiles:onSubmit', 'newChar', data)
     end
 end)
 
