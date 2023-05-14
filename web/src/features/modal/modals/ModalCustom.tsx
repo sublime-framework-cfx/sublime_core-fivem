@@ -50,11 +50,11 @@ export const OpenModalCustom: React.FC<ModalPropsCustom> = ({
     });
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (type: any) => {
     handleClose();
-    //console.log(formData);
+    type = type ? formData : setFormData({});
     await new Promise((resolve) => setTimeout(resolve, 200));
-    fetchNui('sl:modal:closedCustom', formData);
+    fetchNui('sl:modal:closedCustom', type || false, setFormData({}));
   };
 
   const renderField = (field: Option, index: number) => {
@@ -140,14 +140,14 @@ export const OpenModalCustom: React.FC<ModalPropsCustom> = ({
           <AnimatedButton
             iconAwesome={faXmark}
             text='Annuler'
-            onClick={handleSubmit}
+            onClick={() => handleSubmit(false)}
             color='red.6'
             args={false}
           />
           <AnimatedButton
             iconAwesome={faCheck}
             text='Valider'
-            onClick={handleSubmit}
+            onClick={() => handleSubmit(true)}
             color='teal.6'
             args={true}
             isDisabled={!areRequiredFieldsCompleted}
