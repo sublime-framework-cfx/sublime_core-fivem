@@ -1,28 +1,16 @@
 local cards <const> = require(('server.modules.cards.%s'):format(sl.lang))
 
-local function GetAllIdentifiers(source)
+---@param source integer
+---@return table
+local function GetAllIdentifiers(source) ---@todo
+    local listId = { steam = true, license = true, xbl = true, ip = true, discord = true, live = true }
     local identifiers = {}
-    for _, v in ipairs(GetPlayerIdentifiers(source)) do
-        if v:match('steam:') then
-            identifiers.steam = v:gsub('steam:', '')
+    for _,v in ipairs(GetPlayerIdentifiers(source)) do
+        if listId[v:match('([^:]+)')] then
+            identifiers[v:match('([^:]+)')] = v:gsub('([^:]+):', '')
         end
-        if v:match('license:') then
-            identifiers.license = v:gsub('license:', '')
-        end
-        if v:match('xbl:') then
-            identifiers.xbl = v:gsub('xbl:', '')
-        end
-        if v:match('ip:') then
-            identifiers.ip = v:gsub('ip:', '')
-        end
-        if v:match('discord:') then
-            identifiers.discord = v:gsub('discord:', '')
-        end
-        if v:match('live:') then
-            identifiers.live = v:gsub('live:', '')
-        end
-        identifiers.token = GetPlayerToken(source)
     end
+    identifiers.token = GetPlayerToken(source)
     return json.encode(identifiers)
 end
 
