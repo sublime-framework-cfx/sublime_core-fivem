@@ -26,10 +26,14 @@ export const Login: React.FC = () => {
     setShowModal(true);
   });
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (forgot?: boolean) => {
     await new Promise((resolve) => setTimeout(resolve, 200));
-    setShowModal(false);
-    fetchNui('sl:login:submit', { username, password });
+    if (forgot) {
+      fetchNui('sl:login:submit', false);
+    } else {
+      setShowModal(false);
+      fetchNui('sl:login:submit', { username, password });
+    }
   };
 
   return (
@@ -66,7 +70,7 @@ export const Login: React.FC = () => {
               ? {
                   style: { color: 'white', cursor: 'help' },
                   onMouseLeave: () => setForgot(false),
-                  onClick: () => console.log('forgot password'),
+                  onClick: () => handleSubmit(true),
                 }
               : {
                   style: { color: 'gray' },
