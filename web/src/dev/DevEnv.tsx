@@ -18,6 +18,7 @@ import {
 import { debugNotification } from './debug/notifcation';
 import { debugModalsConfirm } from './debug/modals/confirm';
 import { debugModalsCustom } from './debug/modals/custom';
+import { debugLogin } from './debug/login';
 
 
 interface Props {
@@ -107,6 +108,14 @@ const DevTool: React.FC = () => {
             onClick={() => debugNotification()}
           >
             Notication
+          </Button>
+          <Button
+            variant='outline'
+            color='green'
+            fullWidth
+            onClick={() => debugLogin()}
+          >
+            Login
           </Button>
         </Stack>
       </Drawer>
