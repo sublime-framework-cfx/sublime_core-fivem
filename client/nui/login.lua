@@ -1,11 +1,15 @@
 local nui <const>, callback <const>, p = require 'client.modules.nui', require 'imports.callback.client'
-local GetResourceKvpString <const> = GetResourceKvpString
+local GetResourceKvpString <const>, SetResourceKvp <const> = GetResourceKvpString, SetResourceKvp
 
 nui.RegisterReactCallback('sl:login:submit', function(data, cb)
     cb(1)
     if type(data) == 'boolean' then
         sl.emitNet('login:submit', 'forgot_password')
         return
+    end
+    if data.saveKvp then
+        SetResourceKvp('sl:username', data.username)
+        SetResourceKvp('sl:password', data.password)
     end
     local profile <const> = callback.sync('callback:login', false, data)
     if not profile or type(profile) ~= 'string' then
@@ -16,38 +20,21 @@ nui.RegisterReactCallback('sl:login:submit', function(data, cb)
         return
     end
     nui.ResetFocus()
-    if profile.save then
-        SetResourceKvp('sl:username', profile.username)
-        SetResourceKvp('sl:password', profile.password)
-    end
-    p:resolve(profile.username)
+    p:resolve(profile)
 end)
 
 function sl.openLogin()
     if p then return end
+    local d = {}
+    d.username = GetResourceKvpString('sl:username') or nil
+    d.password = GetResourceKvpString('sl:password') or nil
+    d.saveKvp = d.username and d.password and true or nil
     nui.SendReactMessage(true, {
         action = 'sl:login:opened',
-        data = {
-            username = GetResourceKvpString('sl:username') or nil,
-            password = GetResourceKvpString('sl:password') or nil
-        }
+        data = next(d) and d or nil
     }, {
         focus = true
     })
     p = promise.new()
     return sl.await(p)
 end
-
----@todo save cache disk client side pré login
---[[
-
-    SetResourceKvp(
-        key: string, 
-        value: string 
-    )
-
-    local retval: string =
-        GetResourceKvpString(
-            key: string
-        )
---]]
