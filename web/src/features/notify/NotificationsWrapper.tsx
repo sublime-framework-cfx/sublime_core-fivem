@@ -15,7 +15,7 @@ import { iconeAnimation } from '../../animation/icones';
  * Notifications - A component for displaying notifications
  * @example `lua`
  *
- *supv.notify('simple', {
+ *sl.notify('simple', {
  *    id = 'notification_1',
  *    title = 'Notification title',
  *    description = 'Notification description',
@@ -58,7 +58,7 @@ const NotificationsWrapper: React.FC = () => {
       fetchNui('supv:notification:removeQueue');
   };*/
 
-  useNuiEvent<NotificationProps>('supv:notification:send', (data) => {
+  useNuiEvent<NotificationProps>('supv:notification:send', async (data) => {
     if (!data.title && !data.description) return;
 
     /*if (toasts.length > 9) { // A utiliser plus tards pour un système de queue!
@@ -97,6 +97,8 @@ const NotificationsWrapper: React.FC = () => {
       'top',
       undefined
     );
+
+    await new Promise((resolve) => setTimeout(resolve, 50));
 
     toast.custom(
       (t) => (
