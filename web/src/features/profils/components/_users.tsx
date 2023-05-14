@@ -21,6 +21,7 @@ import {
 } from '@mantine/core';
 import { firstToUpper } from '../../../function';
 import { fetchNui } from '../../../utils/fetchNui';
+import AnimatedButton from '../../modal/components/buttons';
 
 export interface UserProps {
   username: string;
@@ -38,6 +39,11 @@ export const User: React.FC<UserProps> = ({ username, permission, logo }) => {
   const handleSet = async (key: string, value: any) => {
     await new Promise((resolve) => setTimeout(resolve, 200));
     fetchNui('sl:profiles:onEdit', { edit: 'profile', key: key, value: value });
+  };
+
+  const handlerDisconnected = async () => {
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    fetchNui('sl:profiles:onSubmit', { submit: 'disconnect', value: true });
   };
 
   return (
@@ -100,10 +106,10 @@ export const User: React.FC<UserProps> = ({ username, permission, logo }) => {
           </UnstyledButton>
         </Box>
         <Menu.Dropdown>
-          <Menu.Item icon={<FontAwesomeIcon icon={faUserPen} />} disabled={permission !== 'owner'}>
+          <Menu.Item icon={<FontAwesomeIcon icon={faUserPen} />} disabled={permission !== 'owner'} onClick={() => handleSet('username', true)}> {/* NEED CHECKER PERMISSION NUI PROVIDER !!!! */}
             Changer son nom
           </Menu.Item>
-          <Menu.Item icon={<FontAwesomeIcon icon={faUserPen} />} disabled>
+          <Menu.Item icon={<FontAwesomeIcon icon={faUserPen} />} disabled={permission !== 'owner'} onClick={() => handleSet('password', true)}> {/* NEED CHECKER PERMISSION NUI PROVIDER !!!! */}
             Changer son mot de passe
           </Menu.Item>
           <Menu.Item
@@ -114,10 +120,9 @@ export const User: React.FC<UserProps> = ({ username, permission, logo }) => {
             Changer avatar
           </Menu.Item>
           <Menu.Item
-            icon={
-              <FontAwesomeIcon icon={faPersonWalkingDashedLineArrowRight} />
-            }
+            icon={<FontAwesomeIcon icon={faPersonWalkingDashedLineArrowRight} />}
             color='red'
+            onClick={() => handlerDisconnected()}
           >
             Se deconnecter
           </Menu.Item>
