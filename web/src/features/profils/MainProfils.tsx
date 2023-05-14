@@ -48,6 +48,14 @@ export const MainProfilesMenu: React.FC = () => {
     setOpened(true);
   });
 
+  useNuiEvent<{key: string, value: string}>('sl:update:profile', (Data) => {
+    switch (Data.key) {
+      case 'username':
+        setData({ ...data, username: Data.value });
+        break;
+      default: break;
+    }
+  });
 
   return (
     <Container>
@@ -125,12 +133,9 @@ export const MainProfilesMenu: React.FC = () => {
             <Navbar.Section>
               {/*Profile Settings*/}
               <User
-                username={data.username || 'SUP2Ak'}
+                username={data.username || 'SUP2Ak The BG issous'}
                 permission={data.permission || 'Player'}
-                logo={
-                  data.logo ||
-                  'https://avatars.githubusercontent.com/u/31973315?v=4'
-                }
+                logo={data.logo}
               />
             </Navbar.Section>
           </Navbar>
