@@ -16,7 +16,7 @@ const ModalWrapper: React.FC = () => {
   const [data, setData] = useState<ModalProps>({ type: '' });
   const [opened, { close, open }] = useDisclosure(false);
 
-  useNuiEvent('sl:modal:opened', (data) => {
+  useNuiEvent('sl:modal:opened', async (data) => {
     if (
       data.type === 'confirm' &&
       !data.description &&
@@ -25,32 +25,31 @@ const ModalWrapper: React.FC = () => {
     )
       return;
     setData(data);
+    await new Promise((resolve) => setTimeout(resolve, 200));
     open();
   });
 
   return (
     <>
-      {opened &&
-        (data.type === 'confirm' ? (
-          <OpenModalConfirm
-            title={data.title}
-            subtitle={data.subtitle}
-            description={data.description}
-            handleClose={close}
-          />
-        ) : data.type === 'custom' ? (
-          <OpenModalCustom
-            title={data.title}
-            options={data.options}
-            handleClose={close}
-          />
-        ) : null)}
+      {data.type === 'custom' && (
+        <OpenModalCustom
+          title={data.title}
+          options={data.options}
+          handleClose={close}
+          open={opened && data.type === 'custom'}
+        />
+      )}
+      {data.type === 'confirm' && (
+        <OpenModalConfirm
+          title={data.title}
+          subtitle={data.subtitle}
+          description={data.description}
+          handleClose={close}
+          open={opened && data.type === 'confirm'}
+        />
+      )}
     </>
   );
 };
-/*
-
-
-            */
 
 export default ModalWrapper;

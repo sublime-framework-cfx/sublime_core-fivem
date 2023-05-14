@@ -23,12 +23,13 @@ export const Login: React.FC = () => {
 
   const areRequiredFieldsCompleted = username.length << 1 && password.length << 1;
 
-  useNuiEvent<{username: string, password: string, saveKvp: boolean}>('sl:login:opened', (data?) => {
+  useNuiEvent<{username: string, password: string, saveKvp: boolean}>('sl:login:opened', async (data?) => {
     if (data) {
       setUsername(data?.username);
       setPassword(data?.password);
       setSaveKvp(data?.saveKvp);
     }
+    await new Promise((resolve) => setTimeout(resolve, 200));
     setShowModal(true);
   });
 
@@ -52,6 +53,12 @@ export const Login: React.FC = () => {
         size='xs'
         withCloseButton={false}
         padding='xs'
+        transitionProps={{
+          transition: 'scale-y',
+          duration: 250,
+          keepMounted: true,
+          timingFunction: 'ease-in-out',
+        }}
       >
         <Stack>
           <TextInput

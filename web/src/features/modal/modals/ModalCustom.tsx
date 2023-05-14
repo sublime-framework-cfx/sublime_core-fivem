@@ -22,6 +22,7 @@ interface ModalPropsCustom {
   title?: string;
   options: Option[];
   handleClose: () => void;
+  open: boolean;
 }
 
 interface RenderedProps {
@@ -33,6 +34,7 @@ export const OpenModalCustom: React.FC<ModalPropsCustom> = ({
   title,
   options,
   handleClose,
+  open,
 }) => {
   const [formData, setFormData] = useState<Record<number, string | boolean | Array<any>>>(
     {}
@@ -117,7 +119,7 @@ export const OpenModalCustom: React.FC<ModalPropsCustom> = ({
   return (
     <>
       <Modal
-        opened={true}
+        opened={open}
         size='xs'
         onClose={handleClose}
         title={title}
@@ -125,8 +127,8 @@ export const OpenModalCustom: React.FC<ModalPropsCustom> = ({
         centered
         withOverlay={false}
         transitionProps={{
-          transition: 'skew-up',
-          duration: 300,
+          transition: 'scale-y',
+          duration: 250,
           keepMounted: true,
           timingFunction: 'ease-in-out',
         }}
@@ -139,14 +141,14 @@ export const OpenModalCustom: React.FC<ModalPropsCustom> = ({
             iconAwesome={faXmark}
             text='Annuler'
             onClick={handleSubmit}
-            color='red'
+            color='red.6'
             args={false}
           />
           <AnimatedButton
             iconAwesome={faCheck}
             text='Valider'
             onClick={handleSubmit}
-            color='green'
+            color='teal.6'
             args={true}
             isDisabled={!areRequiredFieldsCompleted}
           />

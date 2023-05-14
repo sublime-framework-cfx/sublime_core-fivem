@@ -4,12 +4,14 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { fetchNui } from '../../../utils/fetchNui';
 import AnimatedButton from '../components/buttons';
+import React from 'react';
 
 export interface ModalConfirmProps {
   title?: string;
   subtitle?: string;
   description?: string;
   handleClose: () => void;
+  open: boolean;
 }
 
 export const OpenModalConfirm: React.FC<ModalConfirmProps> = ({
@@ -17,6 +19,7 @@ export const OpenModalConfirm: React.FC<ModalConfirmProps> = ({
   subtitle,
   description,
   handleClose,
+  open,
 }) => {
   const handleConfirm = async (value: boolean) => {
     //console.log(value, 'value')
@@ -27,12 +30,17 @@ export const OpenModalConfirm: React.FC<ModalConfirmProps> = ({
 
   return (
     <Modal
-      opened={true}
+      opened={open}
       onClose={handleClose}
       size='md'
-      padding='md'
-      radius='md'
-      shadow='md'
+      padding='xs'
+      centered
+      transitionProps={{
+        transition: 'scale-y',
+        duration: 250,
+        keepMounted: true,
+        timingFunction: 'ease-in-out',
+      }}
     >
       <Title order={1} align='center' mb='xs' underline={true}>
         {' '}
@@ -70,14 +78,14 @@ export const OpenModalConfirm: React.FC<ModalConfirmProps> = ({
           iconAwesome={faXmark}
           text='Annuler'
           onClick={handleConfirm}
-          color='red'
+          color='red.6'
           args={false}
         />
         <AnimatedButton
           iconAwesome={faCheck}
           text='Valider'
           onClick={handleConfirm}
-          color='green'
+          color='teal.6'
           args={true}
         />
       </Group>
