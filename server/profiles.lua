@@ -60,11 +60,5 @@ end)
 
 callback.register('callback:login', function(source, data)
     local profile <const> = sl.createPlayerObj(source, data.username, data.password)
-    return ((data.save and profile?.username and profile?.password) and {
-        username = profile.username,
-        password = profile.password,
-        save = true
-    }) or (profile?.username and {
-        username = profile.username
-    }) or false
+    return profile?.username and profile.username or false
 end)
