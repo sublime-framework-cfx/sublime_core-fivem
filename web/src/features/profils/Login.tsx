@@ -6,6 +6,7 @@ import {
   Group,
   Stack,
   Text,
+  Checkbox
 } from '@mantine/core';
 import AnimatedButton from '../modal/components/buttons';
 import { faCheck, faLock, faUserShield } from '@fortawesome/free-solid-svg-icons';
@@ -16,23 +17,28 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 export const Login: React.FC = () => {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [saveKvp, setSaveKvp] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [onForgot, setForgot] = useState<boolean>(false);
 
-  const areRequiredFieldsCompleted =
-    username.length << 1 && password.length << 1;
+  const areRequiredFieldsCompleted = username.length << 1 && password.length << 1;
 
-  useNuiEvent('sl:login:opened', () => {
+  useNuiEvent<{username: string, password: string, saveKvp: boolean}>('sl:login:opened', (data?) => {
+    if (data) {
+      setUsername(data?.username);
+      setPassword(data?.password);
+      setSaveKvp(data?.saveKvp);
+    }
     setShowModal(true);
   });
 
-  const handleSubmit = async (forgot?: boolean) => {
+  const handleSubmit = async () => {
     await new Promise((resolve) => setTimeout(resolve, 200));
-    if (forgot) {
+    if (onForgot) {
       fetchNui('sl:login:submit', false);
     } else {
       setShowModal(false);
-      fetchNui('sl:login:submit', { username, password });
+      fetchNui('sl:login:submit', { username, password, saveKvp });
     }
   };
 
@@ -52,12 +58,14 @@ export const Login: React.FC = () => {
             label='Username'
             withAsterisk
             placeholder='Your username'
+            value={username}
             onChange={(event) => setUsername(event.target.value)}
             icon={<FontAwesomeIcon icon={faUserShield} size='xs' fade />}
           />
           <PasswordInput
             withAsterisk
             label='Password'
+            value={password}
             placeholder='Your password'
             onChange={(event) => setPassword(event.target.value)}
             icon={<FontAwesomeIcon icon={faLock} size='xs' fade />}
@@ -70,7 +78,7 @@ export const Login: React.FC = () => {
               ? {
                   style: { color: 'white', cursor: 'help' },
                   onMouseLeave: () => setForgot(false),
-                  onClick: () => handleSubmit(true),
+                  onClick: () => handleSubmit(),
                 }
               : {
                   style: { color: 'gray' },
@@ -82,7 +90,7 @@ export const Login: React.FC = () => {
             Mot de passe oublié?
           </Text>
         </Stack>
-        <Group position='right' pt={10}>
+        <Group pt={10}>
           <AnimatedButton
             iconAwesome={faCheck}
             text='Valider'
@@ -90,6 +98,13 @@ export const Login: React.FC = () => {
             color='green'
             args={true}
             isDisabled={!areRequiredFieldsCompleted}
+          />
+          <Checkbox
+            label='Se souvenir de moi?'
+            color='teal.6'
+            checked={saveKvp}
+            onChange={(event) => setSaveKvp(event.currentTarget.checked)}
+            style={{marginLeft: 2}}
           />
         </Group>
       </Modal>
