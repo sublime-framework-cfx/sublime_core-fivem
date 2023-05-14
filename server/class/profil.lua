@@ -116,6 +116,18 @@ local function KickPlayer(self, reason)
     DropPlayer(self.source, reason)
 end
 
+---@param key string
+---@param value any
+local function SetData(self, key, value)
+    self[key] = value
+end
+
+---@param key string
+---@return any
+local function GetData(self, key)
+    return self[key]
+end
+
 ---@param source integer
 ---@param username string
 ---@param password string
@@ -140,6 +152,8 @@ local function CreateProilsObj(source, username, password, external)
         self.loadNuiProfiles = LoadNuiProfiles
         self.setMetadata = SetMetadata
         self.getMetadata = GetMetadata
+        self.set = SetData
+        self.get = GetData
         self.spawned = false
         self.id = db.id
         self.username = db.username
