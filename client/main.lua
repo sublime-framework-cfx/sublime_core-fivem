@@ -36,6 +36,5 @@ RegisterCommand('tt', function()
             },
         }
     })
-    print(tt["1"], tt[1])
     print(json.encode(tt))
 end)
