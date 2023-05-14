@@ -22,6 +22,7 @@ import {
 import { firstToUpper } from '../../../function';
 import { fetchNui } from '../../../utils/fetchNui';
 import AnimatedButton from '../../modal/components/buttons';
+import { debugData } from '../../../utils/debugData';
 
 export interface UserProps {
   username: string;
@@ -43,7 +44,11 @@ export const User: React.FC<UserProps> = ({ username, permission, logo }) => {
 
   const handlerDisconnected = async () => {
     await new Promise((resolve) => setTimeout(resolve, 200));
-    fetchNui('sl:profiles:onSubmit', { submit: 'disconnect', value: true });
+    setOpened(false);
+    fetchNui('sl:profiles:onSubmit', { submit: 'disconnect', value: true }, debugData([{
+      action: 'sl:profiles:opened',
+      data: {username:'uknown', permission: 'none', submit: 'disconnect'},
+    }]));
   };
 
   return (

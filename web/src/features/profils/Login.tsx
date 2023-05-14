@@ -13,6 +13,7 @@ import { faCheck, faLock, faUserShield } from '@fortawesome/free-solid-svg-icons
 import { useNuiEvent } from '../../hooks/useNuiEvent';
 import { fetchNui } from '../../utils/fetchNui';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { debugData } from '../../utils/debugData';
 
 export const Login: React.FC = () => {
   const [username, setUsername] = useState<string>('');
@@ -39,7 +40,15 @@ export const Login: React.FC = () => {
       fetchNui('sl:login:submit', false);
     } else {
       setShowModal(false);
-      fetchNui('sl:login:submit', { username, password, saveKvp });
+      fetchNui('sl:login:submit', { username, password, saveKvp }, debugData(
+        [{
+          action: 'sl:profiles:opened',
+          data: {username: 'SUP2Ak', permission: 'god', chars: [
+            { firstname: 'Jean', lastname: 'Michel', dob: '11/02/1986', sex: 'H' },
+            { firstname: 'Thérèse', lastname: 'Marie', dob: '12/12/2000', sex: 'F' },
+          ]},
+        }]
+      ));
     }
   };
 

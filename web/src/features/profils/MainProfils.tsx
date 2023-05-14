@@ -12,24 +12,19 @@ import {
   Box,
   useMantineTheme,
   rem,
-  Container
+  Container,
 } from '@mantine/core';
 import { useConfig } from '../../providers/ConfigProvider';
 import { useNuiEvent } from '../../hooks/useNuiEvent';
 import { User, UserProps, CharsList, CharListProps } from './components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
-
-// dev
-const characters: CharListProps[] = [
-  { firstname: 'Jean', lastname: 'Michel', dob: '11/02/1986', sex: 'H' },
-  { firstname: 'Thérèse', lastname: 'Marie', dob: '12/12/2000', sex: 'F' },
-];
+import { faPlus } from '@fortawesome/free-solid-svg-icons';;
 
 interface LoadProfilsProps {
   username: string;
   permission: string;
   logo: string;
+  submit?: string; // Using to close menu in dev environment
   chars?: CharListProps[];
 }
 
@@ -37,14 +32,15 @@ export const MainProfilesMenu: React.FC = () => {
   const theme = useMantineTheme();
   const [data, setData] = useState<UserProps>({ username: '', permission: '' });
   const [chars, setChars] = useState<CharListProps[]>([]);
-  const [opened, setOpened] = useState(false); // on true per default during dev
+  const [opened, setOpened] = useState(false);
 
-  useNuiEvent<LoadProfilsProps>('sl:profiles:opened', (data) => {
-    const user = data.username;
-    const permission = data.permission;
+  useNuiEvent<LoadProfilsProps>('sl:profiles:opened', (Data) => {
+    if (Data.submit === 'disconnect' && opened) return setOpened(false); // This is to close the menu when dev Env
+    const user = Data.username;
+    const permission = Data.permission;
     if (!user || !permission) return;
-    setData({ username: user, permission: permission, logo: data.logo });
-    setChars(data.chars || []);
+    setData({ username: user, permission: permission, logo: Data.logo });
+    setChars(Data.chars || []);
     setOpened(true);
   });
 
