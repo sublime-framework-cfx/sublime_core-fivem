@@ -22,10 +22,9 @@ export const OpenModalConfirm: React.FC<ModalConfirmProps> = ({
   open,
 }) => {
   const handleConfirm = async (value: boolean) => {
-    //console.log(value, 'value')
     await new Promise((resolve) => setTimeout(resolve, 200));
-    fetchNui('sl:modal:closedCondirm', value);
     handleClose();
+    fetchNui('sl:modal:closedCondirm', value);
   };
 
   return (
