@@ -1,3 +1,5 @@
 export * from './_checkbox';
 export * from './_input';
 export * from './_password';
+export * from './_dateInput';
+export * from './_slider';

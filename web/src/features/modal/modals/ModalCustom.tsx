@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, TextInput, Select, Button, Stack, Group } from '@mantine/core';
-import { CheckboxField, InputField, PasswordField } from '../components/custom';
+import { Modal, TextInput, Select, Button, Stack, Group, Box } from '@mantine/core';
+import { CheckboxField, InputField, PasswordField, DateInputField, SliderField } from '../components/custom';
 import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
 import AnimatedButton from '../components/buttons';
 import { fetchNui } from '../../../utils/fetchNui';
@@ -10,12 +10,13 @@ interface Option {
   label: string;
   description?: string;
   required?: boolean;
-  default?: string | boolean | Date;
+  default?: string | boolean | Date | number | Array<any>;
   format?: string;
   icon?: string | string[];
   placeholder?: string;
   max?: number;
   min?: number;
+  step?: number;
 }
 
 interface ModalPropsCustom {
@@ -36,13 +37,13 @@ export const OpenModalCustom: React.FC<ModalPropsCustom> = ({
   handleClose,
   open,
 }) => {
-  const [formData, setFormData] = useState<Record<number, string | boolean | Array<any>>>(
+  const [formData, setFormData] = useState<Record<number, string | boolean | number | Array<any>>>(
     {}
   );
   const [areRequiredFieldsCompleted, setRequiredFieldsCompleted] =
     useState(true);
 
-  const handleInputChange = (index: number, value: boolean | string) => {
+  const handleInputChange = (index: number, value: boolean | string | number) => {
     setFormData((prevData) => {
       const updatedData = { ...prevData };
       updatedData[index] = value;
@@ -93,6 +94,29 @@ export const OpenModalCustom: React.FC<ModalPropsCustom> = ({
             onChanged={handleInputChange}
           />
         );
+      case 'date-input':
+        return (
+          <DateInputField
+            key={String(index)}
+            index={index}
+            label={field.label}
+            data={field as Data}
+            onChanged={handleInputChange}
+          />
+        );
+      case 'slider':
+        return (
+          <SliderField
+            key={String(index)}
+            index={index}
+            label={field.label}
+            defaultValue={field.default as number}
+            min={field.min}
+            max={field.max}
+            step={field.step}
+            onChanged={handleInputChange}
+          />
+        );
       default:
         return null;
     }
@@ -118,42 +142,44 @@ export const OpenModalCustom: React.FC<ModalPropsCustom> = ({
 
   return (
     <>
-      <Modal
-        opened={open}
-        size='xs'
-        onClose={handleClose}
-        title={title}
-        withCloseButton={false}
-        centered
-        withOverlay={false}
-        transitionProps={{
-          transition: 'scale-y',
-          duration: 250,
-          keepMounted: true,
-          timingFunction: 'ease-in-out',
-        }}
-      >
-        <Stack style={{ padding: 10 }}>
-          {renderedFields.map(({ field, index }) => renderField(field, index))}
-        </Stack>
-        <Group position='center'>
-          <AnimatedButton
-            iconAwesome={faXmark}
-            text='Annuler'
-            onClick={() => handleSubmit(false)}
-            color='red.6'
-            args={false}
-          />
-          <AnimatedButton
-            iconAwesome={faCheck}
-            text='Valider'
-            onClick={() => handleSubmit(true)}
-            color='teal.6'
-            args={true}
-            isDisabled={!areRequiredFieldsCompleted}
-          />
-        </Group>
-      </Modal>
+        <Modal
+          opened={open}
+          size='xs'
+          onClose={handleClose}
+          withCloseButton={false}
+          centered
+          withOverlay={false}
+          //fullScreen
+          styles={{title: {width: '500px', display: 'flex', justifyContent: 'center' }}}
+          title={title}
+          transitionProps={{
+            transition: 'scale-y',
+            duration: 250,
+            keepMounted: true,
+            timingFunction: 'ease-in-out',
+          }}
+        >
+          <Stack style={{height: 'auto', width: 'auto', display: 'flex', justifyContent: 'center' }}>
+            {renderedFields.map(({ field, index }) => renderField(field, index))}
+            <Group position='center'>
+              <AnimatedButton
+                iconAwesome={faXmark}
+                text='Annuler'
+                onClick={() => handleSubmit(false)}
+                color='red.6'
+                args={false}
+              />
+              <AnimatedButton
+                iconAwesome={faCheck}
+                text='Valider'
+                onClick={() => handleSubmit(true)}
+                color='teal.6'
+                args={true}
+                isDisabled={!areRequiredFieldsCompleted}
+              />
+            </Group>
+          </Stack>
+        </Modal>
     </>
   );
 };
