@@ -43,7 +43,7 @@ function sl.openModal(data)
         action = 'sl:modal:opened',
         data = data
     }, {
-        focus = true
+        focus = data.focus or true
     })
 
     p = promise.new()
