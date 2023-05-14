@@ -8,7 +8,7 @@ import {
   Text,
 } from '@mantine/core';
 import AnimatedButton from '../modal/components/buttons';
-import { faCheck, faXmark, faLock, faUserShield } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faLock, faUserShield } from '@fortawesome/free-solid-svg-icons';
 import { useNuiEvent } from '../../hooks/useNuiEvent';
 import { fetchNui } from '../../utils/fetchNui';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -83,13 +83,6 @@ export const Login: React.FC = () => {
           </Text>
         </Stack>
         <Group position='right' pt={10}>
-          <AnimatedButton
-            iconAwesome={faXmark}
-            text='Annuler'
-            onClick={handleSubmit}
-            color='red'
-            args={false}
-          />
           <AnimatedButton
             iconAwesome={faCheck}
             text='Valider'
