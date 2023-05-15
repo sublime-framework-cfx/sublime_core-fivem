@@ -59,7 +59,7 @@ export const Login: React.FC = () => {
         centered
         onClose={() => handleSubmit}
         title='Login'
-        size='xs'
+        size='auto'
         withCloseButton={false}
         padding='xs'
         transitionProps={{

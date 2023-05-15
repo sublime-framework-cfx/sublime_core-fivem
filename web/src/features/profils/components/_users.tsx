@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faChevronUp,
@@ -32,10 +32,10 @@ export interface UserProps {
 
 export const User: React.FC<UserProps> = ({ username, permission, logo }) => {
   const theme = useMantineTheme();
-  const [opened, setOpened] = React.useState(false);
+  const [opened, setOpened] = useState(false);
   const handleToggle = () => setOpened((opened) => !opened);
-  const [newLogo, setNewLogo] = React.useState(logo);
-  const [set, Set] = React.useState<boolean>(false);
+  const [newLogo, setNewLogo] = useState(logo);
+  const [set, Set] = useState<boolean>(false);
 
   const handleSet = async (key: string, value: any) => {
     await new Promise((resolve) => setTimeout(resolve, 200));
