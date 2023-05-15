@@ -69,7 +69,7 @@ callback.register('callback:profiles:can', function(source, data)
     if data == 'newChar' then
         local listModel <const>, models = require 'shared.modules.models', {}
         for k, v in pairs(listModel) do
-            if not v.perm or v.perm[player.permission] then
+            if player:gotPerm(v.perm) then
                 models[#models + 1] = {
                     label = v.label,
                     value = v.name or k,
