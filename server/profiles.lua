@@ -24,10 +24,21 @@ sl.onNet('profiles:edit', function(source, key, value)
     end
 end)
 
-sl.onNet('profiles:onSubmit', function(source, key)
+sl.onNet('profiles:onSubmit', function(source, key, data)
     local player <const> = sl.getProfileFromId(source)
     if key == 'disconnect' then
         player:kick("Merci d'avoir joué sur notre serveur !") ---@todo translate it
+    elseif key == 'newCharValid' then
+        local add = player:addCharacter(data)
+        if add then
+            local char <const> = player:loadCharacters()
+            if not char then
+                -- notify error
+                print('error', 'not load char')
+                return 
+            end
+            sl.emitNet('refresh:profile', source, 'characters', char)
+        end
     end
 end)
 
@@ -51,6 +62,23 @@ sl.onNet('login:submit', function(source, key, value)
         })
     end
 end, 60000)
+
+callback.register('callback:profiles:can', function(source, data)
+    local player <const> = sl.getProfileFromId(source)
+    if not player then return false end
+    if data == 'newChar' then
+        local listModel <const>, models = require 'shared.modules.models', {}
+        for k, v in pairs(listModel) do
+            if not v.perm or v.perm[player.permission] then
+                models[#models + 1] = {
+                    label = v.label,
+                    value = joaat(k),
+                }
+            end
+        end
+        return #models > 0 and models or false
+    end
+end)
 
 callback.register('callback:getProfilesNui', function(source, data)
     local player <const> = sl.getProfileFromId(source)
