@@ -128,6 +128,36 @@ local function GetData(self, key)
     return self[key]
 end
 
+local function NewChar(self, data)
+    local query <const> = 'INSERT INTO `characters` (`user`, `firstname`, `lastname`, `sex`, `dateofbirth`, `height`, `model`) VALUES (?, ?, ?, ?, ?, ?, ?)'
+    local insert <const> = MySQL.insert.await(query, {self.id, data.firstname, data.lastname, data.sex, data.dob, data.height, data.model})
+    if insert then
+        return true
+    end
+    return false
+end
+
+local function LoadChars(self)
+    local query <const> = MySQL.query.await('SELECT * FROM characters WHERE user = ?', {self.id})
+    if query == '[]' then return false end
+    local data = {}
+    for i = 1, #query do
+        local r = query[i]
+        data[i] = {
+            firstname = r.firstname,
+            lastname = r.lastname,
+            dob = r.dateofbirth,
+            height = r.height,
+            sex = r.sex,
+            stats = json.decode(r.stats) or {},
+            skin = json.decode(r.skin) or {},
+            isDead = r.isDead or false,
+            model = r.model
+        }
+    end
+    return data
+end
+
 ---@param source integer
 ---@param username string
 ---@param password string
@@ -154,6 +184,8 @@ local function CreateProilsObj(source, username, password, external)
         self.getMetadata = GetMetadata
         self.set = SetData
         self.get = GetData
+        self.addCharacter = NewChar
+        self.loadCharacters = LoadChars
         self.spawned = false
         self.id = db.id
         self.username = db.username
