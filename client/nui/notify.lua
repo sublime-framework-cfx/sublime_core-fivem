@@ -5,7 +5,7 @@ local function notify(select, data)
 
     if select == 'simple' then
         nui.SendReactMessage(true,{
-            action = 'supv:notification:send',
+            action = 'sl:notification:send',
             data = data
         })
     end
