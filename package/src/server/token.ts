@@ -6,4 +6,4 @@ import {v4 as uuidv4} from 'uuid';
  */
 const generateToken: string = uuidv4();
 
-export const token: string = generateToken
+export default generateToken;
