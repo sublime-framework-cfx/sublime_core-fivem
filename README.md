@@ -7,10 +7,13 @@
 
 Nouveau framework FiveM pour tout type de serveur.
 
+🇫🇷 bientot...
+
+🇬🇧 soon...
+
 _server.cfg_
 
 ```cfg
 ensure oxmysql
-ensure sublime_sql
 ensure sublime_core
 ```
