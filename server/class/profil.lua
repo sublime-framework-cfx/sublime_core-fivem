@@ -1,5 +1,3 @@
-sl.profils = {}
-
 ---@class CharsProfilsNuiProps
 ---@field firstname string
 ---@field lastname string
@@ -12,6 +10,27 @@ sl.profils = {}
 ---@field username string
 ---@field stats table
 ---@field permission string
+
+---@class AddCharProps
+---@field firstname string
+---@field lastname string
+---@field dob string
+---@field sex string
+---@field height number
+---@field model string
+
+---@class LoadCharsProps[]
+---@field firstname string
+---@field lastname string
+---@field dob string
+---@field model string
+---@field sex string
+---@field height number
+---@field skin table
+---@field stats table
+---@field isDead boolean
+
+sl.profils = {}
 
 ---@param source integer
 ---@return table
@@ -128,6 +147,8 @@ local function GetData(self, key)
     return self[key]
 end
 
+---@param data AddCharProps
+---@return boolean
 local function NewChar(self, data)
     local query <const> = 'INSERT INTO `characters` (`user`, `firstname`, `lastname`, `sex`, `dateofbirth`, `height`, `model`) VALUES (?, ?, ?, ?, ?, ?, ?)'
     local insert <const> = MySQL.insert.await(query, {self.id, data.firstname, data.lastname, data.sex, data.dob, data.height, data.model})
@@ -137,10 +158,17 @@ local function NewChar(self, data)
     return false
 end
 
+---@param select string 'simple'
+---@param data table ---@todo add type
+local function Notify(self, select, data)
+    sl.notify(self.source, select, data)
+end
+
+---@return array|false
 local function LoadChars(self)
     local query <const> = MySQL.query.await('SELECT * FROM characters WHERE user = ?', {self.id})
     if query == '[]' then return false end
-    local data = {}
+    local data = {} ---@type LoadCharsProps[]
     for i = 1, #query do
         local r = query[i]
         data[i] = {
@@ -162,7 +190,7 @@ end
 ---@param username string
 ---@param password string
 ---@param external? boolean
----@return table
+---@return table|false
 local function CreateProilsObj(source, username, password, external)
     local self = {}
 
@@ -186,6 +214,7 @@ local function CreateProilsObj(source, username, password, external)
         self.get = GetData
         self.addCharacter = NewChar
         self.loadCharacters = LoadChars
+        self.notify = Notify
         self.spawned = false
         self.id = db.id
         self.username = db.username
