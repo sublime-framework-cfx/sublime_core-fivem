@@ -55,10 +55,10 @@ const NotificationsWrapper: React.FC = () => {
 
   /*const onRemoveQueue = async () => {
       await new Promise((resolve) => setTimeout(resolve, 200));
-      fetchNui('supv:notification:removeQueue');
+      fetchNui('sl:notification:removeQueue');
   };*/
 
-  useNuiEvent<NotificationProps>('supv:notification:send', async (data) => {
+  useNuiEvent<NotificationProps>('sl:notification:send', async (data) => {
     if (!data.title && !data.description) return;
 
     /*if (toasts.length > 9) { // A utiliser plus tards pour un système de queue!

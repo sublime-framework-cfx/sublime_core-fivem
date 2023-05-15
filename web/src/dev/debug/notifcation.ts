@@ -4,7 +4,7 @@ import type { NotificationProps } from "../../typings/Notification";
 export const debugNotification = () => {
   debugData([
     {
-      action: 'supv:notification:send',
+      action: 'sl:notification:send',
       data: {
         //id: '1',
         title: 'Titre de la notification',
