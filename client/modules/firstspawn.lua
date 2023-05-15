@@ -85,8 +85,9 @@ local function InitSpawn(p)
             Wait(0)
         end
         p:resolve(true)
+        p = nil
     end
-    p:resolve(true)
+    if p then p:resolve(true) end
     return sl.await(p)
 end
 
