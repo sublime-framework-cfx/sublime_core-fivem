@@ -1,4 +1,6 @@
 local RegisterNetEvent <const>, AddEventHandler <const>, TriggerEvent <const>, joaat <const> = RegisterNetEvent, AddEventHandler, TriggerEvent, joaat
+local tokenServer <const>, tokenClient = sl.service == 'server' and require('server.modules.tokenizer'), nil
+local callback <const> = sl.service == 'server' and require 'imports.callback.server' or require 'imports.callback.client'
 
 local timers = {}
 
@@ -67,23 +69,24 @@ function sl.on(name, cb, cooldown, global)
         local eventHandler = function(...)
             local eventCooldown = IsEventCooldown(name)
             if eventCooldown and eventCooldown:onCooldown() then
-                return warn('Ignoring event', name, 'because of cooldown')
+                return warn('Ignoring event', name, 'because of cooldown'..'\n')
             end
             cb(...)
         end
         return AddEventHandler(FormatEvent(name), eventHandler)
     elseif sl.service == 'server' then
-        local eventHandler = function(...)
+        local eventHandler = function(token, ...)
+            if not token or token ~= tokenServer then return end
             if cooldown and not global then
                 local eventCooldown = IsEventCooldown(name, source)
                 if eventCooldown and eventCooldown:onCooldown() then
-                    return warn('Ignoring event', name, 'because of cooldown for source : '..source)
+                    return warn('Ignoring event', name, 'because of cooldown for source : '..source..'\n')
                 end
                 RegisterCooldown(name, cooldown)
             elseif cooldown and global then
                 local eventCooldown = IsEventCooldown(name)
                 if eventCooldown and eventCooldown:onCooldown() then
-                    return warn('Ignoring event : '..name, 'because of global cooldown')
+                    return warn('Ignoring event : '..name, 'because of global cooldown'..'\n')
                 end
                 RegisterCooldown(name, cooldown, global)
             end
@@ -96,7 +99,6 @@ end
 function sl.onNet(name, cb, cooldown, global)
     if type(name) ~= 'string' then return end
     if cb and (type(cb) ~= 'table' and type(cb) ~= 'function') then return RegisterNetEvent(FormatEvent(name)) end
-
     if sl.service == 'client' then
         if type(cooldown) == 'number' then
             RegisterCooldown(name, cooldown)
@@ -104,23 +106,24 @@ function sl.onNet(name, cb, cooldown, global)
         local eventHandler = function(...)
             local eventCooldown = IsEventCooldown(name)
             if eventCooldown and eventCooldown:onCooldown() then
-                return warn('Ignoring event', name, 'because of cooldown')
+                return warn('Ignoring event', name, 'because of cooldown'..'\n')
             end
             cb(...)
         end
         return RegisterNetEvent(FormatEvent(name), eventHandler)
     elseif sl.service == 'server' then
-        local eventHandler = function(...)
+        local eventHandler = function(token, ...)
+            if not token or token ~= tokenServer then return warn(("source : %s a éxécuter un event sans avoir le token"):format(source)) end
             if cooldown and not global then
                 local eventCooldown = IsEventCooldown(name, source)
                 if eventCooldown and eventCooldown:onCooldown() then
-                    return warn('Ignoring event', name, 'because of cooldown for source : '..source)
+                    return warn('Ignoring event', name, 'because of cooldown for source : '..source..'\n')
                 end
                 RegisterCooldown(name, cooldown)
             elseif cooldown and global then
                 local eventCooldown = IsEventCooldown(name)
                 if eventCooldown and eventCooldown:onCooldown() then
-                    return warn('Ignoring event : '..name..'because of global cooldown')
+                    return warn('Ignoring event : '..name..'because of global cooldown'..'\n')
                 end
                 RegisterCooldown(name, cooldown, global)
             end
@@ -131,22 +134,32 @@ function sl.onNet(name, cb, cooldown, global)
 end
 
 if sl.service == 'server' then
+    callback.register(joaat('token'), function(source)
+        return tokenServer
+    end)
+
     local TriggerClientEvent <const> = TriggerClientEvent
 
     function sl.emitNet(name, source, ...) -- @ TriggerClientEvent
         if type(name) ~= 'string' then return end
         TriggerClientEvent(FormatEvent(name, 'client'), source, ...)
     end
+
+    function sl.emit(name, ...) -- @ TriggerEvent
+        if type(name) ~= 'string' then return end
+        TriggerEvent(FormatEvent(name), tokenServer, ...)
+    end
 elseif sl.service == 'client' then
     local TriggerServerEvent <const> = TriggerServerEvent
 
     function sl.emitNet(name, ...) -- @ TriggerServerEvent
+        if not tokenClient then tokenClient = callback.sync(joaat('token')) end
         if type(name) ~= 'string' then return end
-        TriggerServerEvent(FormatEvent(name, 'server'), ...)
+        TriggerServerEvent(FormatEvent(name, 'server'), tokenClient, ...)
     end
-end
 
-function sl.emit(name, ...) -- @ TriggerEvent
-    if type(name) ~= 'string' then return end
-    TriggerEvent(FormatEvent(name), ...)
+    function sl.emit(name, ...) -- @ TriggerEvent
+        if type(name) ~= 'string' then return end
+        TriggerEvent(FormatEvent(name), ...)
+    end
 end
