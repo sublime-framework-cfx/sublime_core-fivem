@@ -186,6 +186,28 @@ local function LoadChars(self)
     return data
 end
 
+---@param args string|number|table|boolean
+---@return boolean
+local function HavePermission(self, args)
+    if type(args) == 'string' and self.permission == args then return true
+    elseif type(args) == 'number' and self.permission >= args then return true
+    elseif type(args) == 'boolean' then return not args
+    elseif type(args) == 'table' then
+        if table.type(args) == 'array' then
+            for i = 1, #args do
+                if self.permission == args[i] then
+                    return true
+                end
+            end
+        elseif table.type == 'hash' then
+            if args[self.permission] then
+                return true
+            end
+        end
+    end
+    return false
+end
+
 ---@param source integer
 ---@param username string
 ---@param password string
@@ -215,6 +237,7 @@ local function CreateProilsObj(source, username, password, external)
         self.addCharacter = NewChar
         self.loadCharacters = LoadChars
         self.notify = Notify
+        self.gotPerm = HavePermission
         self.spawned = false
         self.id = db.id
         self.username = db.username
