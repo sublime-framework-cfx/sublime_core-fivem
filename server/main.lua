@@ -61,3 +61,10 @@ AddEventHandler('onResourceStop', function(resourceName) ---@type void
         end
     end
 end)
+
+local loadedInstance, SetPlayerRoutingBucket <const> = {}, SetPlayerRoutingBucket
+sl.onNet('setLoadedInstance', function(source)
+    if loadedInstance[source] then return end
+    loadedInstance[source] = source
+    SetPlayerRoutingBucket(source, source)
+end)
