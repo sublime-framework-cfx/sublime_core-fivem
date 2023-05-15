@@ -1,5 +1,5 @@
 fx_version 'cerulean'
-games {'gta5', 'rdr3'}
+games {'gta5', 'rdr3'} -- Work only on FiveM for now.. but it's planned to be ported on RedM
 lua54 'yes'
 use_experimental_fxv2_oal 'yes'
 
@@ -10,6 +10,8 @@ repository 'https://github.com/SUBLiME-Association/sublime_core'
 description 'Un framework pour tout type de serveur'
 
 shared_script '_g.lua' -- need to be init first
+server_script 'package/dist/server/server.js' -- need to be init first
+
 shared_scripts {
     'config/shared/*.lua', -- on top
     'shared/handlers/*.lua',
