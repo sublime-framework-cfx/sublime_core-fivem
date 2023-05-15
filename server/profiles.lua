@@ -72,7 +72,7 @@ callback.register('callback:profiles:can', function(source, data)
             if not v.perm or v.perm[player.permission] then
                 models[#models + 1] = {
                     label = v.label,
-                    value = joaat(k),
+                    value = v.name or k,
                 }
             end
         end
