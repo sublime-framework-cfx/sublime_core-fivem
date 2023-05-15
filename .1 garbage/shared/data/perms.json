@@ -1,6 +1,0 @@
-{
-    "player": {"label": "Player", "rank": 1},
-    "modo": {"label": "Modérateur", "rank": 2},
-    "admin": {"label": "Administrateur", "rank": 3},
-    "owner": {"label": "Fondateur", "rank": 4}
-}
