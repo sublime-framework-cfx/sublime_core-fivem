@@ -14,6 +14,14 @@
     "d_wrong_password": "Incorrect password",
     "d_user_not_exist": "User does not exist",
 
+    "first_name": "First Name",
+    "last_name": "Last Name",
+    "height": "Height",
+    "date_of_birth": "Date Of Birth",
+    "phone_number": "Phone Number",
+    "job": "Job",
+    "model": "Model",
+
     "face_md_weight": "Resemblance",
     "skin_md_weight": "Skin Tone",
     "nose_1": "Nose Width",

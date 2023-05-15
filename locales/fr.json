@@ -14,6 +14,14 @@
     "d_wrong_password": "Mot de passe incorrect",
     "d_user_not_exist": "L'utilisateur n'existe pas",
 
+    "first_name": "Prénom",
+    "last_name": "Nom",
+    "height": "Taille",
+    "date_of_birth": "Date de naissance",
+    "phone_number": "Numéro de téléphone",
+    "job": "Métier",
+    "model": "Modèle",
+
     "face_md_weight": "Ressemblance",
     "skin_md_weight": "Teinte de peau",
     "nose_1": "Largeur du nez",
