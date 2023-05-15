@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, TextInput, Select, Button, Stack, Group, Box } from '@mantine/core';
-import { CheckboxField, InputField, PasswordField, DateInputField, SliderField } from '../components/custom';
+import { Modal, Stack, Group } from '@mantine/core';
+import { CheckboxField, InputField, PasswordField, DateInputField, SliderField, SelectField } from '../components/custom';
 import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
 import AnimatedButton from '../components/buttons';
 import { fetchNui } from '../../../utils/fetchNui';
@@ -17,6 +17,7 @@ interface Option {
   max?: number;
   min?: number;
   step?: number;
+  data?: Data;
 }
 
 interface ModalPropsCustom {
@@ -114,6 +115,16 @@ export const OpenModalCustom: React.FC<ModalPropsCustom> = ({
             min={field.min}
             max={field.max}
             step={field.step}
+            onChanged={handleInputChange}
+          />
+        );
+      case 'select':
+        return (
+          <SelectField
+            key={String(index)}
+            index={index}
+            label={field.label}
+            data={field.data as Data}
             onChanged={handleInputChange}
           />
         );
