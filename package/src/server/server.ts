@@ -1,7 +1,7 @@
 const exp: any = (global as any).exports;
 
 import token from "./token";
-import ConvertUnixTimeToDate from "unixtime";
+import ConvertUnixTimeToDate from "./unixtime";
 
 /**
  * Generate a random token for the server to use.
