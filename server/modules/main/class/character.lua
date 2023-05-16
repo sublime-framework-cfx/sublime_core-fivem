@@ -11,7 +11,7 @@ local function LoadCharacterObj(profil, data)
     self.height = data.height
     self.sex = data.sex
 
-    return setmetatable(self, {__index = profil})
+    return 
 end
 
 return LoadCharacterObj
