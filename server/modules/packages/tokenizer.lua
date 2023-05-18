@@ -1,3 +1,5 @@
+local export <const> = exports[sl.name]
+
 ---@return string uuid (randomly generated when resource start)
-local token <const> = exports.sublime_core:token()
+local token <const> = export:getToken()
 return token
