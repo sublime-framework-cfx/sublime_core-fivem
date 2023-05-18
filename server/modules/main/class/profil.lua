@@ -248,6 +248,27 @@ end
 sl.createProfileObj = CreateProfileObj
 sl.getProfileFromId = GetProfile
 
+---@param spawned? boolean
+---@return table
+function sl:getPlayers(spawned)
+    if type(spawned) == 'boolean' then
+        local listed = {}
+        for _, profil in pairs(self.profiles) do
+            if spawned then
+                if profil.char then
+                    listed[#listed+1] = profil
+                end
+            else
+                if not profil.char then
+                    listed[#listed+1] = profil
+                end
+            end
+        end
+        return listed
+    end
+    return self.profiles
+end
+
 function sl.getCharFromId(source) ---@todo
     local profil <const> = GetProfile(source)
     if not profil then return false end
