@@ -26,6 +26,7 @@ files {
     'obj.lua',
     'locales/*',
     'client/modules/**',
+    'shared/modules/**',
     'imports/**/shared.lua',    
     'imports/**/client.lua',
     'web/build/index.html',
