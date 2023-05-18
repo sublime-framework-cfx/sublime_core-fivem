@@ -1,4 +1,3 @@
-local connect <const> = require 'config.server.connect'
 sl.previousId = {}
 
 function sl:playerLoaded(source)
@@ -27,7 +26,7 @@ end
 ---@param setKickReason string
 ---@param deferrals table
 AddEventHandler('playerConnecting', function(name, setKickReason, deferrals) ---@type void
-    local _source = source
+    local _source, connect <const> = source, require 'config.server.connect'
 
     if connect.useWhitelist then
         ---@todo Not implemented yet
