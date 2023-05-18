@@ -1,16 +1,14 @@
-const exp: any = (global as any).exports;
+import { Token, ConvertUnixTimeToDate } from './modules/index';
 
-import token from "./token";
-import ConvertUnixTimeToDate from "./unixtime";
+const exp: any = (global as any).exports;
 
 /**
  * Generate a random token for the server to use.
  * @returns {string} token 
 */
-exp('token', () => {
-    return token;
+exp('getToken', () => {
+    return Token;
 });
-
 
 /**
  * Convert a unix time to a date.
