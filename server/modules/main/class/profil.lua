@@ -241,12 +241,12 @@ local function CreateProfileObj(obj, source, username, password, external)
     return false, err
 end
 
-local function GetProfile(self, source)
-    return (source == true and self.profiles) or (self.profiles[source]) or false
+local function GetProfile(source)
+    return (source == true and sl.profiles) or (sl.profiles[source]) or false
 end
 
-sl:createProfileObj = CreateProfileObj
-sl:getProfileFromId = GetProfile
+sl.createProfileObj = CreateProfileObj
+sl.getProfileFromId = GetProfile
 
 function sl.getCharFromId(source) ---@todo
     local profil <const> = GetProfile(source)
