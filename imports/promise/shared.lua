@@ -28,7 +28,7 @@ end
 
 return {
     async = Async, -- credit: linden @overextended
-    new = PromiseNew -- credit: SUP2Ak, for love javascript x)
+    new = PromiseNew -- credit: SUP2Ak, for people love javascript x)
 }
 
 ---@exemple sl.promise.async (you need to use `CreateThread` function and sl.await method)
