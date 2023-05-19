@@ -1,7 +1,7 @@
 local sl_core <const> = 'sublime_core'
 local LoadResourceFile <const>, IsDuplicityVersion <const> = LoadResourceFile, IsDuplicityVersion
 local service <const> = (IsDuplicityVersion() and 'server') or 'client'
-local GetGameName <const>, joaat <const> = GetGameName, joaat
+local GetGameName <const>, joaat <const>, await <const> = GetGameName, joaat, Citizen.Await
 local GetCurrentResourceName <const> = GetCurrentResourceName
 
 local function load_module(index, service)
@@ -29,12 +29,12 @@ local function FormatEvent(self, name, from)
 end
 
 sl = setmetatable({
-    service = service, 
+    service = service,
     name = GetCurrentResourceName(),
     game = GetGameName(),
     env = GetCurrentResourceName(),
     hashEvent = FormatEvent,
-    await = Citizen.Await,
+    await = await,
     lang = GetConvar('sl:locale', 'fr')
 }, {
     __newindex = function(self, name, func)
