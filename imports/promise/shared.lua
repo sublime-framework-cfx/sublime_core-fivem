@@ -27,8 +27,8 @@ local function PromiseNew(func)
 end
 
 return {
-    async = Async,
-    new = PromiseNew
+    async = Async, -- credit: linden @overextended
+    new = PromiseNew -- credit: SUP2Ak, for love javascript x)
 }
 
 ---@exemple sl.promise.async (you need to use `CreateThread` function and sl.await method)
@@ -52,8 +52,8 @@ end)
 --[[ 
 sl.promise.new(function(resolve, reject)
     local v = math.random(1, 100)
-    if v > 50 then reject(v) end
-    resolve(v)
+    if v > 50 then reject(':(') end
+    resolve(':)')
 end):Then(function(result)
     print('then', result)
 end):Catch(function(result)
