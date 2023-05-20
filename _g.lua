@@ -56,6 +56,8 @@ if sl.service == 'server' then
     require('imports.mysql.server').init()
 end
 
+callback = require(('imports.callback.%s'):format(sl.service))
+
 -- credit: ox_lib <https://github.com/overextended/ox_lib/blob/master/init.lua>
 local intervals = {}
 ---@param callback function | number
