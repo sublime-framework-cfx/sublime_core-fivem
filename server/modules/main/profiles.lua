@@ -1,9 +1,9 @@
-local callback <const>, change <const> = require 'imports.callback.server', require('config.server.permission').profiles
+local change <const> = require('config.server.permission').profiles
 
 sl:onNet('profiles:edit', function(source, key, value)
-    local profile = sl:getProfileFromId(source)
+    local profile <const> = sl.getProfileFromId(source)
     if not profile then return end
-    if (change[key] == true) or (change[key][profile.permission]) then
+    if profile:hasPermission(change[key]) then
         if key == 'logo' then
             profile:setMetadata(key, value)
         else
@@ -44,7 +44,7 @@ end)
 
 sl:onNet('login:submit', function(source, key, value)
     --local getIdentifierFromSource <const> = require('server.modules.getIdentifier').getIdentifierFromSource
-    local player = sl.previousId[sl:getIdentifierFromId(source, 'token')] or sl:getIdentifierFromId(source, 'token')
+    local player = sl.previousId[sl.getIdentifierFromId(source, 'token')] or sl:getIdentifierFromId(source, 'token')
     player = MySQL.single.await('SELECT * FROM profils WHERE previousId = ?', { player })
     if not player.id then 
         warn("???")
@@ -64,29 +64,37 @@ sl:onNet('login:submit', function(source, key, value)
 end, 60000)
 
 callback.register('callback:profiles:can', function(source, data)
-    local player <const> = sl:getProfileFromId(source)
+    local player <const> = sl.getProfileFromId(source)
     if not player then return false end
     if data == 'newChar' then
-        local listModel <const>, models = require 'shared.modules.models', {}
-        for k, v in pairs(listModel) do
+        local listModel <const>, models = require 'config.shared.models', {}
+        local keys = {}
+        for k,v in  pairs(listModel) do
             if player:hasPermission(v.perm) then
-                models[#models + 1] = {
-                    label = v.label,
-                    value = v.name or k,
-                }
+                keys[#keys + 1] = k
             end
+        end
+        table.sort(keys, function(a, b)
+            return a > b
+        end)
+        for i = 1, #keys do
+            local k = keys[i]
+            models[#models + 1] = {
+                label = listModel[k].label,
+                value = listModel[k].name or k,
+            }
         end
         return #models > 0 and models or false
     end
 end)
 
 callback.register('callback:getProfilesNui', function(source, data)
-    local player <const> = sl:getProfileFromId(source)
+    local player <const> = sl.getProfileFromId(source)
     if not player then return false end
     return player:loadNuiProfiles()
 end)
 
 callback.register('callback:login', function(source, data)
-    local profile <const> = sl:createPlayerObj(source, data.username, data.password)
+    local profile <const> = sl:createProfileObj(source, data.username, data.password)
     return profile?.username and profile.username or false
 end)
