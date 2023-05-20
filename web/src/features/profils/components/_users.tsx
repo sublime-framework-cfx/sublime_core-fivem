@@ -45,10 +45,20 @@ export const User: React.FC<UserProps> = ({ username, permission, logo }) => {
   const handlerDisconnected = async () => {
     await new Promise((resolve) => setTimeout(resolve, 200));
     setOpened(false);
-    fetchNui('sl:profiles:onSubmit', { submit: 'disconnect', value: true }, debugData([{
-      action: 'sl:profiles:opened',
-      data: {username:'uknown', permission: 'none', submit: 'disconnect'},
-    }]));
+    fetchNui(
+      'sl:profiles:onSubmit',
+      { submit: 'disconnect', value: true },
+      debugData([
+        {
+          action: 'sl:profiles:opened',
+          data: {
+            username: 'uknown',
+            permission: 'none',
+            submit: 'disconnect',
+          },
+        },
+      ])
+    );
   };
 
   return (
@@ -69,52 +79,64 @@ export const User: React.FC<UserProps> = ({ username, permission, logo }) => {
             }`,
           }}
         >
-          <UnstyledButton
-            sx={{
-              display: 'block',
-              width: '100%',
-              padding: theme.spacing.xs,
-              borderRadius: theme.radius.sm,
-              color:
-                theme.colorScheme === 'dark'
-                  ? theme.colors.dark[0]
-                  : theme.black,
-
-              '&:hover': {
-                backgroundColor:
+          <Menu.Target>
+            <UnstyledButton
+              sx={{
+                display: 'block',
+                width: '100%',
+                padding: theme.spacing.xs,
+                borderRadius: theme.radius.sm,
+                color:
                   theme.colorScheme === 'dark'
-                    ? theme.colors.teal[6]
-                    : theme.colors.gray[0],
-                opacity: 0.75,
-              },
-            }}
-            onClick={handleToggle}
-          >
-            <Group>
-              <Avatar src={newLogo} radius='xl' />
-              <Box sx={{ flex: 1 }}>
-                <Text size='sm' weight={500} color='white'>
-                  {username}
-                </Text>
-                <Text color='dimmed' size='xs'>
-                  {firstToUpper(permission)}
-                </Text>
-              </Box>
-              {!opened ? (
-                <FontAwesomeIcon icon={faChevronLeft} />
-              ) : (
-                <Menu.Target>
+                    ? theme.colors.dark[0]
+                    : theme.black,
+
+                '&:hover': {
+                  backgroundColor:
+                    theme.colorScheme === 'dark'
+                      ? theme.colors.teal[6]
+                      : theme.colors.gray[0],
+                  opacity: 0.75,
+                },
+              }}
+              onClick={handleToggle}
+            >
+              <Group>
+                <Avatar src={newLogo} radius='xl' />
+                <Box sx={{ flex: 1 }}>
+                  <Text size='sm' weight={500} color='white'>
+                    {username}
+                  </Text>
+                  <Text color='dimmed' size='xs'>
+                    {firstToUpper(permission)}
+                  </Text>
+                </Box>
+                {!opened ? (
+                  <FontAwesomeIcon icon={faChevronLeft} />
+                ) : (
                   <FontAwesomeIcon icon={faChevronUp} />
-                </Menu.Target>
-              )}
-            </Group>
-          </UnstyledButton>
+                )}
+              </Group>
+            </UnstyledButton>
+          </Menu.Target>
         </Box>
         <Menu.Dropdown>
-          <Menu.Item icon={<FontAwesomeIcon icon={faUserPen} />} disabled={permission !== 'owner'} onClick={() => handleSet('username', true)}> {/* NEED CHECKER PERMISSION NUI PROVIDER !!!! */}
+          <Menu.Item
+            icon={<FontAwesomeIcon icon={faUserPen} />}
+            disabled={permission !== 'owner'}
+            onClick={() => handleSet('username', true)}
+          >
+            {' '}
+            {/* NEED CHECKER PERMISSION NUI PROVIDER !!!! */}
             Changer son nom
           </Menu.Item>
-          <Menu.Item icon={<FontAwesomeIcon icon={faUserPen} />} disabled={permission !== 'owner'} onClick={() => handleSet('password', true)}> {/* NEED CHECKER PERMISSION NUI PROVIDER !!!! */}
+          <Menu.Item
+            icon={<FontAwesomeIcon icon={faUserPen} />}
+            disabled={permission !== 'owner'}
+            onClick={() => handleSet('password', true)}
+          >
+            {' '}
+            {/* NEED CHECKER PERMISSION NUI PROVIDER !!!! */}
             Changer son mot de passe
           </Menu.Item>
           <Menu.Item
@@ -125,7 +147,9 @@ export const User: React.FC<UserProps> = ({ username, permission, logo }) => {
             Changer avatar
           </Menu.Item>
           <Menu.Item
-            icon={<FontAwesomeIcon icon={faPersonWalkingDashedLineArrowRight} />}
+            icon={
+              <FontAwesomeIcon icon={faPersonWalkingDashedLineArrowRight} />
+            }
             color='red'
             onClick={() => handlerDisconnected()}
           >
@@ -147,7 +171,13 @@ export const User: React.FC<UserProps> = ({ username, permission, logo }) => {
             }
             placeholder="Copier ici l'URL de l'image..."
           />
-          <Button onClick={() => {Set(false); handleSet('logo', newLogo)}} color='teal'>
+          <Button
+            onClick={() => {
+              Set(false);
+              handleSet('logo', newLogo);
+            }}
+            color='teal'
+          >
             Valider
           </Button>
         </Group>
