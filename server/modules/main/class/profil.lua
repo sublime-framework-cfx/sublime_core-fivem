@@ -95,6 +95,7 @@ local function LoadNuiProfiles(self)
             sex = char.sex,
             dob = char.dateofbirth,
             model = char.model,
+            skin = json.decode(char.skin) or {},
             -- country = char.country,
         }
     end
