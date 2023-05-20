@@ -247,7 +247,7 @@ export const MainProfilesMenu: React.FC = () => {
         }
       >
         {/*Main compoenent to add char 3d view + stats rect*/}
-        <Text color='black'>Main View 3D char + Stats of Char + Cam button</Text>
+        <Text color='white'>..... wip</Text>
       </AppShell>
     </Container>
   );
