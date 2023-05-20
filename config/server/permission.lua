@@ -11,8 +11,8 @@ return { -- ps: false no one can change / true everyone can change / table only 
 
     profiles = {
         username = {['owner'] = true, ['admin'] = true}, -- change username
-        password = true, -- change password 
-        logo = true,
+        password = false, -- change password 
+        logo = false,
     },
 
     resource = {
