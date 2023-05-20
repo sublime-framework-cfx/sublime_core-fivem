@@ -34,7 +34,7 @@ AddEventHandler('playerConnecting', function(name, setKickReason, deferrals) ---
     end
 
     if connect.useDeferral then
-        local d <const> = require 'server.modules.deferrals'
+        local d <const> = require 'server.modules.deferrals.main'
         d(_source, name, setKickReason, deferrals)
     end
 end)
@@ -52,9 +52,9 @@ AddEventHandler('onResourceStart', function(resourceName) ---@type void
 end)
 
 AddEventHandler('onResourceStop', function(resourceName) ---@type void
-    if resourceName ~= GetCurrentResourceName() then return end
-    local profiles = next(sl.profiles) and sl.profiles
-    if profiles then
+    if resourceName ~= sl.name then return end
+    local profiles <const> = sl:getPlayers()
+    if next(profiles) then
         for _,v in pairs(profiles) do
             v:save()
         end
