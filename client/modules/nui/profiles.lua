@@ -1,4 +1,4 @@
-local callback <const>, onCharacter = require 'imports.callback.client'
+local preview <const>, onCharacter = require 'client.modules.main.firstspawn'
 
 sl:registerReactCallback('sl:profiles:onSelect', function(data, cb)
     local selected <const> = callback.sync('callback:selectProfilesNui', data)
@@ -59,10 +59,29 @@ sl:registerReactCallback('sl:profiles:onSubmit', function(data, cb)
                     { type = 'input', label = translate('first_name'), placeholder = 'John', required = true },
                     { type = 'input', label = translate('last_name'), placeholder = 'Doe', required = true },
                     { type = 'slider', label = translate('height'), min = 120, max = 220, default = 180, required = true },
-                    { type = 'select', data = models, label = translate('model'), required = true },
+                    { type = 'select', data = models, label = translate('model'), required = true , callback = true},
                     { type = 'date-input', label = translate('date_of_birth'), required = true }
-                }
-            })
+                },
+            }, function(index, value)
+                print(index, value)
+                if index == 4 then
+                    local defaultCoords <const> = vec4(498.45, 5605.07, 797.90, 178.37)
+                    local ped = preview.get('preview')
+                    preview.delete('preview')
+            
+                    local offset = GetOffsetFromEntityInWorldCoords(cache.ped, 0.0, 4.7, 0.2)
+                    local cam = CreateCameraWithParams('DEFAULT_SCRIPTED_CAMERA', offset.x, offset.y, offset.z, 0.0, 0.0, 0.0, 30.0, false, 0)
+                    SetCamActive(cam, true)
+                    RenderScriptCams(true, true, 0.0, true, true)
+                    preview.spawn('preview', joaat(value), defaultCoords, 'anim@mp_player_intcelebrationmale@wave', 'wave')
+                    Wait(300)
+                    ped = preview.get('preview')
+                    FreezeEntityPosition(ped, true)
+                    --TaskGoToCoordAnyMeans(ped, defaultCoords.x, defaultCoords.y, defaultCoords.z, 1.0, 0, 0, 786603, 0xbf800000)
+                    Wait(500)
+                    --TaskTurnPedToFaceCoord(ped, defaultCoords.x, defaultCoords.y, defaultCoords.z, -1)
+                end
+            end)
             if not input then return end
             local modelSelected <const> = require('config.shared.models')[input[4]]
             onCharacter = {
@@ -79,7 +98,7 @@ sl:registerReactCallback('sl:profiles:onSubmit', function(data, cb)
     end
 end)
 
-function sl:openProfiles()
+function sl:openProfile()
     local profiles <const> = callback.sync('callback:getProfilesNui')
     if not profiles then return end
     self:sendReactMessage(true, {
