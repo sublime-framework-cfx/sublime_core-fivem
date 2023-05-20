@@ -1,5 +1,4 @@
-local callback <const>, p = require 'imports.callback.client'
-local GetResourceKvpString <const>, SetResourceKvp <const> = GetResourceKvpString, SetResourceKvp
+local GetResourceKvpString <const>, SetResourceKvp <const>, p = GetResourceKvpString, SetResourceKvp
 
 sl:registerReactCallback('sl:login:submit', function(data, cb)
     cb(1)
@@ -11,6 +10,7 @@ sl:registerReactCallback('sl:login:submit', function(data, cb)
         SetResourceKvp('sl:username', data.username)
         SetResourceKvp('sl:password', data.password)
     end
+
     local profile <const> = callback.sync('callback:login', false, data)
     if not profile or type(profile) ~= 'string' then
         sl:sendReactMessage(true, {
@@ -36,5 +36,5 @@ function sl:openLogin()
         focus = true
     })
     p = promise.new()
-    return self:await(p)
+    return self.await(p)
 end
