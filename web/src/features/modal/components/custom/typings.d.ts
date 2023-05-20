@@ -9,6 +9,7 @@ interface Data {
   name?: string;
   value?: string;
   step?: number;
+  callback?: boolean;
 }
 
 interface SelectProps {

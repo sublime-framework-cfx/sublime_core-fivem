@@ -18,6 +18,7 @@ interface Option {
   min?: number;
   step?: number;
   data?: Data;
+  callback?: boolean;
 }
 
 interface ModalPropsCustom {
@@ -48,6 +49,9 @@ export const OpenModalCustom: React.FC<ModalPropsCustom> = ({
     setFormData((prevData) => {
       const updatedData = { ...prevData };
       updatedData[index] = value;
+      if (options[index]?.callback) {
+        fetchNui('sl:modal:callback', {index, value});
+      };
       return updatedData;
     });
   };
