@@ -10,5 +10,6 @@ require 'client.modules.nui.notify'
 
 
 ---@load modules.?
-require 'client.modules.cache'
-require 'client.modules.security'
+require 'client.modules.main.cache'
+require 'client.modules.main.main'
+require 'client.modules.main.security'
