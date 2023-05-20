@@ -30,6 +30,8 @@
 ---@field stats table
 ---@field isDead boolean
 
+local power <const> = require 'config.server.permission'.power
+
 sl.profiles = {}
 
 ---@return boolean|void
@@ -48,9 +50,9 @@ local function InitProfileFromDb(self, from)
     self.username = row.user
     self.password = row.password
     self.permission = row.permission
-    self.stats = json.decode(row.stats)
+    self.stats = json.decode(row.stats) or {}
     self.createdBy = json.decode(row.createdBy)
-    self.metadata = json.decode(row.metadata)
+    self.metadata = json.decode(row.metadata) or {}
 
     return true
 end
@@ -59,7 +61,7 @@ end
 ---@return boolean
 local function Disconnected(self)
     MySQL.update.await('UPDATE profils SET previousId = ? WHERE id = ?', {nil, self.id})
-    sl.profils[self.source] = nil
+    sl.profiles[self.source] = nil
     return true
 end
 
@@ -171,7 +173,7 @@ end
 ---@return boolean
 local function HasPermission(self, args)
     if type(args) == 'string' and self.permission == args then return true
-    elseif type(args) == 'number' and self.permission >= args then return true
+    elseif type(args) == 'number' and power[self.permission] and power[self.permission] >= args then return true
     elseif type(args) == 'boolean' then return not args
     elseif type(args) == 'table' then
         if table.type(args) == 'array' then
@@ -180,7 +182,7 @@ local function HasPermission(self, args)
                     return true
                 end
             end
-        elseif table.type == 'hash' then
+        else
             if args[self.permission] then
                 return true
             end
@@ -208,7 +210,7 @@ local function CreateProfileObj(obj, source, username, password, external)
     local self = {}
 
     self.source = source
-    self.identifiers = obj:getIdentifiersFromId(source)
+    self.identifiers = obj.getIdentifiersFromId(source)
 
     password = password:gsub('%s+', '')
 
@@ -231,7 +233,7 @@ local function CreateProfileObj(obj, source, username, password, external)
         self.hasPermission = HasPermission
         --self.char = false
         --self.spawn = SpawnCharacter
-        obj.profils[source] = self
+        obj.profiles[source] = self
         obj.previousId[self.identifiers.token] = nil
         self.notify = function(select, data)
             obj:notify(self.source, select, data)
