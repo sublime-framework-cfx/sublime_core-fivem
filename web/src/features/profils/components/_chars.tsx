@@ -12,6 +12,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { firstToUpper } from '../../../function';
+import { fetchNui } from '../../../utils/fetchNui';
 
 export interface CharListProps {
   firstname: string;
@@ -27,6 +28,11 @@ interface InCharListProps {
 
 export const CharsList: React.FC<InCharListProps> = ({ chars, index }) => {
   const theme = useMantineTheme();
+  const handleCallback = async (index: number) => {
+    console.log('Callback _char : ' + index);
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    fetchNui('sl:profile:callback:charSelect', index);
+  };
   return (
     <Box
       sx={{
@@ -35,6 +41,7 @@ export const CharsList: React.FC<InCharListProps> = ({ chars, index }) => {
       }}
     >
       <UnstyledButton
+        onClick={() => handleCallback(index)}
         sx={{
           display: 'block',
           width: '100%',
