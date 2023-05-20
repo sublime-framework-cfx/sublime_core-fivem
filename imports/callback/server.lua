@@ -38,10 +38,10 @@ local function CallbackSynchrone(name, source, ...)
     return TriggerClientCallback(name, source, nil, ...)
 end
 
-local function CallackResponse(success, result, ...)
+local function CallbackResponse(success, result, ...)
     if not success then
         if result then
-            return error(("ERROR callback : %s"):format(result))
+            return warn(('^1SCRIPT ERROR: %s^0\n'):format(result))
         end
         return false
     end
@@ -50,7 +50,7 @@ end
 
 local function RegisterCallback(name, cb, ...)
     RegisterNetEvent(nameEvent:format(name), function(resource, k, ...)
-        TriggerClientEvent(nameEvent:format(resource), source, k, CallackResponse(pcall(cb, source, ...)))
+        TriggerClientEvent(nameEvent:format(resource), source, k, CallbackResponse(pcall(cb, source, ...)))
     end)
 end
 

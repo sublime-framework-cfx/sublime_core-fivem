@@ -54,10 +54,10 @@ local function CallbackSync(name, timer, ...)
     return TriggerServerCallback(name, timer, nil, ...)
 end
 
-local function CallackResponse(success, result, ...)
+local function CallbackResponse(success, result, ...)
     if not success then
         if result then
-            return error(("ERROR callback : %s"):format(result))
+            return warn(('^1SCRIPT ERROR: %s^0\n%s'):format(result ))
         end
         return false
     end
@@ -66,7 +66,7 @@ end
 
 local function RegisterCallback(name, cb)
     RegisterNetEvent(nameEvent:format(name), function(resource, k, ...)
-        TriggerServerEvent(nameEvent:format(resource), k, CallackResponse(pcall(cb, ...)))
+        TriggerServerEvent(nameEvent:format(resource), k, CallbackResponse(pcall(cb, ...)))
     end)
 end
 
