@@ -25,7 +25,7 @@ sl:onNet('profiles:edit', function(source, key, value)
 end)
 
 sl:onNet('profiles:onSubmit', function(source, key, data)
-    local player <const> = sl:getProfileFromId(source)
+    local player <const> = sl.getProfileFromId(source)
     if key == 'disconnect' then
         player:kick("Merci d'avoir joué sur notre serveur !") ---@todo translate it
     elseif key == 'newCharValid' then
@@ -88,10 +88,10 @@ callback.register('callback:profiles:can', function(source, data)
     end
 end)
 
-callback.register('callback:getProfilesNui', function(source, data)
+callback.register('callback:getProfilesNui', function(source, data, cache)
     local player <const> = sl.getProfileFromId(source)
     if not player then return false end
-    return player:loadNuiProfiles()
+    return not cache and player:loadNuiProfiles() or player.chars
 end)
 
 callback.register('callback:login', function(source, data)
