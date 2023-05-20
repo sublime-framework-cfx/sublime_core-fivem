@@ -1,4 +1,5 @@
-local preview <const>, onCharacter = require 'client.modules.main.firstspawn'
+local preview <const>, Charlist, onCharacter = require 'client.modules.main.firstspawn', {}
+local lastIndex = 0
 
 sl:registerReactCallback('sl:profiles:onSelect', function(data, cb)
     local selected <const> = callback.sync('callback:selectProfilesNui', data)
@@ -94,12 +95,15 @@ sl:registerReactCallback('sl:profiles:onSubmit', function(data, cb)
             }
             sl:emitNet('profiles:onSubmit', 'newCharValid', onCharacter)
             onCharacter = nil
+            local ped = preview.get('preview')
+            if ped then preview.delete('preview') end
         end
     end
 end)
 
 function sl:openProfile()
     local profiles <const> = callback.sync('callback:getProfilesNui')
+    Charlist = profiles.chars
     if not profiles then return end
     self:sendReactMessage(true, {
         action = 'sl:profiles:opened',
@@ -111,6 +115,11 @@ function sl:openProfile()
 end
 
 sl:onNet('refresh:profile', function(key, value)
+    print(key, value)
+    if key == 'characters' then
+        Charlist = {}
+        Charlist = value
+    end
     sl:sendReactMessage(true, {
         action = 'sl:update:profile',
         data = {
@@ -121,4 +130,32 @@ sl:onNet('refresh:profile', function(key, value)
         focus = true,
         keepInput = true
     })
+end)
+
+sl:registerReactCallback('sl:profile:callback:charSelect', function(data, cb)
+    cb(1)
+    local index = data + 1
+    if index == lastIndex then return end
+    lastIndex = index
+    local pedInfo = Charlist[index]
+    local defaultCoords <const> = vec4(498.45, 5605.07, 797.90, 178.37)
+    local ped = preview.get('preview')
+    if ped then preview.delete('preview') end
+
+    while not HasModelLoaded(joaat(pedInfo.model)) do
+        RequestModel(joaat(pedInfo.model))
+        Wait(10)
+    end
+
+    local offset = GetOffsetFromEntityInWorldCoords(cache.ped, 0.0, 4.7, 0.2)
+    local cam = CreateCameraWithParams('DEFAULT_SCRIPTED_CAMERA', offset.x, offset.y, offset.z, 0.0, 0.0, 0.0, 30.0, false, 0)
+    SetCamActive(cam, true)
+    RenderScriptCams(true, true, 0.0, true, true)
+    preview.spawn('preview', joaat(pedInfo.model), defaultCoords, 'anim@mp_player_intcelebrationmale@wave', 'wave')
+    Wait(300)
+    ped = preview.get('preview')
+    FreezeEntityPosition(ped, true)
+    --TaskGoToCoordAnyMeans(ped, defaultCoords.x, defaultCoords.y, defaultCoords.z, 1.0, 0, 0, 786603, 0xbf800000)
+    Wait(500)
+    --TaskTurnPedToFaceCoord(ped, defaultCoords.x, defaultCoords.y, defaultCoords.z, -1)
 end)
