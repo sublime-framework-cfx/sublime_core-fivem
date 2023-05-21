@@ -10,7 +10,7 @@ import {
   Text,
 } from '@mantine/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { faChevronRight , faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { firstToUpper } from '../../../function';
 import { fetchNui } from '../../../utils/fetchNui';
 
@@ -26,13 +26,19 @@ interface InCharListProps {
   index: number;
 }
 
-export const CharsList: React.FC<InCharListProps> = ({ chars, index }) => {
+export const CharsList: React.FC<InCharListProps & { activeIndex: number, setActiveIndex: (index: number) => void }> = ({ chars, index, activeIndex, setActiveIndex }) => {
   const theme = useMantineTheme();
   const handleCallback = async (index: number) => {
-    console.log('Callback _char : ' + index);
     await new Promise((resolve) => setTimeout(resolve, 200));
+    setActiveIndex(index);
     fetchNui('sl:profile:callback:charSelect', index);
   };
+
+  const handleToggle = () => {
+    if (activeIndex === index) return;
+    handleCallback(index);
+  };
+
   return (
     <Box
       sx={{
@@ -41,7 +47,7 @@ export const CharsList: React.FC<InCharListProps> = ({ chars, index }) => {
       }}
     >
       <UnstyledButton
-        onClick={() => handleCallback(index)}
+        onClick={handleToggle}
         sx={{
           display: 'block',
           width: '100%',
@@ -70,7 +76,11 @@ export const CharsList: React.FC<InCharListProps> = ({ chars, index }) => {
               {chars.sex} "{chars.dob}"
             </Text>
           </Box>
-          <FontAwesomeIcon icon={faChevronRight} style={{ right: 0 }} />
+          <FontAwesomeIcon
+            icon={activeIndex === index ? faChevronRight : faChevronLeft}
+            beatFade={activeIndex === index}
+            style={{ right: 0 }}
+          />
         </Group>
       </UnstyledButton>
     </Box>

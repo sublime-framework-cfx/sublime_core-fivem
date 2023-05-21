@@ -134,6 +134,7 @@ export const MainProfilesMenu: React.FC = () => {
   const [data, setData] = useState<UserProps>({ username: '', permission: '' });
   const [chars, setChars] = useState<CharListProps[]>([]);
   const [opened, setOpened] = useState(false);
+  const [activeIndexChar, setActiveIndexChar] = useState<number>(-1);
 
   useNuiEvent<LoadProfilsProps>('sl:profiles:opened', (Data) => {
     if (Data.submit === 'disconnect' && opened) return setOpened(false); // This is to close the menu when dev Env
@@ -193,7 +194,7 @@ export const MainProfilesMenu: React.FC = () => {
                 }}
               >
                 {chars.map((char, index) => (
-                  <CharsList chars={char} index={index} />
+                  <CharsList chars={char} index={index} activeIndex={activeIndexChar} setActiveIndex={setActiveIndexChar} />
                 ))}
                 <UnstyledButton
                   sx={{
