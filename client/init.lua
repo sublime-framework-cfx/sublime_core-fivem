@@ -14,6 +14,6 @@ require 'client.modules.main.cache'
 require 'client.modules.main.firstspawn'
 
 ---
-require 'client.modules.main.main'
+--require 'client.modules.main.main'
 require 'client.modules.main.security'
-require 'client.modules.loadscreen.main'
+--require 'client.modules.loadscreen.main'

@@ -15,10 +15,6 @@ local RequestCollisionAtCoord <const> = RequestCollisionAtCoord
 local GetGameTimer <const> = GetGameTimer
 local HasCollisionLoadedAroundEntity <const> = HasCollisionLoadedAroundEntity
 local IsScreenFadedIn <const> = IsScreenFadedIn
-local CreateCameraWithParams <const> = CreateCameraWithParams
-local GetOffsetFromEntityInWorldCoords <const> = GetOffsetFromEntityInWorldCoords
-local SetCamActive <const> = SetCamActive
-local RenderScriptCams <const> = RenderScriptCams
 
 -- used for first spawn
 local SetPlayerModel <const> = SetPlayerModel
@@ -44,11 +40,19 @@ local DoScreenFadeOut <const> = DoScreenFadeOut
 local ShutdownLoadingScreen <const> = ShutdownLoadingScreen
 local DoScreenFadeIn <const> = DoScreenFadeIn
 local NetworkEndTutorialSession <const> = NetworkEndTutorialSession
+local DestroyCam <const> = DestroyCam
+local CreateCameraWithParams <const> = CreateCameraWithParams
+local GetOffsetFromEntityInWorldCoords <const> = GetOffsetFromEntityInWorldCoords
+local SetCamActive <const> = SetCamActive
+local RenderScriptCams <const> = RenderScriptCams
+local ClearOverrideWeather <const> = ClearOverrideWeather
+local NetworkOverrideClockTime <const> = NetworkOverrideClockTime
+local SetWeatherTypeNow <const> = SetWeatherTypeNow
+local NetworkClearClockTimeOverride <const> = NetworkClearClockTimeOverride
 -- local SetNuiFocus <const> = SetNuiFocus
 
 local p <const> = require 'imports.promise.shared'
-local default <const> = require 'config.client.firstspawn'
-local hidePlayer, playerLoaded = false, false
+local hidePlayer, playerLoaded, charSpawned = false, false, false
 
 p.new(function(resolve)
     while not cache.playerid or not NetworkIsPlayerActive(cache.playerid) do
@@ -66,13 +70,14 @@ end)
 
 function cache.onUpdate.ped(value)
     if not hidePlayer then return end
-    FreezeEntityPosition(value, true)
-    SetEntityVisible(value, false, false)
+    --FreezeEntityPosition(value, true)
+    --SetEntityVisible(value, false, false)
+    --SetEntityCoordsNoOffset(value, default.coords.x, default.coords.y, default.coords.z, true, true, false)
 end
 
 local function PlayerPeview(toggle)
     if toggle then
-        hidePlayer = true -- moving soon by player is spawned statebag server-side
+        hidePlayer = true
         CreateThread(function()
             while not playerLoaded do
                 DisableAllControlActions(0)
@@ -92,6 +97,18 @@ local function PlayerPeview(toggle)
             end
         end)
 
+        CreateThread(function()
+            while not charSpawned do
+                ClearOverrideWeather()
+                ClearWeatherTypePersist()
+                SetWeatherTypePersist('EXTRASUNNY')
+                SetWeatherTypeNow('EXTRASUNNY')
+                SetWeatherTypeNowPersist('EXTRASUNNY')
+                NetworkOverrideClockTime(10, 0, 0)
+                Wait(100000)
+            end
+        end)
+
         FreezeEntityPosition(cache.ped, true)
         SetEntityVisible(cache.ped, false, false)
     else
@@ -102,27 +119,21 @@ local function PlayerPeview(toggle)
 end
 
 sl:onNet('playerLoaded', function()
-    
-    SetPlayerControl(cache.playerid, false, 0)
-    SetPlayerInvincible(cache.playerid, true)
-
-    Wait(500)
-
-    PlayerPeview(true)
+    local default <const> = require 'config.client.firstspawn'
 
     if not playerLoaded then
-        local playerModel <const> = default.model
-        RequestModel(playerModel)
-        while not HasModelLoaded(playerModel) do
+        RequestModel(default.model)
+        while not HasModelLoaded(default.model) do
             Wait(100)
         end
-        SetPlayerModel(cache.playerid, playerModel)
+        SetPlayerModel(cache.playerid, default.model)
         SetPedDefaultComponentVariation(cache.ped)
         Wait(500)
         playerLoaded = true
     end
 
     Wait(500)
+    PlayerPeview(true)
 
     local success <const> = sl.await(p.async(function(resolve)
         SendLoadingScreenMessage(json.encode({loginOpen = true}))
@@ -143,11 +154,9 @@ sl:onNet('playerLoaded', function()
             ShutdownLoadingScreen()
         end
 
-        SetEntityCoordsNoOffset(cache.ped, default.coords.x, default.coords.y, default.coords.z, true, true, false)
-        StartPlayerTeleport(cache.playerid, default.coords.x, default.coords.y, default.coords.z, default.coords.w, false, true, false)
         NetworkStartSoloTutorialSession()
         SetPlayerControl(cache.playerid, true, 0) -- maybe false ?
-        SetPlayerInvincible(cache.playerid, false)
+        SetPlayerInvincible(cache.playerid, true)
         DoScreenFadeOut(200)
         Wait(1000)
         DoScreenFadeIn(500)
@@ -156,13 +165,26 @@ sl:onNet('playerLoaded', function()
         sl:resetFocus() -- prevent: focus from being stuck or not visible
         Wait(500)
 
+        SetEntityCoordsNoOffset(cache.ped, default.coords.x, default.coords.y, default.coords.z, true, true, false)
+        StartPlayerTeleport(cache.playerid, default.coords.x, default.coords.y, default.coords.z, default.coords.w, false, true, false)
+
+        local offset = GetOffsetFromEntityInWorldCoords(cache.ped, 0.0, 4.7, 0.2)
+        local cam = CreateCameraWithParams('DEFAULT_SCRIPTED_CAMERA', offset.x, offset.y, offset.z, 0.0, 0.0, 0.0, 30.0, false, 0)
+        SetCamActive(cam, true)
+        RenderScriptCams(true, true, 0.0, true, true)
+
         local spawn <const> = sl:openProfile()
 
         if spawn then
             ---@todo: spawn player
             -- event server-side: playerSpawned
+            RenderScriptCams(false, false, 0, true, true)
+            DestroyCam(cam, false)
             PlayerPeview(false)
+            NetworkClearClockTimeOverride()
+            ClearOverrideWeather()
             NetworkEndTutorialSession()
+            cam = nil
         else
             ---@todo: kick player / unload
         end
