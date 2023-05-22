@@ -70,7 +70,7 @@ end)
 
 function cache.onUpdate.ped(value)
     if not hidePlayer then return end
-    --FreezeEntityPosition(value, true)
+    FreezeEntityPosition(value, true)
     --SetEntityVisible(value, false, false)
     --SetEntityCoordsNoOffset(value, default.coords.x, default.coords.y, default.coords.z, true, true, false)
 end
@@ -87,7 +87,7 @@ local function PlayerPeview(toggle)
             end
 
             while hidePlayer do
-                DisableAllControlActions(0)
+                --DisableAllControlActions(0)
                 ThefeedHideThisFrame()
                 HideHudAndRadarThisFrame()
 
@@ -172,8 +172,11 @@ sl:onNet('playerLoaded', function()
         local cam = CreateCameraWithParams('DEFAULT_SCRIPTED_CAMERA', offset.x, offset.y, offset.z, 0.0, 0.0, 0.0, 30.0, false, 0)
         SetCamActive(cam, true)
         RenderScriptCams(true, true, 0.0, true, true)
-
-        local spawn <const> = sl:openProfile()
+        Wait(500)
+        --RenderScriptCams(false, false, 0, true, true)
+        --DestroyCam(cam, false)
+        --cam = nil
+        local spawn <const> = sl:openProfile(cam, hidePlayer)
 
         if spawn then
             ---@todo: spawn player
