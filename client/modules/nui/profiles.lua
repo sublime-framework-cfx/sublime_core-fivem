@@ -1,13 +1,163 @@
-local preview <const>, Charlist, onCharacter = require 'client.modules.main.firstspawn', {}
-local lastIndex = 0
+local createPed <const> = require 'imports.npc.client'
+local default <const> = require 'config.client.firstspawn'
+local lastIndex, Charlist, ped, onCharacter = 0, {}
+---------------------------------------------------------
 
-sl:registerReactCallback('sl:profiles:onSelect', function(data, cb)
+local function StartPreview(cam, preview)
+    local mouseX = 0.0
+    local mouseY = 0.0
+    local rotationSpeed = 2.0
+    local rotationAngle = 0.0
+
+    SetPlayerControl(cache.playerid, true, 0)
+    FreezeEntityPosition(cache.ped, true)
+
+    CreateThread(function()
+        local camDistance = 5.0 -- Distance initiale entre la caméra et le personnage
+        while preview do
+            Wait(0)
+            DisableControlAction(0, 24, true) -- Désactiver les attaques
+            ---@todo: ajout de plus de control a desactiver plus tards ...
+            if IsControlPressed(0, 25) then -- 25 (bouton de la souris)
+                mouseX = (2.0 * GetControlNormal(0, 239) - 1.0)
+                if mouseX < -0.1 then
+                    rotationAngle = rotationAngle + (mouseX * rotationSpeed)
+                elseif mouseX > 0.1 then
+                    rotationAngle = rotationAngle + (mouseX * rotationSpeed)
+                end
+    
+                mouseY = (2.0 * GetControlNormal(0, 240) - 1.0)
+    
+                -- Gérer le zoom et le dézoom avec la molette de la souris
+                local scrollValue = 0.0
+                if IsControlJustPressed(0, 15) then -- 243 (molette de la souris vers le haut)
+                    scrollValue += 0.1 -- Valeur de zoom positive
+                elseif IsControlJustPressed(0, 14) then -- 242 (molette de la souris vers le bas)
+                    scrollValue -= 0.1 -- Valeur de zoom négative
+                end
+                camDistance = camDistance + (scrollValue * 1.0) -- Ajuster la distance de la caméra en fonction du zoom
+    
+                camDistance = math.max(1.0, math.min(5.0, camDistance)) -- Limiter la distance de la caméra entre 1.0 et 3.0
+    
+                local camX = default.coords.x + (math.sin(math.rad(rotationAngle)) * camDistance)
+                local camY = default.coords.y + (math.cos(math.rad(rotationAngle)) * camDistance)
+                local camZ = default.coords.z + (mouseY * 2.0) -- Ajuster la hauteur de la caméra en fonction du mouvement de la souris
+    
+                -- Orienter la caméra vers le personnage
+                SetCamCoord(cam, camX, camY, camZ)
+                PointCamAtEntity(cam, ped?.ped or cache.ped, 0.0, 0.0, 0.0, true)
+            end
+        end
+    end)
+end
+
+--- Function ---
+
+function sl:openProfile(cam, preview)
+    local Promise = promise.new()
+    local profiles <const> = callback.sync('callback:getProfilesNui')
+    Charlist = profiles.chars
+    if not profiles then return end
+    StartPreview(cam, preview)
+    self:sendReactMessage(true, {
+        action = 'sl:profiles:opened',
+        data = profiles
+    }, {
+        focus = true,
+        keepInput = true
+    })
+
+    return sl.await(Promise)
+end
+
+--- Event ---
+
+sl:onNet('refresh:profile', function(key, value)
+    if key == 'characters' then
+        Charlist = {}
+        Charlist = value
+    end
+    sl:sendReactMessage(true, {
+        action = 'sl:update:profile',
+        data = {
+            key = key,
+            value = value
+        }
+    }, {
+        focus = true,
+        keepInput = true
+    })
+end)
+
+--- Nui callback ---
+
+sl:registerReactCallback('sl:profiles:onSelect', function(data, cb) ---@todo
     local selected <const> = callback.sync('callback:selectProfilesNui', data)
     if not selected then return end
     sl:sendReactMessage(true, {
         action = 'sl:profiles:update:selected',
         data = selected
     })
+end)
+
+-- Char selector
+sl:registerReactCallback('sl:profile:callback:charSelect', function(data, cb)
+    cb(1)
+    local index = data + 1
+    if index == lastIndex then return end
+    lastIndex = index
+    local pedInfo = Charlist[index]
+
+    -- local offSet = GetOffsetFromEntityInWorldCoords(cache.ped, 0.0, 4.7, 0.2)
+    -- local cam = CreateCameraWithParams('DEFAULT_SCRIPTED_CAMERA', offSet.x, offSet.y, offSet.z, 0.0, 0.0, 0.0, 30.0, false, 0)
+    -- SetCamActive(cam, true)
+    -- RenderScriptCams(true, false, 0.0, true, true)
+
+    if ped then ped = ped:remove() end
+
+    ped = createPed.preview(pedInfo.model, default.coords, 'anim@mp_player_intcelebrationmale@wave', 'wave')
+end)
+
+sl:registerReactCallback('sl:profiles:onSubmit', function(data, cb)
+    cb(1)
+    if data.submit == 'disconnect' then
+        sl:emitNet('profiles:onSubmit', 'disconnect')
+    elseif data.submit == 'newChar' then
+        local models <const> = callback.sync('callback:profiles:can', false, data.submit)
+        if models then
+            if ped then ped = ped:remove() end
+            local input = sl:openModal({
+                type = 'custom',
+                title = 'New Character',
+                options = {
+                    { type = 'input', label = translate('first_name'), placeholder = 'John', required = true },
+                    { type = 'input', label = translate('last_name'), placeholder = 'Doe', required = true },
+                    { type = 'slider', label = translate('height'), min = 120, max = 220, default = 180, required = true },
+                    { type = 'select', data = models, label = translate('model'), required = true , callback = true},
+                    { type = 'date-input', label = translate('date_of_birth'), required = true }
+                },
+            }, function(index, value)
+                print(index, value)
+                if index == 4 then
+                    if ped then ped = ped:remove() end
+                    ped = createPed.preview(value, default.coords, 'anim@mp_player_intcelebrationmale@wave', 'wave')
+                end
+            end)
+            if not input then return end
+            local modelSelected <const> = require('config.shared.models')[input[4]]
+            onCharacter = {
+                firstname = input[1],
+                lastname = input[2],
+                height = input[3],
+                model = modelSelected.name,
+                sex = modelSelected.sex == 0 and 'M' or modelSelected.sex == 1 and 'F' or 'N',
+                dob = input[5]
+            }
+            sl:emitNet('profiles:onSubmit', 'newCharValid', onCharacter)
+            onCharacter = nil
+            if ped then ped = ped:remove() end
+        end
+    end
 end)
 
 ---@todo implement this to update the profile list profiles / char
@@ -46,116 +196,9 @@ sl:registerReactCallback('sl:profiles:onEdit', function(data, cb)
     end
 end)
 
-sl:registerReactCallback('sl:profiles:onSubmit', function(data, cb)
-    cb(1)
-    if data.submit == 'disconnect' then
-        sl:emitNet('profiles:onSubmit', 'disconnect')
-    elseif data.submit == 'newChar' then
-        local models <const> = callback.sync('callback:profiles:can', false, data.submit)
-        if models then
-            local input = sl:openModal({
-                type = 'custom',
-                title = 'New Character',
-                options = {
-                    { type = 'input', label = translate('first_name'), placeholder = 'John', required = true },
-                    { type = 'input', label = translate('last_name'), placeholder = 'Doe', required = true },
-                    { type = 'slider', label = translate('height'), min = 120, max = 220, default = 180, required = true },
-                    { type = 'select', data = models, label = translate('model'), required = true , callback = true},
-                    { type = 'date-input', label = translate('date_of_birth'), required = true }
-                },
-            }, function(index, value)
-                print(index, value)
-                if index == 4 then
-                    local defaultCoords <const> = vec4(498.45, 5605.07, 797.90, 178.37)
-                    local ped = preview.get('preview')
-                    preview.delete('preview')
-            
-                    local offset = GetOffsetFromEntityInWorldCoords(cache.ped, 0.0, 4.7, 0.2)
-                    local cam = CreateCameraWithParams('DEFAULT_SCRIPTED_CAMERA', offset.x, offset.y, offset.z, 0.0, 0.0, 0.0, 30.0, false, 0)
-                    SetCamActive(cam, true)
-                    RenderScriptCams(true, true, 0.0, true, true)
-                    preview.spawn('preview', joaat(value), defaultCoords, 'anim@mp_player_intcelebrationmale@wave', 'wave')
-                    Wait(300)
-                    ped = preview.get('preview')
-                    FreezeEntityPosition(ped, true)
-                    --TaskGoToCoordAnyMeans(ped, defaultCoords.x, defaultCoords.y, defaultCoords.z, 1.0, 0, 0, 786603, 0xbf800000)
-                    Wait(500)
-                    --TaskTurnPedToFaceCoord(ped, defaultCoords.x, defaultCoords.y, defaultCoords.z, -1)
-                end
-            end)
-            if not input then return end
-            local modelSelected <const> = require('config.shared.models')[input[4]]
-            onCharacter = {
-                firstname = input[1],
-                lastname = input[2],
-                height = input[3],
-                model = modelSelected.name,
-                sex = modelSelected.sex == 0 and 'M' or modelSelected.sex == 1 and 'F' or 'N',
-                dob = input[5]
-            }
-            sl:emitNet('profiles:onSubmit', 'newCharValid', onCharacter)
-            onCharacter = nil
-            local ped = preview.get('preview')
-            if ped then preview.delete('preview') end
-        end
-    end
-end)
+--- Resource Stop ---
 
-function sl:openProfile()
-    local profiles <const> = callback.sync('callback:getProfilesNui')
-    Charlist = profiles.chars
-    if not profiles then return end
-    self:sendReactMessage(true, {
-        action = 'sl:profiles:opened',
-        data = profiles
-    }, {
-        focus = true,
-        keepInput = true
-    })
-end
-
-sl:onNet('refresh:profile', function(key, value)
-    print(key, value)
-    if key == 'characters' then
-        Charlist = {}
-        Charlist = value
-    end
-    sl:sendReactMessage(true, {
-        action = 'sl:update:profile',
-        data = {
-            key = key,
-            value = value
-        }
-    }, {
-        focus = true,
-        keepInput = true
-    })
-end)
-
-sl:registerReactCallback('sl:profile:callback:charSelect', function(data, cb)
-    cb(1)
-    local index = data + 1
-    if index == lastIndex then return end
-    lastIndex = index
-    local pedInfo = Charlist[index]
-    local defaultCoords <const> = vec4(498.45, 5605.07, 797.90, 178.37)
-    local ped = preview.get('preview')
-    if ped then preview.delete('preview') end
-
-    while not HasModelLoaded(joaat(pedInfo.model)) do
-        RequestModel(joaat(pedInfo.model))
-        Wait(10)
-    end
-
-    local offset = GetOffsetFromEntityInWorldCoords(cache.ped, 0.0, 4.7, 0.2)
-    local cam = CreateCameraWithParams('DEFAULT_SCRIPTED_CAMERA', offset.x, offset.y, offset.z, 0.0, 0.0, 0.0, 30.0, false, 0)
-    SetCamActive(cam, true)
-    RenderScriptCams(true, true, 0.0, true, true)
-    preview.spawn('preview', joaat(pedInfo.model), defaultCoords, 'anim@mp_player_intcelebrationmale@wave', 'wave')
-    Wait(300)
-    ped = preview.get('preview')
-    FreezeEntityPosition(ped, true)
-    --TaskGoToCoordAnyMeans(ped, defaultCoords.x, defaultCoords.y, defaultCoords.z, 1.0, 0, 0, 786603, 0xbf800000)
-    Wait(500)
-    --TaskTurnPedToFaceCoord(ped, defaultCoords.x, defaultCoords.y, defaultCoords.z, -1)
+AddEventHandler('onResourceStop', function(resourceName)
+    if resourceName ~= sl.name then return end
+    if ped then ped = ped:remove() end
 end)
