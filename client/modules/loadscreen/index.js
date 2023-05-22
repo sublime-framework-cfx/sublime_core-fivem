@@ -1,7 +1,7 @@
 /**
  * AUTHOR: SUP2Ak#3755
  * DATE: 21/05/2023
- * VERSION: 1.0.0
+ * VERSION: 1.1.0 (Stable but not clean)
  * LICENSE: GNU V3
  * GITHUB: https://github.com/SUP2Ak
  * DISCORD: https://discord.com/invite/B6Z5VbA5wd
@@ -20,17 +20,55 @@
 */
 
 // Fonction utilitaire pour mapper une valeur à une nouvelle plage de valeurs
-const mapValue = (value, inputMin, inputMax, outputMin, outputMax) => {
+/*const mapValue = (value, inputMin, inputMax, outputMin, outputMax) => {
   return (value - inputMin) * (outputMax - outputMin) / (inputMax - inputMin) + outputMin;
+}*/
+
+// Promsie pour mettre le code en pause avant que l'animation commence (pour pas quel'animation bogue au début)
+const delay = (ms) => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
+// #12b886, #82c91e
+const getColor = (average) => {
+  const color1 = [130, 201, 30];;
+  const color2 = [18, 184, 134];
+
+  const t = average / 255;
+
+  const r = Math.round((1 - t) * color1[0] + t * color2[0]);
+  const g = Math.round((1 - t) * color1[1] + t * color2[1]);
+  const b = Math.round((1 - t) * color1[2] + t * color2[2]);
+
+  return `rgb(${r}, ${g}, ${b})`;
+};
+
+let turnOff = false;
 
 document.addEventListener("DOMContentLoaded", () => {
-  
-  // 1. Audio + Equalizer
 
+  // 1. Audio + Equalizer
   // Créer l'objet audio
   const audio = new Audio("./resistancia.mp3");
   audio.volume = 0.1;
+
+  const playButton = document.getElementById('playButton');
+
+  playButton.addEventListener('click', () => {
+    if (audio.paused) {
+      audio.play();
+      playButton.innerHTML = '<i class="fas fa-pause"></i>'; // Icône de pause
+    } else {
+      audio.pause();
+      playButton.innerHTML = '<i class="fas fa-play"></i>'; // Icône de lecture
+    }
+  });
+
+  const volumeSlider = document.getElementById('volumeSlider');
+
+  volumeSlider.addEventListener('input', () => {
+    const volume = volumeSlider.value / 100; // Convertir la valeur en pourcentage en décimale
+    audio.volume = volume;
+  });
 
   // Créer le canvas
   const canvas = document.getElementById('equalizerCanvas');
@@ -80,13 +118,14 @@ document.addEventListener("DOMContentLoaded", () => {
       const x = (barWidth + barSpacing) * i;
       const y = canvasHeight - barHeight;
 
-      const hue = mapValue(average, 0, 255, 0, 360);
-      const color = `hsl(${hue}, 100%, 50%)`;
+      const gradient = ctx.createLinearGradient(x, y, x, y + barHeight);
+      gradient.addColorStop(0, getColor(average));
+      gradient.addColorStop(1, getColor(average));
 
-      ctx.fillStyle = color;
+      ctx.fillStyle = gradient;
       ctx.fillRect(x, y, barWidth, barHeight);
     }
-  }
+  };
 
   // Lancé l'animation + Musique synchronisée
   audio.play();
@@ -108,11 +147,6 @@ document.addEventListener("DOMContentLoaded", () => {
       im1.style.animation = 'rotate 2.0s';
     }, 1000);
   };
-
-  // Promsie pour mettre le code en pause avant que l'animation commence (pour pas que l'animation bogue au début)
-  const delay = (ms) => {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
   
   // Délai asynchrone avant l'animation
   async function getImages() {
@@ -140,6 +174,7 @@ document.addEventListener("DOMContentLoaded", () => {
   
       // Lancer l'animation (Rotation loop)
       setInterval(() => {
+        if (turnOff) return;
         // Reset l'animation
         im2.style.animation = '';
         im1.style.animation = '';
@@ -155,4 +190,24 @@ document.addEventListener("DOMContentLoaded", () => {
   .catch((error) => {
     console.error(error); // Afficher les erreurs même si il y en a âs :eyes:
   });
+  const bg = document.getElementById('bg');
+  const soundBloc = document.getElementById('soundBlocs');
+  window.addEventListener('message', (e) => {
+    // This is the shutdown message that is sent by client script
+    if (e.data.fullyLoaded) {
+      console.log('fullyLoaded');
+      bg.style.animation = 'slide-out-bottom 2.0s';
+      setTimeout(() => {
+        bg.style.display = 'none';
+      }, 2000);
+    } 
+    if (e.data.loginOpen) {
+      console.log('loginOpen');
+      soundBloc.style.animation = 'fadeOut 2.0s';
+      setTimeout(() => {
+        soundBloc.style.display = 'none';
+        audio.pause();
+      }, 2000);
+    }
+  })
 });
