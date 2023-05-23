@@ -4,7 +4,6 @@
 ---------
 
 <img width="750" alt="BACKGROUND SUBLIME" src="https://raw.githubusercontent.com/SUP2Ak/logo-banner/main/sublime_gif.gif" />
-<video width="750" alt="TEST VIDEO" src="https://raw.githubusercontent.com/SUP2Ak/logo-banner/main/sublime_video.mp4" autoplay loop></video>
 
 Nouveau framework FiveM pour tout type de serveur.
 
