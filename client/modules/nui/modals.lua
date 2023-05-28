@@ -1,9 +1,11 @@
-local onCallback, p
+---@type fun(index: number, value: any): void | nil
+local onCallback
+local p
 
 ---@class DataConfirmProps
 ---@field title? string
 ---@field description? string
----@field transition? { name: string, duration: number, timingFunction: string } refer to MantineUI transition provider
+---@field transition? { name: string, duration: number, timingFunction: string } ref: https://mantine.dev/core/transition/
 
 ---@class ModalConfirm
 ---@field data? DataConfirmProps
@@ -12,15 +14,15 @@ local onCallback, p
 ---@field title string
 ---@field options { type: 'checkbox' | 'input' | 'select' | 'date' | 'password' | 'number', label: string }
 ---@field canCancel? boolean
----@field transition? { name: string, duration: number, timingFunction: string } refer to MantineUI transition provider
+---@field transition? { name: string, duration: number, timingFunction: string } ref: https://mantine.dev/core/transition/
 
 ---@class ModalCustom
 ---@field data DataCustomProps
----@field callback fun(index: number, value: any)
+---@field callback fun(index: number, value: any): void
 
 ---@param title string
 ---@param data DataCustomProps
----@param callback fun(index: number, value: any)
+---@param callback fun(index: number, value: any): void
 ---@return table|nil
 ---@type ModalCustom
 local function Custom(self, data, callback) 
@@ -81,12 +83,13 @@ sl:registerReactCallback('sl:modal:confirm', function(data, cb)
     cb(1)
 end, true)
 
----@param data table
+---@param data { index: number, value: any }
 sl:registerReactCallback('sl:modal:submit', function(data, cb)
     cb(1)
     if p then p:resolve(data) end p, onCallback = nil, nil
 end, true)
 
+---@param data { index: number, value: any }
 sl:registerReactCallback('sl:modal:callback', function(data, cb)
     cb(1)
     onCallback(data.index, data.value)
