@@ -1,4 +1,47 @@
 import { debugData } from "../../../utils/debugData";
+import type { ModalConfirmProps } from "../../../typings";
+
+const desc = `
+A paragraph with *emphasis* and **strong importance**.
+> A block quote with ~strikethrough~ and a URL: https://reactjs.org.
+
+* Lists
+* [ ] todo
+* [x] done
+
+A table:
+
+| a | b |
+| - | - |
+`;
+
+const code = `
+~~~js
+  const a = 1;
+  const b = 2;
+  const c = a + b;
+~~~
+`;
+
+const text = "Je pourrais aussi faire comme cela  \n  Avec un retour un la ligne  \n\t  Et la une tabulation avec un retour à la ligne";
+
+export const debugModalsConfirm = () => {
+  debugData([
+    {
+      action: 'sl:modal:opened-confirm',
+      data: {
+        title: 'Dialog title',
+        description: text,
+        transition: {
+          name: 'skew-up',
+          duration: 200,
+          timingFunction: 'ease-in-out'
+        },
+        } as ModalConfirmProps,
+      }
+  ]);
+}
+
 /*import type {ModalProps} from "../../../typings";
 const desc = `
 A paragraph with *emphasis* and **strong importance**.

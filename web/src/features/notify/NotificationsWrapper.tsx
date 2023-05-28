@@ -15,7 +15,7 @@ import { iconeAnimation } from '../../animation/icones';
  * Notifications - A component for displaying notifications
  * @example `lua`
  *
- *sl.notify('simple', {
+ *sl:notify('simple', {
  *    id = 'notification_1',
  *    title = 'Notification title',
  *    description = 'Notification description',

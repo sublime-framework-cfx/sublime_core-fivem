@@ -33,6 +33,13 @@ export interface ModalPropsCustom {
   transition?: {name: MantineTransition, duration: number, timingFunction: string};
 }
 
+export interface ModalConfirmProps {
+  title?: string;
+  description?: string;
+  size?: string;
+  transition?: {name: MantineTransition, duration: number, timingFunction: string};
+}
+
 // _components
 
 export interface ItemSelectProps {
