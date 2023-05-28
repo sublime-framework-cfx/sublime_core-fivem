@@ -1,15 +1,8 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { DateInput } from '@mantine/dates';
+import type { _DateInputProps } from '../../../../typings';
 
-interface Props {
-    index: string;
-    label?: string;
-    data?: any;
-    onChanged: (index: string, value: string, isRequired?: boolean, callback?: boolean) => void;
-    props: any;
-}
-
-export const DateInputField: React.FC<Props> = ({index, label, data, onChanged, props}) => {
+export const DateInputField: React.FC<_DateInputProps> = ({index, label, data, onChanged, props}) => {
   const [value, setValue] = useState<Date | null>(null);
 
   const formatDate = (date: Date | null): string => {
