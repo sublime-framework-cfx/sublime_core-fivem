@@ -1,11 +1,42 @@
-import { MantineThemeOverride } from '@mantine/core';
+import { MantineThemeOverride, rem } from '@mantine/core';
 
 
 
 export const themeOverride: MantineThemeOverride = {
   fontFamily: 'Ubuntu',
-  colors: {
-    // or replace default theme color
-    //dark: ['white', 'rgba(31,17,39,0.38)', 'white', 'white', 'white', 'rgba(31,17,39,0.80)', 'rgba(31,17,39,0.80)' , 'rgba(39,54,102,0.80)'],
+  primaryColor: 'teal',
+ /* globalStyles: (theme) => ({
+    "*:hover": {
+      outline: 'none',
+      color: theme.colors.teal[5],
+    },
+  }),*/
+  /*globalStyles: (theme) => ({
+    '*:hover': {
+      outline: 'none',
+      color: theme.colors.teal[5],
+    },
+  }),*/
+  /*activeStyles: {
+    color: 'teal',
+    backgroundColor: 'teal',
+    borderColor: 'teal',
+  },*/
+  focusRingStyles: {
+    resetStyles: () => ({ outline: 'none' }),
+    styles: (theme) => ({ outline: `${rem(2)} solid ${theme.colors.teal[5]}`}),
+    inputStyles: (theme) => ({ outline: `${rem(2)} solid ${theme.colors.teal[5]}` }),
   },
+  components: {
+    Checkbox: {
+      defaultProps: {
+        color: 'teal.6',
+      },
+    },
+    Switch: {
+      defaultProps: {
+        color: 'teal.6',
+      },
+    },
+  }
 };
