@@ -1,16 +1,8 @@
 import React from 'react';
 import { Checkbox } from '@mantine/core';
+import type { _CheckboxProps } from '../../../../typings';
 
-interface Props {
-  index: string;
-  label?: string;
-  data?: any;
-  defaultValue?: boolean;
-  onChanged: (index: string, value: boolean, isRequired?: boolean, callback?: boolean) => void;
-  props: any;
-}
-
-export const CheckboxField: React.FC<Props> = ({
+export const CheckboxField: React.FC<_CheckboxProps> = ({
   index,
   label,
   defaultValue,
