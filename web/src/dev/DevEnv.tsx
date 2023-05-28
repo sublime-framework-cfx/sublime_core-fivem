@@ -16,7 +16,7 @@ import {
   faArrowRight,
 } from '@fortawesome/free-solid-svg-icons';
 import { debugNotification } from './debug/notifcation';
-import { debugModalsConfirm } from './debug/modals/confirm';
+//import { debugModalsConfirm } from './debug/modals/confirm';
 import { debugModalsCustom } from './debug/modals/custom';
 import { debugLogin } from './debug/login';
 
@@ -98,7 +98,7 @@ const DevTool: React.FC = () => {
             wrap='wrap'
           >
             <Text>Modal: </Text>
-            <AnimatedButtons text='Confirm' Clicked={() => {debugModalsConfirm(); setOpened(false)}} color='dark.9'/>
+            <AnimatedButtons text='Confirm' Clicked={() => {/*debugModalsConfirm();*/ setOpened(false)}} color='dark.9'/>
             <AnimatedButtons text='Custom' Clicked={() => {debugModalsCustom(); setOpened(false)}} color='dark.9'/>
           </Flex>
           <Button

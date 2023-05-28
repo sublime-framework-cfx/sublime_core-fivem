@@ -1,5 +1,5 @@
 import { debugData } from "../../../utils/debugData";
-import type {ModalProps} from "../../../typings";
+/*import type {ModalProps} from "../../../typings";
 const desc = `
 A paragraph with *emphasis* and **strong importance**.
 > A block quote with ~strikethrough~ and a URL: https://reactjs.org.
@@ -33,4 +33,4 @@ export const debugModalsConfirm = () => {
         } as ModalProps,
       }
   ]);     
-}
+}*/
