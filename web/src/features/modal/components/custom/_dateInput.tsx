@@ -24,7 +24,7 @@ export const DateInputField: React.FC<Props> = ({index, label, data, onChanged, 
 
   const handlerChange = (date: Date | null) => {
     setValue(date);
-    onChanged(index, formatDate(date), data?.required || false, data?.callback || false);
+    onChanged(index, formatDate(date), data?.required, data?.callback);
   };
 
   const onPlaceHolder = (date: Date | null): string => {
