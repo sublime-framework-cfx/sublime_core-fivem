@@ -2,16 +2,16 @@ import React, { useState, Fragment } from 'react';
 import { useNuiEvent } from '../../hooks/useNuiEvent';
 import { useDisclosure } from '@mantine/hooks';
 import { useForm } from '@mantine/form';
-import { useConfig } from '../../providers/ConfigProvider';
+//import { useConfig } from '../../providers/ConfigProvider';
 import { Stack, Group, Modal, Divider } from '@mantine/core';
 import { InputField, SelectField, CheckboxField, DateInputField, PasswordField, SliderField } from './components/custom';
 import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { fetchNui } from "../../utils/fetchNui";
 import AnimatedButton from './components/buttons';
-import type { ModalPropsCustom, Option, SelectProps, _SelectProps } from '../../typings';
+import type { ModalPropsCustom, Option, SelectProps } from '../../typings';
 
 const ModalCustom: React.FC = () => {
-  const { config } = useConfig();
+  //const { config } = useConfig();
   //const useStyles = createStyles((theme) => ({...config.modalsStyles}));
   //const { classes } = useStyles();
   const [getData, setData] = useState<ModalPropsCustom>({title: '', options: []});
@@ -80,7 +80,7 @@ const ModalCustom: React.FC = () => {
         centered
         withCloseButton={false}
         styles={{ title: { textAlign: 'center', width: '100%', fontSize: 16 }}}
-        transitionProps={ getData.transition && {transition: getData.transition.name, duration: getData.transition.duration || 100, timingFunction: getData.transition.timingFunction || 'ease-in-out'} || undefined}
+        transitionProps={ (getData.transition && {transition: getData.transition.name, duration: getData.transition.duration || 100, timingFunction: getData.transition.timingFunction || 'ease-in-out'}) || undefined}
         title={getData.title}
         size={getData.size || 'xs'}
       >
