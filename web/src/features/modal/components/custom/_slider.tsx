@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Slider, Text, Box } from '@mantine/core';
-import type { _SelectProps } from '../../../../typings';
+import type { _SliderProps } from '../../../../typings';
 
-export const SliderField: React.FC<_SelectProps> = ({
+export const SliderField: React.FC<_SliderProps> = ({
   index,
   label,
   defaultValue,
