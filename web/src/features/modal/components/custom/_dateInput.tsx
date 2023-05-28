@@ -2,14 +2,14 @@ import { useState } from 'react';
 import { DateInput } from '@mantine/dates';
 
 interface Props {
-    key: string;
-    index: number;
+    index: string;
     label?: string;
-    data?: Data;
-    onChanged: (index: number, value: string) => void;
+    data?: any;
+    onChanged: (index: string, value: string, isRequired?: boolean, callback?: boolean) => void;
+    props: any;
 }
 
-export const DateInputField: React.FC<Props> = ({key, index, label, data, onChanged}) => {
+export const DateInputField: React.FC<Props> = ({index, label, data, onChanged, props}) => {
   const [value, setValue] = useState<Date | null>(null);
 
   const formatDate = (date: Date | null): string => {
@@ -24,8 +24,8 @@ export const DateInputField: React.FC<Props> = ({key, index, label, data, onChan
 
   const handlerChange = (date: Date | null) => {
     setValue(date);
-    onChanged(index, formatDate(date));
-    };
+    onChanged(index, formatDate(date), data?.required || false, data?.callback || false);
+  };
 
   const onPlaceHolder = (date: Date | null): string => {
     return date
@@ -39,14 +39,17 @@ export const DateInputField: React.FC<Props> = ({key, index, label, data, onChan
 
   return (
       <DateInput
-        key={key}
         value={value}
+        sx={{ paddingTop: '10px' }}
+        popoverProps={{ withinPortal: true, position: 'top' }}
         onChange={handlerChange}
         label={label}
         placeholder={onPlaceHolder(value)}
         valueFormat='DD/MM/YYYY'
         mx='xs'
-        style={{ width: 'auto', height: 'auto'}}
+        required={data?.required || false}
+        error={props.error || false}
+        withAsterisk={data?.required || false}
       />
   );
 };
