@@ -4,7 +4,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { useForm } from '@mantine/form';
 //import { useConfig } from '../../providers/ConfigProvider';
 import { Stack, Group, Modal, Divider } from '@mantine/core';
-import { InputField, SelectField, CheckboxField, DateInputField, PasswordField, SliderField } from './components/custom';
+import { InputField, SelectField, CheckboxField, DateInputField, PasswordField, SliderField, NumberField } from './components/custom';
 import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { fetchNui } from "../../utils/fetchNui";
 import AnimatedButton from './components/buttons';
@@ -158,6 +158,17 @@ const ModalCustom: React.FC = () => {
                         max={field.max as number}
                         step={field.step as number}
                         transition={field.transition as Option["transition"]}
+                        onChanged={handleChange}
+                        props={form.getInputProps(`${index}`)}
+                      />
+                    )
+                  }
+                  {
+                    field.type === 'number' && (
+                      <NumberField
+                        index={`${index}`}
+                        label={field.label}
+                        data={field as any}
                         onChanged={handleChange}
                         props={form.getInputProps(`${index}`)}
                       />
