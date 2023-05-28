@@ -21,7 +21,7 @@ import {
 } from '@mantine/core';
 import { firstToUpper } from '../../../function';
 import { fetchNui } from '../../../utils/fetchNui';
-import AnimatedButton from '../../modal/components/buttons';
+//import AnimatedButton from '../../modal/components/buttons';
 import { debugData } from '../../../utils/debugData';
 
 export interface UserProps {
