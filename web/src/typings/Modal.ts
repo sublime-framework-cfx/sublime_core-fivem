@@ -1,6 +1,7 @@
 //import { ModalsProviderProps } from './config/modals';
 import { MantineTransition } from '@mantine/core';
 
+// Modal Props as cat all option
 export interface Option {
   type: string;
   label: string;
@@ -19,7 +20,7 @@ export interface Option {
   size?: string;
   error?: string;
   callback?: boolean;
-  options?: SelectProps;
+  options?: ItemSelectProps[];
   transition?: {name: MantineTransition, duration: number, timingFunction: string};
 }
 
@@ -32,13 +33,13 @@ export interface ModalPropsCustom {
   transition?: {name: MantineTransition, duration: number, timingFunction: string};
 }
 
-export interface SelectProps {
+// _components
+
+export interface ItemSelectProps {
   Array: {label: string, value: string}[];
 }
 
-// _components
-
-export interface _SelectProps {
+export interface _SliderProps {
   index: string;
   label?: string;
   defaultValue?: number;
@@ -55,21 +56,69 @@ export interface _SelectProps {
   props: any;
 }
 
-/*interface Data {
-  max?: number;
-  min?: number;
-  required?: boolean;
-  placeholder?: string;
-  description?: string;
+export interface _SelectProps {
+  index: string;
   label?: string;
-  type?: string;
-  name?: string;
-  value?: string;
-  step?: number;
-  callback?: boolean;
-  options?: SelectProps;
+  data: any;
+  options: ItemSelectProps[],
+  onChanged: (
+    index: string,
+    value: string,
+    isRequired?: boolean,
+    callback?: boolean
+  ) => void;
+  props: any;
 }
 
-interface SelectProps {
-  Array: {label: string, value: string}[];
-}*/
+export interface _PasswordProps {
+  index: string;
+  label?: string;
+  data?: any;
+  onChanged: (
+    index: string,
+    value: string,
+    isRequired?: boolean,
+    callback?: boolean
+  ) => void;
+  props: any;
+}
+
+export interface _CheckboxProps {
+  index: string;
+  label?: string;
+  data?: any;
+  defaultValue?: boolean;
+  onChanged: (
+    index: string,
+    value: boolean,
+    isRequired?: boolean,
+    callback?: boolean
+  ) => void;
+  props: any;
+}
+
+export interface _DateInputProps {
+  index: string;
+  label?: string;
+  data?: any;
+  onChanged: (
+    index: string,
+    value: string,
+    isRequired?: boolean,
+    callback?: boolean
+  ) => void;
+  props: any;
+}
+
+export interface _TextInputProps {
+  index: string;
+  label?: string;
+  data?: any;
+  onChanged: (
+    index: string,
+    value: string,
+    isRequired?: boolean,
+    callback?: boolean
+  ) => void;
+  props: any;
+}
