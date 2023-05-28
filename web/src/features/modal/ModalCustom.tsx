@@ -18,7 +18,7 @@ const ModalCustom: React.FC = () => {
   const [opened, { close, open }] = useDisclosure(false);
   const form = useForm<{index: {value: any, required: boolean}[]}>({});
 
-  useNuiEvent<ModalPropsCustom>('sl:modal:opened', async (data) => {
+  useNuiEvent<ModalPropsCustom>('sl:modal:opened-custom', async (data) => {
     const options = data.options;
     setData(data);
     options.forEach((field: Option, index: number) => {

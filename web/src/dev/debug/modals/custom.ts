@@ -45,7 +45,7 @@ const modalOptions = [
 export const debugModalsCustom = () => {
   debugData([
     {
-      action: 'sl:modal:opened',
+      action: 'sl:modal:opened-custom',
       data: {
         title: 'Title of the modal',
         useCallback: true,
