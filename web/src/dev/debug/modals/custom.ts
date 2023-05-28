@@ -1,8 +1,8 @@
 import { debugData } from '../../../utils/debugData';
-import type { ModalPropsCustom, Option } from '../../../typings';
+import type { ModalPropsCustom/*, Option */} from '../../../typings';
 const modalOptions = [
-  { type: 'input', name: 'inputField', label: 'Input Field', required: true, callback: true, error: 'Message perso' },
-  { type: 'select', name: 'selectField', label: 'Select Field', options: 
+  { type: 'input', label: 'Input Field', required: true, callback: true, error: 'Message perso' },
+  { type: 'select', label: 'Select Field', options: 
   [
     { value: 'react', label: 'React' },
     { value: 'ng', label: 'Angular' },
@@ -11,26 +11,25 @@ const modalOptions = [
   ], required: true, error: 'Select an option' },
   {
     type: 'checkbox',
-    name: 'checkboxField',
     label: 'Checkbox Field',
-    //checked: true,
-    required: true,
-    error: 'Message ??',
-  },/*
+  },
   {
     type: 'password',
-    name: 'inputField',
-    label: 'Input Field',
+    label: 'Password Field',
     required: true,
   },
   {
     type: 'slider',
-    name: 'sliderField',
     label: 'Slider Field',
-    min: 120,
+    /*min: 120,
     max: 240,
-    default: 180,
-  },*/
+    default: 180,*/
+    transition: {
+      name: 'skew-up',
+      duration: 100,
+      timingFunction: 'ease-in-out'
+    }
+  },
   {
     type: 'date',
     label: 'Date Input Field',
@@ -45,6 +44,12 @@ export const debugModalsCustom = () => {
       data: {
         title: 'Title of the modal',
         useCallback: true,
+        transition: {
+          name: 'skew-up',
+          duration: 200,
+          timingFunction: 'ease-in-out'
+        },
+        //canCancel: false,
         options: modalOptions,
       } as ModalPropsCustom,
     },
