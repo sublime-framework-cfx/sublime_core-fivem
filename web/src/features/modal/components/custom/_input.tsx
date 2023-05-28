@@ -1,15 +1,8 @@
 import React from 'react';
 import { TextInput } from '@mantine/core';
+import type { _TextInputProps } from '../../../../typings';
 
-interface Props {
-  index: string;
-  label?: string;
-  data?: any;
-  onChanged: (index: string, value: string, isRequired?: boolean, callback?: boolean) => void;
-  props: any;
-}
-
-export const InputField: React.FC<Props> = ({
+export const InputField: React.FC<_TextInputProps> = ({
   index,
   label,
   data,
