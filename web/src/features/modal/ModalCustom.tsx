@@ -8,7 +8,7 @@ import { InputField, SelectField, CheckboxField, DateInputField, PasswordField, 
 import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { fetchNui } from "../../utils/fetchNui";
 import AnimatedButton from './components/buttons';
-import type { ModalPropsCustom, Option, SelectProps } from '../../typings';
+import type { ModalPropsCustom, Option, _SelectProps } from '../../typings';
 
 const ModalCustom: React.FC = () => {
   //const { config } = useConfig();
@@ -106,7 +106,7 @@ const ModalCustom: React.FC = () => {
                       <SelectField
                         index={`${index}`}
                         label={field.label}
-                        options={field.options as SelectProps}
+                        options={field.options as _SelectProps["options"]}
                         data={field as any}
                         onChanged={handleChange}
                         props={form.getInputProps(`${index}`)}
