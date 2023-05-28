@@ -34,6 +34,11 @@ const modalOptions = [
     type: 'date',
     label: 'Date Input Field',
     required: true
+  },
+  {
+    type: 'number',
+    label: 'Number Input Field',
+    format: {separator: ',', value: '€'},
   }
 ];
 
