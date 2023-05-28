@@ -1,4 +1,5 @@
-import { ModalsProviderProps } from './config/modals';
+//import { ModalsProviderProps } from './config/modals';
+import { MantineTransition } from '@mantine/core';
 
 export interface Option {
   type: string;
@@ -19,6 +20,7 @@ export interface Option {
   error?: string;
   callback?: boolean;
   options?: SelectProps;
+  transition?: {name: MantineTransition, duration: number, timingFunction: string};
 }
 
 export interface ModalPropsCustom {
@@ -26,10 +28,31 @@ export interface ModalPropsCustom {
   size?: string;
   options: Option[];
   useCallback?: boolean;
+  canCancel?: boolean;
+  transition?: {name: MantineTransition, duration: number, timingFunction: string};
 }
 
 export interface SelectProps {
   Array: {label: string, value: string}[];
+}
+
+// _components
+
+export interface _SelectProps {
+  index: string;
+  label?: string;
+  defaultValue?: number;
+  min?: number;
+  max?: number;
+  step?: number;
+  transition?: {name: MantineTransition, duration: number, timingFunction: string}
+  onChanged: (
+    index: string,
+    value: number,
+    isRequired?: boolean,
+    callback?: boolean
+  ) => void;
+  props: any;
 }
 
 /*interface Data {
