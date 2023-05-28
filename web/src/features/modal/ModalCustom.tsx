@@ -1,40 +1,16 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, Fragment } from 'react';
 import { useNuiEvent } from '../../hooks/useNuiEvent';
 import { useDisclosure } from '@mantine/hooks';
 import { useForm } from '@mantine/form';
 import { useConfig } from '../../providers/ConfigProvider';
 import { Stack, Group, Modal, Divider } from '@mantine/core';
-import { InputField, SelectField, CheckboxField, DateInputField } from './components/custom';
-import { fetchNui } from "../../utils/fetchNui";
-import type { ModalPropsCustom, Option, SelectProps } from '../../typings';
-import AnimatedButton from './components/buttons';
+import { InputField, SelectField, CheckboxField, DateInputField, PasswordField, SliderField } from './components/custom';
 import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { fetchNui } from "../../utils/fetchNui";
+import AnimatedButton from './components/buttons';
+import type { ModalPropsCustom, Option, SelectProps, _SelectProps } from '../../typings';
 
-/*interface Option {
-  type: string;
-  label: string;
-  description?: string;
-  required?: boolean;
-  default?: string | boolean | Date | number | Array<any>;
-  format?: string;
-  icon?: string | string[];
-  placeholder?: string;
-  max?: number;
-  min?: number;
-  step?: number;
-  data?: Data;
-  size?: string;
-  callback?: boolean;
-}
-
-interface ModalPropsCustom {
-  title: string;
-  size?: string;
-  options: Option[];
-  useCallback?: boolean;
-}*/
-
-const ModalWrapper: React.FC = () => {
+const ModalCustom: React.FC = () => {
   const { config } = useConfig();
   //const useStyles = createStyles((theme) => ({...config.modalsStyles}));
   //const { classes } = useStyles();
@@ -45,22 +21,19 @@ const ModalWrapper: React.FC = () => {
   useNuiEvent<ModalPropsCustom>('sl:modal:opened', async (data) => {
     const options = data.options;
     setData(data);
-    console.log(options);
     options.forEach((field: Option, index: number) => {
-      console.log(field, index);
       form.setFieldValue(`${index}`, 
         {
           value :
-            field.type === 'input' ? field.default || '' 
+            field.type === ('input' || 'select' || 'password' || 'date') ? field.default || '' 
             : field.type === 'checkbox' ? field.default || false
-            : field.type === 'select' ? field.default || ''
-            : field.type === 'date' ? field.default || ''
+            : field.type === 'slider' ? field.default || 0
             : null,
           required: field.required || false,
           callback: field.callback || false
         });
     });
-    await new Promise((resolve) => setTimeout(resolve, 200));
+    await new Promise((resolve) => setTimeout(resolve, 50));
     open();
   });
 
@@ -72,7 +45,7 @@ const ModalWrapper: React.FC = () => {
         const val = !field.value ? null : field.value;
         switch (val) {
           case null:
-          case typeof val === 'boolean' && val !== true:
+          case typeof val === 'boolean' && !val:
           case typeof val === 'string' && val.length <= 1:
             missing = true;
             const err = getData.options[index]?.error || null;
@@ -107,22 +80,20 @@ const ModalWrapper: React.FC = () => {
         centered
         withCloseButton={false}
         styles={{ title: { textAlign: 'center', width: '100%', fontSize: 16 }}}
-        transitionProps={{
-          
-        }}
+        transitionProps={ getData.transition && {transition: getData.transition.name, duration: getData.transition.duration || 100, timingFunction: getData.transition.timingFunction || 'ease-in-out'} || undefined}
         title={getData.title}
         size={getData.size || 'xs'}
       >
         <Divider variant='solid' />
         <Stack>
           <form onSubmit={handleSubmit}>
-            {getData.options?.map((field: Option, index) => {
+            {getData.options?.map((field: Option, index: number) => {
               return (
                 <Fragment key={index}>
                   {
                     field.type === 'input' && (
                       <InputField
-                        index={index.toString()}
+                        index={`${index}`}
                         label={field.label}
                         data={field as any}
                         onChanged={handleChange}
@@ -133,7 +104,7 @@ const ModalWrapper: React.FC = () => {
                   {
                     field.type === 'select' && (
                       <SelectField
-                        index={index.toString()}
+                        index={`${index}`}
                         label={field.label}
                         options={field.options as SelectProps}
                         data={field as any}
@@ -145,7 +116,7 @@ const ModalWrapper: React.FC = () => {
                   {
                     field.type === 'checkbox' && (
                       <CheckboxField
-                        index={index.toString()}
+                        index={`${index}`}
                         label={field.label}
                         data={field as any}
                         defaultValue={field.checked as boolean}
@@ -157,9 +128,35 @@ const ModalWrapper: React.FC = () => {
                   {
                     field.type === 'date' && (
                       <DateInputField
-                        index={index.toString()}
+                        index={`${index}`}
                         label={field.label}
                         data={field as any}
+                        onChanged={handleChange}
+                        props={form.getInputProps(`${index}`)}
+                      />
+                    )
+                  }
+                  {
+                    field.type === 'password' && (
+                      <PasswordField
+                        index={`${index}`}
+                        label={field.label}
+                        data={field as any}
+                        onChanged={handleChange}
+                        props={form.getInputProps(`${index}`)}
+                      />
+                    )
+                  }
+                  {
+                    field.type === 'slider' && (
+                      <SliderField
+                        index={`${index}`}
+                        label={field.label}
+                        defaultValue={field.default as number}
+                        min={field.min as number}
+                        max={field.max as number}
+                        step={field.step as number}
+                        transition={field.transition as Option["transition"]}
                         onChanged={handleChange}
                         props={form.getInputProps(`${index}`)}
                       />
@@ -172,9 +169,10 @@ const ModalWrapper: React.FC = () => {
               <AnimatedButton
                 iconAwesome={faXmark}
                 text='Annuler'
-                onClick={() => {close(); form.reset();}}
+                onClick={() => {close(); form.reset(); fetchNui('sl:modal:submit', null)}}
                 color='red.6'
                 args={false}
+                isDisabled={getData?.canCancel === false || undefined}
               />
               <AnimatedButton
                 iconAwesome={faCheck}
@@ -191,4 +189,4 @@ const ModalWrapper: React.FC = () => {
   );
 };
 
-export default ModalWrapper;
+export default ModalCustom;
