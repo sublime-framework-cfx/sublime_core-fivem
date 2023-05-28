@@ -2,28 +2,30 @@ import React from 'react';
 import { Checkbox } from '@mantine/core';
 
 interface Props {
-  key: string;
-  index: number;
+  index: string;
   label?: string;
+  data?: any;
   defaultValue?: boolean;
-  onChanged: (index: number, value: boolean) => void;
+  onChanged: (index: string, value: boolean, isRequired?: boolean, callback?: boolean) => void;
+  props: any;
 }
 
 export const CheckboxField: React.FC<Props> = ({
   index,
-  key,
   label,
   defaultValue,
+  data,
   onChanged,
+  props
 }) => {
   return (
     <>
       <Checkbox
-        sx={{ display: 'flex' }}
-        key={key}
+        sx={{ display: 'flex', paddingTop: '10px' }}
         label={label}
         defaultChecked={defaultValue || false}
-        onChange={(event) => onChanged(index, event.target.checked)}
+        onChange={(event) => onChanged(index, event.target.checked, data?.required, data?.callback)}
+        error={!defaultValue && props.error}
       />
     </>
   );
