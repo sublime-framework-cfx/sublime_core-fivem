@@ -4,8 +4,8 @@ import {
   Box,
   Group,
   useMantineTheme,
-  rem,
-  Avatar,
+  //rem,
+  //Avatar,
   Skeleton,
   Text,
 } from '@mantine/core';
