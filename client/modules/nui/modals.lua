@@ -1,67 +1,90 @@
-local open, onCb, p = {}
+local onCallback, p
 
 ---@class ModalConfrim
----@field type 'confirm'
 ---@field title? string
 ---@field subtitle? string
 ---@field description? string
 
+---@class DataCustomProps
+---@field title string
+---@field options { type: 'checkbox' | 'input' | 'select' | 'date' | 'password', label: string }
+---@field canCancel? boolean
+---@field transition? { name: string, duration: number, timingFunction: string } refer to MantineUI transition provider
+
 ---@class ModalCustom
----@field type 'custom'
----@field title? string
----@field options {type: 'checkbox' | 'input' | 'select' | 'textarea'}
+---@field data DataCustomProps
+---@field callback fun(index: number, value: any)
 
---- supv.openModal
----@param data ModalConfrim|ModalCustom|...
----@return boolean
-function sl:openModal(data, onCallback)
+---@param title string
+---@param data DataCustomProps
+---@param callback fun(index: number, value: any)
+---@return table|nil
+---@type ModalCustom
+local function Custom(self, data, callback) 
     if type(data) ~= 'table' then return end
-    if type(data.type) ~= 'string' then return end
-    if p then return end
-
-    if data.type == 'custom' and (not data.options or #data.options < 1) then return end
-    if onCallback then
-        onCb = onCallback
-        for i = 1, #data.options do
-            local o = data.options[i]
-            if o.callback then
-                open[i] = true
-            end
-        end
-    end
+    if type(data.title) ~= 'string' then return end
+    onCallback = callback
 
     self:sendReactMessage(true, {
-        action = 'sl:modal:opened',
-        data = data
+        action = 'sl:modal:custom',
+        data = {
+            title = data.title,
+            canCancel = data.canCancel or true,
+            transition = data.transition,
+            options = data.options
+        }
     }, {
-        focus = data.focus or true
+        focus = true
     })
 
     p = promise.new()
     return self.await(p)
 end
 
+---@param data {title: string|nil, subtitle: string|nil, description: string|nil}
+---@return boolean
+---@type ModalConfrim
+local function Confirm(self, data)
+    if type(data) ~= 'table' then return end
+    
+    self:sendReactMessage(true, {
+        action = 'sl:modal:confirm',
+        data = data
+    }, {
+        focus = true
+    })
+
+    p = promise.new()
+    return self.await(p)
+end
+
+---@param types custom | confirm as string
+---@param data table
+---@param callback fun(index: number, value: any)
+---@return table|boolean|nil
+function sl:openModal(types, data, callback)
+    if p then return end
+    if type(types) ~= 'string' then return end
+    if types == 'custom' then
+        return Custom(self, data, callback)
+    elseif types == 'confirm' then
+        return Confirm(self, data)
+    end
+end
+
 ---@param data boolean
-sl:registerReactCallback('sl:modal:closedCondirm', function(data, cb)
+sl:registerReactCallback('sl:modal:confirm', function(data, cb)
     if p then p:resolve(data) end p = nil
     cb(1)
 end, true)
 
 ---@param data table
-sl:registerReactCallback('sl:modal:closedCustom', function(data, cb)
-    if p then
-        local temp = {}
-        for k, v in pairs(data) do
-            temp[tonumber(k)+1] = v
-        end
-        p:resolve(temp)
-    end p = nil
-    open = {}
+sl:registerReactCallback('sl:modal:submit', function(data, cb)
     cb(1)
+    if p then p:resolve(data) end p, onCallback = nil, nil
 end, true)
 
 sl:registerReactCallback('sl:modal:callback', function(data, cb)
     cb(1)
-    data.index += 1
-    onCb(data.index, data.value)
+    onCallback(data.index, data.value)
 end)
