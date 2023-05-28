@@ -11,7 +11,7 @@ import AnimatedButton from './components/buttons';
 import type { ModalPropsCustom, Option, _SelectProps } from '../../typings';
 
 const ModalCustom: React.FC = () => {
-  //const { config } = useConfig();
+  //const { config } = useConfig(); // not used & implemented yet
   //const useStyles = createStyles((theme) => ({...config.modalsStyles}));
   //const { classes } = useStyles();
   const [getData, setData] = useState<ModalPropsCustom>({title: '', options: []});
@@ -45,6 +45,7 @@ const ModalCustom: React.FC = () => {
         const val = !field.value ? null : field.value;
         switch (val) {
           case null:
+          case typeof val === 'number' && isNaN(val):
           case typeof val === 'boolean' && !val:
           case typeof val === 'string' && val.length <= 1:
             missing = true;

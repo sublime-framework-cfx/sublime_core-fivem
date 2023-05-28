@@ -31,12 +31,12 @@ const AnimatedButton: React.FC<Props> = ({
       onMouseLeave={() => setIsHovered(false)}
       rightIcon={
         <FontAwesomeIcon
-          icon={iconAwesome}
-          shake={isHovered}
+          icon={ iconAwesome }
+          shake={ isHovered }
           style={{ transition: 'transform 0.5s' }}
         />
       }
-      color={color}
+      color={ color }
       onClick={() => onClick(args)}
     >
       {text}
