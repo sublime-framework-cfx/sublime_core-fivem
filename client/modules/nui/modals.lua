@@ -7,7 +7,7 @@ local onCallback, p
 
 ---@class DataCustomProps
 ---@field title string
----@field options { type: 'checkbox' | 'input' | 'select' | 'date' | 'password', label: string }
+---@field options { type: 'checkbox' | 'input' | 'select' | 'date' | 'password' | 'number', label: string }
 ---@field canCancel? boolean
 ---@field transition? { name: string, duration: number, timingFunction: string } refer to MantineUI transition provider
 
