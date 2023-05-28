@@ -126,15 +126,14 @@ sl:registerReactCallback('sl:profiles:onSubmit', function(data, cb)
         local models <const> = callback.sync('callback:profiles:can', false, data.submit)
         if models then
             if ped then ped = ped:remove() end
-            local input = sl:openModal({
-                type = 'custom',
+            local input = sl:openModal('custom', {
                 title = 'New Character',
                 options = {
-                    { type = 'input', label = translate('first_name'), placeholder = 'John', required = true },
-                    { type = 'input', label = translate('last_name'), placeholder = 'Doe', required = true },
-                    { type = 'slider', label = translate('height'), min = 120, max = 220, default = 180, required = true },
-                    { type = 'select', data = models, label = translate('model'), required = true , callback = true},
-                    { type = 'date-input', label = translate('date_of_birth'), required = true }
+                    { type = 'input', label = translate('first_name'), placeholder = 'John', required = true, error = '' },
+                    { type = 'input', label = translate('last_name'), placeholder = 'Doe', required = true, error = '' },
+                    { type = 'slider', label = translate('height'), min = 120, max = 220, default = 180 },
+                    { type = 'select', data = models, label = translate('model'), required = true , callback = true, error = ''},
+                    { type = 'date', label = translate('date_of_birth'), required = true, error = '' }
                 },
             }, function(index, value)
                 print(index, value)
@@ -173,8 +172,7 @@ sl:registerReactCallback('sl:profiles:onEdit', function(data, cb)
                 { type = 'password', placeholder = 'Password' },
                 { type = 'password', placeholder = 'Confirm Password' }
             }
-            local input = sl:openModal({
-                type = 'custom',
+            local input = sl:openModal('custom', {
                 title = 'Edit Profile',
                 options = options
             })
