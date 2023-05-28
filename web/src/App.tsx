@@ -9,7 +9,7 @@ import { themeOverride } from './theme';
 // Features //
 //import {useConfig} from './providers/ConfigProvider'; // TODO: use config
 import NotificationsWrapper from './features/notify/NotificationsWrapper';
-import ModalWrapper from './features/modal/ModalWrapper';
+import ModalCustom from './features/modal/ModalCustom';
 import { MainProfilesMenu, Login } from './features/profils/index';
 import ConvertUnixTime from './features/tool/ConvertUnix';
 
@@ -41,7 +41,7 @@ const App: React.FC = () => {
           <Login />
           <MainProfilesMenu />
           <ConvertUnixTime />
-          <ModalWrapper />
+          <ModalCustom />
           <NotificationsWrapper />
           {isEnvBrowser() && <DevTool />}
         </MantineProvider>
