@@ -1,9 +1,12 @@
 local onCallback, p
 
----@class ModalConfrim
+---@class DataConfirmProps
 ---@field title? string
----@field subtitle? string
 ---@field description? string
+---@field transition? { name: string, duration: number, timingFunction: string } refer to MantineUI transition provider
+
+---@class ModalConfirm
+---@field data? DataConfirmProps
 
 ---@class DataCustomProps
 ---@field title string
@@ -26,7 +29,7 @@ local function Custom(self, data, callback)
     onCallback = callback
 
     self:sendReactMessage(true, {
-        action = 'sl:modal:custom',
+        action = 'sl:modal:opened-custom',
         data = {
             title = data.title,
             canCancel = data.canCancel or true,
@@ -41,14 +44,14 @@ local function Custom(self, data, callback)
     return self.await(p)
 end
 
----@param data {title: string|nil, subtitle: string|nil, description: string|nil}
+---@param data DataConfirmProps
 ---@return boolean
----@type ModalConfrim
+---@type ModalConfirm
 local function Confirm(self, data)
     if type(data) ~= 'table' then return end
     
     self:sendReactMessage(true, {
-        action = 'sl:modal:confirm',
+        action = 'sl:modal:opened-confirm',
         data = data
     }, {
         focus = true
