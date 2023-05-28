@@ -26,7 +26,7 @@ export const InputField: React.FC<Props> = ({
         required={data?.required || false}
         minLength={data?.min || 0}
         maxLength={data?.max || 255}
-        onChange={(event) => onChanged(index, event.target.value, data?.required || false, data?.callback || false)}
+        onChange={(event) => onChanged(index, event.target.value, data?.required, data?.callback)}
         error={props.error || false}
       />
     </>
