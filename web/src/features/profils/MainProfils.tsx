@@ -13,9 +13,9 @@ import {
   Box,
   useMantineTheme,
   rem,
-  Container, Modal, TextInput, Button, Stack,
+  Container/*, Modal, TextInput, /*Button, Stack*/,
 } from '@mantine/core';
-import { DateInput } from '@mantine/dates';
+//import { DateInput } from '@mantine/dates';
 //import { useConfig } from '../../providers/ConfigProvider';
 import { useNuiEvent } from '../../hooks/useNuiEvent';
 import { User, UserProps, CharsList, CharListProps } from './components';
@@ -31,17 +31,17 @@ interface LoadProfilsProps {
   chars?: CharListProps[];
 }
 
-interface DataPropsIdentity {
+/*interface DataPropsIdentity {
   firstName: string;
   lastName: string;
   dateOfBirth: string;
-}
+}*/
 
-interface NewCharModalProps {
+/*interface NewCharModalProps {
     title: string;
-}
+}*/
 
-const NewCharModal = () => {
+/*const NewCharModal = () => {
   const [formData, setFormData] = useState<DataPropsIdentity>({
     firstName: '',
     lastName: '',
@@ -127,7 +127,7 @@ const NewCharModal = () => {
       </Modal>
     </>
   );
-};
+};*/
 
 export const MainProfilesMenu: React.FC = () => {
   const theme = useMantineTheme();
