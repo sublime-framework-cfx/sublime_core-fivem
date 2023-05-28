@@ -122,3 +122,16 @@ export interface _TextInputProps {
   ) => void;
   props: any;
 }
+
+export interface _NumberInputProps {
+  index: string;
+  label?: string;
+  data?: any;
+  onChanged: (
+    index: string,
+    value: number,
+    isRequired?: boolean,
+    callback?: boolean
+  ) => void;
+  props: any;
+}
