@@ -36,7 +36,8 @@ local function Custom(self, data, callback)
             title = data.title,
             canCancel = data.canCancel or true,
             transition = data.transition,
-            options = data.options
+            options = data.options,
+            useCallback = callback and true or false
         }
     }, {
         focus = true
@@ -51,7 +52,7 @@ end
 ---@type ModalConfirm
 local function Confirm(self, data)
     if type(data) ~= 'table' then return end
-    
+
     self:sendReactMessage(true, {
         action = 'sl:modal:opened-confirm',
         data = data
@@ -68,8 +69,8 @@ end
 ---@param callback fun(index: number, value: any)
 ---@return table|boolean|nil
 function sl:openModal(types, data, callback)
-    if p then return end
-    if type(types) ~= 'string' then return end
+    if p or type(types) ~= 'string' then return end
+
     if types == 'custom' then
         return Custom(self, data, callback)
     elseif types == 'confirm' then
