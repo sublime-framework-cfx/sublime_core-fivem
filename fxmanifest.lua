@@ -6,7 +6,7 @@ use_experimental_fxv2_oal 'yes'
 name 'sublime_core'
 author 'SUBLiME'
 version '0.0.0'
-repository 'https://github.com/SUBLiME-Association/sublime_core'
+repository 'https://github.com/sublime-framework-cfx/sublime_core'
 description 'Un framework pour tout type de serveur'
 
 loadscreen 'client/modules/loadscreen/index.html' -- loadscreen
@@ -35,7 +35,7 @@ files {
 }
 
 dependencies {
-    'oxmysql',                     -- requires oxmysql resource
-    '/server:5848',                -- requires at least server build 5848
-    '/onesync',                    -- requires onesync enabled
+    '/server:6461', -- requires at least server build 6461 (txAdmin v6)
+    '/onesync', -- requires onesync enabled
+    'oxmysql', -- requires oxmysql resource
 }
