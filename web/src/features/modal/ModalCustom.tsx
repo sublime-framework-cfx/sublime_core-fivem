@@ -21,7 +21,7 @@ const ModalCustom: React.FC = () => {
   useNuiEvent<ModalPropsCustom>('sl:modal:opened-custom', async (data) => {
     const options = data.options;
     setData(data);
-    options.forEach((field: Option, index: number) => {
+    options.map((field: Option, index: number) => {
       form.setFieldValue(`${index}`, 
         {
           value :
@@ -33,7 +33,7 @@ const ModalCustom: React.FC = () => {
           callback: field.callback || false
         });
     });
-    await new Promise((resolve) => setTimeout(resolve, 50));
+    await new Promise((resolve) => setTimeout(resolve, 200));
     open();
   });
 
@@ -50,7 +50,7 @@ const ModalCustom: React.FC = () => {
           case typeof val === 'string' && val.length <= 1:
             missing = true;
             const err = getData.options[index]?.error || null;
-            form.setFieldError(index.toString(), err || 'Ce champ est requis');
+            form.setFieldError(`${index}`, err || 'Ce champ est requis');
             return;
           default: break;
         }
@@ -88,9 +88,9 @@ const ModalCustom: React.FC = () => {
         <Divider variant='solid' />
         <Stack>
           <form onSubmit={handleSubmit}>
-            {getData.options?.map((field: Option, index: number) => {
+            {getData.options.map((field: Option, index: number) => {
               return (
-                <Fragment key={index}>
+                <Fragment key={`${index}`}>
                   {
                     field.type === 'input' && (
                       <InputField
