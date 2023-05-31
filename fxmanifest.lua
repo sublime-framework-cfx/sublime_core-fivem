@@ -34,4 +34,8 @@ files {
     'web/build/**/*'
 }
 
-
+dependencies {
+    'oxmysql',                     -- requires oxmysql resource
+    '/server:5848',                -- requires at least server build 5848
+    '/onesync',                    -- requires onesync enabled
+}
