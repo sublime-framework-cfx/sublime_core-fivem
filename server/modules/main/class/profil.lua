@@ -62,6 +62,7 @@ end
 local function Disconnected(self)
     MySQL.update.await('UPDATE profils SET previousId = ? WHERE id = ?', {nil, self.id})
     sl.profiles[self.source] = nil
+    GlobalState.playersCount -= 1
     return true
 end
 
@@ -208,7 +209,7 @@ end
 ---@param external? boolean
 ---@return table|false
 local function CreateProfileObj(obj, source, username, password, external)
-    local self = {}
+    local self, bag <const> = {}, Player(source).state
 
     self.source = source
     self.identifiers = obj.getIdentifiersFromId(source)
@@ -218,6 +219,7 @@ local function CreateProfileObj(obj, source, username, password, external)
     self.username = username
     self.password = joaat(password)
     self.kick = KickPlayer
+    bag:set('username', username, true)
 
     local can, err = pcall(InitProfileFromDb, self, external)
 
@@ -239,6 +241,7 @@ local function CreateProfileObj(obj, source, username, password, external)
         self.notify = function(select, data)
             obj:notify(self.source, select, data)
         end
+        GlobalState.playersCount += 1
         return self
     end
     return false, err
