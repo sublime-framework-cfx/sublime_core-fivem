@@ -1,6 +1,6 @@
 import { debugData } from "../../../utils/debugData";
 import type { ModalConfirmProps } from "../../../typings";
-
+/*
 const desc = `
 A paragraph with *emphasis* and **strong importance**.
 > A block quote with ~strikethrough~ and a URL: https://reactjs.org.
@@ -21,7 +21,7 @@ const code = `
   const b = 2;
   const c = a + b;
 ~~~
-`;
+`;*/
 
 const text = "Je pourrais aussi faire comme cela  \n  Avec un retour un la ligne  \n\t  Et la une tabulation avec un retour à la ligne";
 
