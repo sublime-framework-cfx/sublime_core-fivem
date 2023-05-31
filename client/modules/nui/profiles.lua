@@ -1,6 +1,7 @@
 local createPed <const> = require 'imports.npc.client'
 local default <const> = require 'config.client.firstspawn'
-local lastIndex, Charlist, ped, onCharacter = 0, {}
+local lastIndex, Charlist, ped, onCharacter, pedInfo  = 0, {}
+local Promise
 ---------------------------------------------------------
 
 local function StartPreview(cam, preview)
@@ -54,7 +55,7 @@ end
 --- Function ---
 
 function sl:openProfile(cam, preview)
-    local Promise = promise.new()
+    Promise = promise.new()
     local profiles <const> = callback.sync('callback:getProfilesNui')
     Charlist = profiles.chars
     if not profiles then return end
@@ -69,6 +70,14 @@ function sl:openProfile(cam, preview)
 
     return sl.await(Promise)
 end
+
+--- DEBUG ---
+
+RegisterCommand('spawn', function()
+   --if not next(pedInfo) or not Promise then return end
+   if ped then ped = ped:remove() end
+   Promise:resolve(pedInfo)
+end)
 
 --- Event ---
 
@@ -106,7 +115,7 @@ sl:registerReactCallback('sl:profile:callback:charSelect', function(data, cb)
     local index = data + 1
     if index == lastIndex then return end
     lastIndex = index
-    local pedInfo = Charlist[index]
+    pedInfo = Charlist[index]
 
     -- local offSet = GetOffsetFromEntityInWorldCoords(cache.ped, 0.0, 4.7, 0.2)
     -- local cam = CreateCameraWithParams('DEFAULT_SCRIPTED_CAMERA', offSet.x, offSet.y, offSet.z, 0.0, 0.0, 0.0, 30.0, false, 0)
@@ -128,11 +137,16 @@ sl:registerReactCallback('sl:profiles:onSubmit', function(data, cb)
             if ped then ped = ped:remove() end
             local input = sl:openModal('custom', {
                 title = 'New Character',
+                transition = {
+                    name= 'skew-up',
+                    duration= 200,
+                    timingFunction= 'ease-in-out'
+                },
                 options = {
                     { type = 'input', label = translate('first_name'), placeholder = 'John', required = true, error = '' },
                     { type = 'input', label = translate('last_name'), placeholder = 'Doe', required = true, error = '' },
                     { type = 'slider', label = translate('height'), min = 120, max = 220, default = 180 },
-                    { type = 'select', data = models, label = translate('model'), required = true , callback = true, error = ''},
+                    { type = 'select', options = models, label = translate('model'), required = true , callback = true, error = ''},
                     { type = 'date', label = translate('date_of_birth'), required = true, error = '' }
                 },
             }, function(index, value)
