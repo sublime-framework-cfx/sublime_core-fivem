@@ -23,7 +23,8 @@ CreateThread(function()
 
     if discord.buttons and #discord.buttons > 0 then
         local SetDiscordRichPresenceAction <const> = SetDiscordRichPresenceAction
-        for i = 0, #(discord.buttons-1) do
+        print(#discord.buttons)
+        for i = 0, #(discord.buttons) do
             local button <const> = discord.buttons[i]
             SetDiscordRichPresenceAction(i, button.text, button.url)
         end
@@ -45,6 +46,8 @@ end)
 
 AddStateBagChangeHandler('playersCount', 'global', function(bagName, key, value, reserved, replicated)
     local time <const>, timer <const> = GetGameTimer(), 5000
+    print(value, GlobalState.playersCount)
     while (time + timer) > GetGameTimer() do Wait(1000) end
     richPresence:set('count', GlobalState.playersCount == value and value or GlobalState.playersCount)
+    print(value, GlobalState.playersCount)
 end)
