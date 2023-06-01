@@ -1,11 +1,12 @@
 local discord <const> = require 'config.client.rich-presence'.discord
 local AddStateBagChangeHandler <const> = AddStateBagChangeHandler
 local SetRichPresence <const> = SetRichPresence
+local GetGameTimer <const> = GetGameTimer
 local richPresence = {}
 
 function richPresence:set(key, value)
     if self[key] ~= value then self[key] = value end
-    SetRichPresence(('Players: %s/%s\n[%s] - %s'):format(self.count or GlobalState.playersCount, discord.maxPlayers, cache.serverid, self.username))
+    SetRichPresence(('Players: %s/%s\n[%s] - %s'):format(self.count or GlobalState.playersCount, discord.maxPlayers, cache.serverid, not LocalPlayer.state.username and self.username or LocalPlayer.state.username))
 end
 
 CreateThread(function()
@@ -39,12 +40,8 @@ CreateThread(function()
     richPresence:set('username', playerName)
 end)
 
-AddStateBagChangeHandler('username', 'player', function(bagName, key, value, reserved, replicated)
-    richPresence:set(key, value)
-end)
-
 AddStateBagChangeHandler('playersCount', 'global', function(bagName, key, value, reserved, replicated)
-    local time <const>, timer <const> = GetGameTimer(), 5000
+    local time <const>, timer <const> = GetGameTimer(), 4000
     while (time + timer) > GetGameTimer() do Wait(1000) end
     richPresence:set('count', GlobalState.playersCount == value and value or GlobalState.playersCount)
 end)
