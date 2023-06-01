@@ -11,6 +11,7 @@ import { themeOverride } from './theme';
 import NotificationsWrapper from './features/notify/NotificationsWrapper';
 import ModalCustom from './features/modal/ModalCustom';
 import ModalConfirm from './features/modal/ModalConfirm';
+import AlertWrapper from './features/alert/AlertWrapper';
 import { MainProfilesMenu, Login } from './features/profils/index';
 import ConvertUnixTime from './features/tool/ConvertUnix';
 
@@ -44,6 +45,7 @@ const App: React.FC = () => {
           <ConvertUnixTime />
           <ModalCustom />
           <ModalConfirm />
+          <AlertWrapper />
           <NotificationsWrapper />
           {isEnvBrowser() && <DevTool />}
         </MantineProvider>
