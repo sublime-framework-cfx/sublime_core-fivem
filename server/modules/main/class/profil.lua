@@ -209,7 +209,7 @@ end
 ---@param external? boolean
 ---@return table|false
 local function CreateProfileObj(obj, source, username, password, external)
-    local self, bag <const> = {}, Player(source).state
+    local self <const> = {}
 
     self.source = source
     self.identifiers = obj.getIdentifiersFromId(source)
@@ -219,11 +219,13 @@ local function CreateProfileObj(obj, source, username, password, external)
     self.username = username
     self.password = joaat(password)
     self.kick = KickPlayer
-    bag:set('username', username, true)
 
     local can, err = pcall(InitProfileFromDb, self, external)
 
     if can then
+        local bag <const> =  Player(self.source).state
+        bag:set('username', username, true)
+
         self.remove = Disconnected
         self.save = UpdateDb
         self.loadNuiProfiles = LoadNuiProfiles
