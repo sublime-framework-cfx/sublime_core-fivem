@@ -1,4 +1,5 @@
 sl.previousId = {}
+GlobalState.playersCount = 0
 
 function sl:playerLoaded(source)
     self:emitNet('playerLoaded', source)
@@ -68,3 +69,16 @@ sl:onNet('setLoadedInstance', function(source)
     loadedInstance[source] = source
     SetPlayerRoutingBucket(source, source)
 end)
+
+print([[
+^6###############################################################################
+^6# ^2ssss   u  u  bbbbb   l    iii mm   mm  eeee      cccc   ooo   rrrrrr  eeee  ^6#
+^6# ^2s      u  u  b    b  l     i  mmm mmm ee   e    c      o   o  rrr    ee   e ^6#
+^6# ^2 sss   u  u  bbbbb   l     i  mm m mm eeeee     c      o   o  rr     eeeee  ^6#
+^6# ^2    s  u  u  b    b  l     i  mm   mm ee    ^7...^2 c      o   o  rr     ee     ^6#
+^6# ^2ssss   uuuu  bbbbbb  llll iii mm   mm  eeee ^7...^2  cccc   ooo   rr      eeee  ^6#
+^6#                                                                             ^6#
+^6#                   ^2Github: soon                                              ^6#
+^6#                                                                             ^6#
+^6###############################################################################
+]])
