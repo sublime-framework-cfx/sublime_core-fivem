@@ -1,3 +1,6 @@
+-- this module is used for first spawn and preview player but work only on FiveM for now.. but it's planned to be ported on RedM & can got some bugs on restart resource
+-- also this module is not finished yet, it's just a preview of what it will look like
+
 -- not used actually or used in other module later i will see :eyes:
 local GetPlayerPed <const> = GetPlayerPed
 local PlayerId <const> = PlayerId
@@ -52,7 +55,7 @@ local NetworkClearClockTimeOverride <const> = NetworkClearClockTimeOverride
 -- local SetNuiFocus <const> = SetNuiFocus
 
 local p <const> = require 'imports.promise.shared'
-local hidePlayer, playerLoaded, charSpawned = false, false, false
+local hidePlayer, playerLoaded, charSpawned = true, false, false
 
 p.new(function(resolve)
     while not cache.playerid or not NetworkIsPlayerActive(cache.playerid) do
@@ -67,13 +70,6 @@ p.new(function(resolve)
 end):Then(function()
     sl:emitNet('playerLoaded')
 end)
-
-function cache.onUpdate.ped(value)
-    if not hidePlayer then return end
-    FreezeEntityPosition(value, true)
-    --SetEntityVisible(value, false, false)
-    --SetEntityCoordsNoOffset(value, default.coords.x, default.coords.y, default.coords.z, true, true, false)
-end
 
 local function PlayerPeview(toggle)
     if toggle then
@@ -110,11 +106,9 @@ local function PlayerPeview(toggle)
         end)
 
         FreezeEntityPosition(cache.ped, true)
-        SetEntityVisible(cache.ped, false, false)
+        SetEntityVisible(cache.ped, false)
     else
         hidePlayer = false
-        FreezeEntityPosition(cache.ped, false)
-        SetEntityVisible(cache.ped, true, false)
     end
 end
 
@@ -127,6 +121,7 @@ sl:onNet('playerLoaded', function()
             Wait(100)
         end
         SetPlayerModel(cache.playerid, default.model)
+        SetModelAsNoLongerNeeded(default.model)
         SetPedDefaultComponentVariation(cache.ped)
         Wait(500)
         playerLoaded = true
@@ -141,6 +136,7 @@ sl:onNet('playerLoaded', function()
         if login then
             SendLoadingScreenMessage(json.encode({fullyLoaded = true}))
         end
+        FreezeEntityPosition(cache.ped, true)
         SetEntityCoordsNoOffset(cache.ped, default.coords.x, default.coords.y, default.coords.z, true, true, false)
         StartPlayerTeleport(cache.playerid, default.coords.x, default.coords.y, default.coords.z, default.coords.w, false, true, false)
         resolve(true)
@@ -161,33 +157,50 @@ sl:onNet('playerLoaded', function()
         Wait(1000)
         DoScreenFadeIn(500)
 
-        Wait(500)
+        Wait(250)
         sl:resetFocus() -- prevent: focus from being stuck or not visible
-        Wait(500)
+        Wait(250)
 
         SetEntityCoordsNoOffset(cache.ped, default.coords.x, default.coords.y, default.coords.z, true, true, false)
         StartPlayerTeleport(cache.playerid, default.coords.x, default.coords.y, default.coords.z, default.coords.w, false, true, false)
+        FreezeEntityPosition(cache.ped, true)
 
         local offset = GetOffsetFromEntityInWorldCoords(cache.ped, 0.0, 4.7, 0.2)
         local cam = CreateCameraWithParams('DEFAULT_SCRIPTED_CAMERA', offset.x, offset.y, offset.z, 0.0, 0.0, 0.0, 30.0, false, 0)
         SetCamActive(cam, true)
         RenderScriptCams(true, true, 0.0, true, true)
-        Wait(500)
-        --RenderScriptCams(false, false, 0, true, true)
-        --DestroyCam(cam, false)
-        --cam = nil
         local spawn <const> = sl:openProfile(cam, hidePlayer)
 
         if spawn then
             ---@todo: spawn player
             -- event server-side: playerSpawned
+            charSpawned = true
             RenderScriptCams(false, false, 0, true, true)
             DestroyCam(cam, false)
-            PlayerPeview(false)
+            
             NetworkClearClockTimeOverride()
             ClearOverrideWeather()
             NetworkEndTutorialSession()
             cam = nil
+
+            ---@debug
+            sl:resetFocus()
+            PlayerPeview(false)
+            SetPlayerModel(PlayerId(), spawn.model) 
+            cache.ped = PlayerPedId()
+            SetPedDefaultComponentVariation(cache.ped) 
+            SetEntityAsMissionEntity(cache.ped, true, true) 
+            SetModelAsNoLongerNeeded(cache.ped)
+            SetEntityCollision(cache.ped, true, true)
+            SetEntityCoordsNoOffset(cache.ped, default.coords.x, default.coords.y, default.coords.z, true, true, false)
+            SetEntityHeading(cache.ped, default.coords.w)
+            FreezeEntityPosition(cache.ped, false)
+            SetEntityVisible(cache.ped, true)
+            SetPlayerInvincible(cache.playerid, false)
+            SetPlayerControl(cache.playerid, true, 0)
+            ClearPlayerWantedLevel(cache.playerid)
+            NetworkResurrectLocalPlayer(default.coords.x, default.coords.y, default.coords.z, default.coords.w, true, false)
+            SetGameplayCamRelativeHeading(0)
         else
             ---@todo: kick player / unload
         end
