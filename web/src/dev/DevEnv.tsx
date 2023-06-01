@@ -7,7 +7,7 @@ import {
   Divider,
   Button,
   Flex,
-  Text
+  Text,
 } from '@mantine/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -15,11 +15,13 @@ import {
   faArrowLeft,
   faArrowRight,
 } from '@fortawesome/free-solid-svg-icons';
-import { debugNotification } from './debug/notifcation';
-import { debugModalsConfirm } from './debug/modals/confirm';
-import { debugModalsCustom } from './debug/modals/custom';
-import { debugLogin } from './debug/login';
-
+import {
+  debugNotification,
+  debugModalsConfirm,
+  debugModalsCustom,
+  debugLogin,
+  debugAlert,
+} from './debug';
 
 interface Props {
   text: string;
@@ -32,7 +34,7 @@ const AnimatedButtons: React.FC<Props> = ({
   text,
   Clicked,
   color,
-  isDisabled
+  isDisabled,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -91,15 +93,29 @@ const DevTool: React.FC = () => {
           <Flex
             bg='dark.3'
             gap='xs'
-            style={{ borderRadius: 4}}
+            style={{ borderRadius: 4 }}
             justify='center'
             align='center'
             direction='row'
             wrap='wrap'
           >
             <Text>Modal: </Text>
-            <AnimatedButtons text='Confirm' Clicked={() => {debugModalsConfirm(); setOpened(false)}} color='dark.9'/>
-            <AnimatedButtons text='Custom' Clicked={() => {debugModalsCustom(); setOpened(false)}} color='dark.9'/>
+            <AnimatedButtons
+              text='Confirm'
+              Clicked={() => {
+                debugModalsConfirm();
+                setOpened(false);
+              }}
+              color='dark.9'
+            />
+            <AnimatedButtons
+              text='Custom'
+              Clicked={() => {
+                debugModalsCustom();
+                setOpened(false);
+              }}
+              color='dark.9'
+            />
           </Flex>
           <Button
             variant='outline'
@@ -116,6 +132,17 @@ const DevTool: React.FC = () => {
             onClick={() => debugLogin()}
           >
             Login
+          </Button>
+          <Button
+            variant='outline'
+            color='gray.8'
+            fullWidth
+            onClick={() => {
+              debugAlert();
+              setOpened(false);
+            }}
+          >
+            Alert
           </Button>
         </Stack>
       </Drawer>
