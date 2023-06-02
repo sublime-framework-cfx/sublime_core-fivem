@@ -46,7 +46,7 @@ local config <const> = {
                 `metadata` longtext NOT NULL DEFAULT '[]',
                 PRIMARY KEY (`charid`) USING BTREE,
                 INDEX `FK_characters_profils` (`user`) USING BTREE,
-                CONSTRAINT `FK_characters_profils` FOREIGN KEY (`user`) REFERENCES `sublime-framework`.`profils` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+                CONSTRAINT `FK_characters_profils` FOREIGN KEY (`user`) REFERENCES `]]..db_name..[[`.`profils` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
             )
         ]],
     }
