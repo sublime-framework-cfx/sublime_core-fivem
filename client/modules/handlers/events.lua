@@ -1,9 +1,9 @@
 local RegisterNetEvent <const>, AddEventHandler <const>, TriggerEvent <const>, TriggerServerEvent <const>, joaat <const> = RegisterNetEvent, AddEventHandler, TriggerEvent, TriggerServerEvent, joaat
-local callback <const>, tokenClient = require 'imports.callback.client'
-local timers, GetGameTimer <const> = {}, GetGameTimer
+local timers, GetGameTimer <const>, tokenClient = {}, GetGameTimer
 
 ---@param name string
 ---@return table|false
+---@private
 local function IsEventCooldown(name)
     if timers[name] then
         return timers[name]
@@ -12,6 +12,7 @@ local function IsEventCooldown(name)
 end
 
 ---@return boolean
+---@private
 local function GetCooldown(self)
     if not self then return end
     local time = GetGameTimer()
@@ -24,6 +25,7 @@ end
 
 ---@param name string
 ---@param timer number
+---@private
 local function RegisterCooldown(name, timer)
     local self = {}
     
@@ -34,6 +36,10 @@ local function RegisterCooldown(name, timer)
     timers[name] = self
 end
 
+---@param name string
+---@param cb fun(...: any)
+---@param cooldown? number
+---@public AddEventHandler
 function sl:on(name, cb, cooldown)
     if type(name) ~= 'string' then return end
     if cb and (type(cb) ~= 'table' and type(cb) ~= 'function') then return end
@@ -52,6 +58,10 @@ function sl:on(name, cb, cooldown)
     return AddEventHandler(self:hashEvent(name), eventHandler)
 end
 
+---@param name string
+---@param cb? fun(...: any)
+---@param cooldown? number
+---@public RegisterNetEvent
 function sl:onNet(name, cb, cooldown)
     if type(name) ~= 'string' then return end
     if cb and (type(cb) ~= 'table' and type(cb) ~= 'function') then return RegisterNetEvent(self:hashEvent(name)) end
@@ -69,13 +79,19 @@ function sl:onNet(name, cb, cooldown)
     return RegisterNetEvent(self:hashEvent(name), eventHandler)
 end
 
-function sl:emitNet(name, ...) -- @ TriggerServerEvent
+---@param name string
+---@param ... any
+---@public TriggerServerEvent
+function sl:emitNet(name, ...)
     if not tokenClient then tokenClient = callback.sync(joaat('token')) end
     if type(name) ~= 'string' then return end
     TriggerServerEvent(self:hashEvent(name, 'server'), tokenClient, ...)
 end
 
-function sl:emit(name, ...) -- @ TriggerEvent
+---@param name string
+---@param ... any
+---@public TriggerEvent
+function sl:emit(name, ...)
     if type(name) ~= 'string' then return end
     TriggerEvent(self:hashEvent(name), ...)
 end
