@@ -1,26 +1,25 @@
-local modules <const> = require 'config.client.modules'
+local define <const> = require 'config.client.modules'
+local modules = {}
 
----@load modules.handlers
-require 'client.modules.handlers.events'
-require 'client.modules.handlers.nui'
-require 'client.modules.handlers.statebags'
-
----@load modules.nui
-require 'client.modules.nui.modals'
-require 'client.modules.nui.login'
-require 'client.modules.nui.profiles'
-require 'client.modules.nui.notify'
-
-
----@load modules.?
-require 'client.modules.main.cache'
-require 'client.modules.main.firstspawn'
-
----
---require 'client.modules.main.main'
-require 'client.modules.main.security'
---require 'client.modules.loadscreen.main'
-
-if modules.richPresence then
-    if modules.richPresence.discord then require 'client.modules.rich-presence.discord' end
+for k in pairs(define) do
+    modules[#modules + 1] = k
 end
+
+table.sort(modules, function(a, b)
+    return a < b
+end)
+
+for i = 1, #modules do
+    local files = modules[i]
+    if #define[files] > 1 then
+        local M = define[files]
+        for j = 1, #M do
+            local module = M[j]
+            require(('client.modules.%s.%s'):format(files, module))
+        end
+    else
+        require(('client.modules.%s.%s'):format(files, define[files][1]))
+    end
+end
+
+modules = nil
