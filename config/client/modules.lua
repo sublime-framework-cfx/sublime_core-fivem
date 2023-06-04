@@ -15,6 +15,9 @@ return {
         'firstspawn',
         'security'
     },
+    ['setting'] = {
+        'population',
+    },
     ['rich-presence'] = {
         'discord'
     }
