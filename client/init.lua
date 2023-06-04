@@ -1,3 +1,16 @@
+---@class CacheProps
+---@field ped number PlayerEntity: PlayerPedId()
+---@field playerid number PlayerIndex: PlayerId()
+---@field serverid number PlayerServerId: GetPlayerServerId(PlayerId())
+---@field mount? boolean redm only
+---@field weapon number|false weapon: hash or false
+---@field vehicle number|false vehicle: entity or false
+---@field seat number|false seat: number or false
+---@field screenX number GetActiveScreenResolution()[1]
+---@field screenY number GetActiveScreenResolution()[2]
+---@field set fun(self: CacheProps, key: string, value: any)
+---@field on fun(key: string, cb: fun(value: any))
+
 local define <const> = require 'config.client.modules'
 local modules = {}
 
@@ -7,13 +20,14 @@ RegisterNUICallback('sl:react:config', function(_, cb)
     }) ---@todo config interface
 end)
 
--- RegisterNUICallback('sl:react:locale', function(_, cb)
+-- RegisterNUICallback('sl:react:translation', function(_, cb)
 --     local 
 --     cb({
 -- 
---     }) ---@todo config interface
+--     }) ---@todo config language
 -- end)
 
+---@type CacheProps
 cache = {
     on = function(key, cb)
         sl:on(('cache:%s'):format(key), cb)
