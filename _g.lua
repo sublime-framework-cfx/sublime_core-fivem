@@ -1,5 +1,5 @@
 local sl_core <const>, service <const> = 'sublime_core', (IsDuplicityVersion() and 'server') or 'client'
-local LoadResourceFile <const>, IsDuplicityVersion <const>, GetGameName <const>, joaat <const>, await <const>, GetCurrentResourceName <const>, GetInvokingResource <const> = LoadResourceFile, IsDuplicityVersion, GetGameName, joaat, Citizen.Await, GetCurrentResourceName, GetInvokingResource
+local LoadResourceFile <const>, IsDuplicityVersion <const>, GetGameName <const>, joaat <const>, await <const>, GetCurrentResourceName <const> = LoadResourceFile, IsDuplicityVersion, GetGameName, joaat, Citizen.Await, GetCurrentResourceName
 
 ---@param index string
 ---@param service string<'client' | 'server'>
