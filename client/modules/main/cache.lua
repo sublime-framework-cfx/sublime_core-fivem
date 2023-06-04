@@ -2,9 +2,6 @@ local cache = _ENV.cache
 
 function cache:set(key, value)
     if self[key] ~= value then
-        if cache.onUpdate[key] then
-            cache.onUpdate[key](value, self[key])
-        end
         self[key] = value
         sl:emit(('cache:%s'):format(key), value)
         return true
@@ -26,17 +23,15 @@ local GetCurrentPedWeapon <const> = GetCurrentPedWeapon
 local GetActiveScreenResolution <const> = GetActiveScreenResolution
 
 local size = 247
-
+cache:set('playerid', PlayerId())
+cache:set('serverid', GetPlayerServerId(cache.playerid))
 
 SetInterval(function()
     cache:set('ped', PlayerPedId())
-
     if size > 250 then
         local screen_x, screen_y = GetActiveScreenResolution()
-        cache:set('playerid', PlayerId())
-        cache:set('serverid', GetPlayerServerId(cache.playerid))
-        cache:set('screen_x', screen_x)
-        cache:set('screen_y', screen_y)
+        cache:set('screenX', screen_x)
+        cache:set('screenY', screen_y)
         size = 0
     end
 
