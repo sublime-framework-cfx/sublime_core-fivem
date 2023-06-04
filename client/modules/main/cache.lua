@@ -9,8 +9,8 @@ function cache:set(key, value)
 end
 
 -- redm only
-local GetMount <const> = GetMount
-local IsPedOnMount <const> = IsPedOnMount
+local GetMount <const> = sl.game == 'redm' and GetMount
+local IsPedOnMount <const> = sl.game == 'redm' and IsPedOnMount
 
 -- fivem & redm
 local PlayerPedId <const> = PlayerPedId
