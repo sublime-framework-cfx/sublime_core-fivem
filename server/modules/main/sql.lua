@@ -1,5 +1,4 @@
-Citizen.CreateThreadNow(function()
-
+MySQL.ready(function()
     local databaseName <const> = MySQL.scalar.await('SELECT DATABASE()')
     sl.databaseName = databaseName ---@type string utils to recover the database name later
 
