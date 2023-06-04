@@ -37,7 +37,7 @@ const ConfigProvider: React.FC<{ children: React.ReactNode }> = ({ children }) =
   });
 
   useEffect(() => {
-    fetchNui<Config>('supv:react:getConfig').then((data) => setConfig(data));
+    fetchNui<Config>('sl:react:config').then((data) => setConfig(data));
   }, []);
 
   return <ConfigCtx.Provider value={{ config, setConfig }}>{children}</ConfigCtx.Provider>;
