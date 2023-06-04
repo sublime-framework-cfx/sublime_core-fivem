@@ -1,6 +1,12 @@
 local define <const> = require 'config.client.modules'
 local modules = {}
 
+RegisterNUICallback('sl:react:config', function(_, cb)
+    cb({
+        
+    }) ---@todo config interface
+end)
+
 for k in pairs(define) do
     modules[#modules + 1] = k
 end
