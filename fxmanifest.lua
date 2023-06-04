@@ -14,7 +14,7 @@ loadscreen_manual_shutdown "yes" -- enable manual shutdown
 loadscreen_cursor 'yes' -- enable cursor
 
 server_script 'package/dist/server/server.js' -- need to be init first
-shared_scripts {'_g.lua', 'shared/init.lua'} -- need to be init first
+shared_scripts {'init.lua', 'shared/init.lua'} -- need to be init first
 
 server_script 'server/init.lua'
 client_script 'client/init.lua'
