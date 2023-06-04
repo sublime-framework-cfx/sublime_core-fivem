@@ -1,5 +1,5 @@
 local sl_core <const>, service <const> = 'sublime_core', (IsDuplicityVersion() and 'server') or 'client'
-local LoadResourceFile <const>, IsDuplicityVersion <const>, GetGameName <const>, joaat <const>, await <const>, GetCurrentResourceName <const> = LoadResourceFile, IsDuplicityVersion, GetGameName, joaat, Citizen.Await, GetCurrentResourceName
+local LoadResourceFile <const>, IsDuplicityVersion <const>, GetGameName <const>, joaat <const>, await <const>, GetCurrentResourceName <const>, GetInvokingResource <const> = LoadResourceFile, IsDuplicityVersion, GetGameName, joaat, Citizen.Await, GetCurrentResourceName, GetInvokingResource
 
 ---@param index string
 ---@param service string<'client' | 'server'>
@@ -9,7 +9,7 @@ local function load_module(index, service)
     local chunk <const> = LoadResourceFile(sl_core, ('%s/%s.lua'):format(dir, service))
     local shared <const> = LoadResourceFile(sl_core, ('%s/shared.lua'):format(dir))
     local func, err
-    
+
     if chunk or shared then
         if shared then
             func, err = load(shared, ('@@%s/%s/%s'):format(sl_core, index, 'shared'))
@@ -33,9 +33,9 @@ end
 
 sl = setmetatable({
     service = service, ---@type string<'client' | 'server'>
-    name = GetCurrentResourceName(), ---@type string<'sublime_core'>
+    name = sl_core, ---@type string<'sublime_core'>
     game = GetGameName(), ---@type string<'fivem' | 'redm'>
-    env = GetInvokingResource() == GetCurrentResourceName() and sl_core or GetInvokingResource() or 'unknown',
+    env = GetCurrentResourceName(),
     hashEvent = FormatEvent,
     await = await,
     lang = GetConvar('sl:locale', 'fr') ---@type string<'fr' | 'en' | unknown>
