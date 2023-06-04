@@ -3,9 +3,22 @@ local modules = {}
 
 RegisterNUICallback('sl:react:config', function(_, cb)
     cb({
-        
+
     }) ---@todo config interface
 end)
+
+-- RegisterNUICallback('sl:react:locale', function(_, cb)
+--     local 
+--     cb({
+-- 
+--     }) ---@todo config interface
+-- end)
+
+cache = {
+    on = function(key, cb)
+        sl:on(('cache:%s'):format(key), cb)
+    end
+}
 
 for k in pairs(define) do
     modules[#modules + 1] = k
