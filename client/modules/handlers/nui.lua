@@ -1,17 +1,21 @@
+---@alias CursorPositionProps 'top-right' | 'bottom-right'
+
 ---@class SendReactValue
 ---@field action string
 ---@field data? any
+---@type table
  
 ---@class SendReactOptions
----@field focus? boolean|table
----@field locations? string|table
+---@field focus? boolean | {[1]: boolean, [2]: boolean}
+---@field locations? CursorPositionProps | {x: float, y: float}
 ---@field keepInput? boolean
 
 local SetCursorLocation <const>, SetNuiFocusKeepInput<const>, SendNUIMessage <const>, type <const>, SetNuiFocus <const>, table <const>, RegisterNUICallback <const>, IsNuiFocused <const> = SetCursorLocation, SetNuiFocusKeepInput, SendNUIMessage, type, SetNuiFocus, table, RegisterNUICallback, IsNuiFocused 
 
-local Locations <const> = {
+---@type table<string, {x: float, y: float}>
+local cusorPosition <const> = {
     ['top-right'] = {},
-    ['bottom-right'] = {0.90, 0.90}
+    ['bottom-right'] = {x = 0.90, y = 0.90}
 }
 
 --- supv.sendReactMessage
@@ -42,7 +46,7 @@ local function SendReactMessage(self, visible, value, options)
         end
 
         if type(options.locations) == 'string' then
-            SetCursorLocation(Locations[options.locations][1], Locations[options.locations][2])
+            SetCursorLocation(cusorPosition[options.locations][1], cusorPosition[options.locations][2])
         elseif type(options.locations) == 'table' then
             SetCursorLocation(options.locations[1] or options.locations.x, options.locations[2] or options.locations.y)
         end
