@@ -31,14 +31,16 @@
 ---@field isDead boolean
 
 local power <const> = require 'config.server.permission'.power
+local CreateCharObj <const> = require 'server.class.character'
+local sql <const> = require 'server.modules.handlers.sql'
 
 sl.profiles = {}
 
 ---@return boolean|void
 local function InitProfileFromDb(self, from)
     local row = nil
-
-    if from == 'token' then
+    ---@todo more change about tempid
+    if from == 'loading' then
         row = MySQL.single.await('SELECT * FROM profils WHERE previousId = ?', {self.identifiers.token})
     else
         row = MySQL.single.await('SELECT * FROM profils WHERE user = ? AND password = ?', {self.username, self.password})
@@ -60,9 +62,9 @@ end
 
 ---@return boolean
 local function Disconnected(self)
-    MySQL.update.await('UPDATE profils SET previousId = ? WHERE id = ?', {nil, self.id})
+    sql.changeTempId(nil, self.id)
     sl.profiles[self.source] = nil
-    GlobalState.playersCount -= 1
+    -- GlobalState.playersCount -= 1 -- that will be moved
     return true
 end
 
@@ -80,7 +82,7 @@ end
 
 ---@return loadNuiProfiles
 local function LoadNuiProfiles(self)
-    local query <const> = MySQL.query.await('SELECT * FROM characters WHERE user = ?', {self.id})
+    local query <const> = sql.loadCharacter(self.id)
 
     if query == '[]' then return false end
 
@@ -97,22 +99,21 @@ local function LoadNuiProfiles(self)
             dob = char.dateofbirth,
             model = char.model,
             skin = json.decode(char.skin) or {},
-            -- country = char.country,
+            -- country = char.country, ---@todo will be available soon
         }
     end
 
     data.username = self.username
     data.permission = self.permission
     data.stats = self.stats
-    data.logo = self.metadata.logo
+    data.logo = self.metadata?.logo
     
     return data
 end
 
 ---@return void
 local function UpdateDb(self)
-    local query = 'UPDATE profils SET user = ?, password = ?, stats = ?, metadata = ? WHERE id = ?'
-    local update <const> = MySQL.update.await(query, {self.username, self.password, json.encode(self.stats or {}), json.encode(self.metadata), self.id})
+    local update <const> = sql.updateProfile(self)
     if update then 
         print('Update profil: '..self.username)
     else
@@ -141,15 +142,15 @@ end
 ---@param data AddCharProps
 ---@return boolean
 local function NewChar(self, data)
-    local query <const> = 'INSERT INTO `characters` (`user`, `firstname`, `lastname`, `sex`, `dateofbirth`, `height`, `model`) VALUES (?, ?, ?, ?, ?, ?, ?)'
-    local insert <const> = MySQL.insert.await(query, {self.id, data.firstname, data.lastname, data.sex, data.dob, data.height, data.model})
+    local insert <const> = sql.createNewCharacter(self.id, data)
     if insert then
         return true
     end
     return false
 end
 
----@return array|false
+---@return table | table<LoadCharsProps>
+--[[ not used yet
 local function LoadChars(self)
     local query <const> = MySQL.query.await('SELECT * FROM characters WHERE user = ?', {self.id})
     if query == '[]' then return false end
@@ -170,8 +171,9 @@ local function LoadChars(self)
     end
     return data
 end
+--]]
 
----@param args string|number|table|boolean
+---@param args string | number | table | boolean
 ---@return boolean
 local function HasPermission(self, args)
     if type(args) == 'string' and self.permission == args then return true
@@ -193,13 +195,16 @@ local function HasPermission(self, args)
     return false
 end
 
+---@todo
 local function SpawnCharacter(self)
     if self.char then return warn("character is already loaded, you need to unload char before!\n") end
     local data = {}
+    local query <const> = MySQL.query.await('SELECT * FROM characters WHERE user = ?', {self.id})
+    if query == '[]' then return false end
 
-    ---@todo spawn character load data from db
-
-    --self.char = require('server.class.character')(self, data)
+    ---@todo implement data
+    
+    sl.profiles[self.source].char = CreateCharObj(self, data)
     return self.char
 end
 
@@ -207,14 +212,14 @@ end
 ---@param username string
 ---@param password string
 ---@param external? boolean
----@return table|false
+---@return table | false
 local function CreateProfileObj(obj, source, username, password, external)
     local self <const> = {}
 
     self.source = source
     self.identifiers = obj.getIdentifiersFromId(source)
 
-    password = password:gsub('%s+', '')
+    password = password:gsub('%s+', '') ---@todo more check about password (because for some reason profile nui isn't loaded from that or user)
 
     self.username = username
     self.password = joaat(password)
@@ -234,16 +239,16 @@ local function CreateProfileObj(obj, source, username, password, external)
         self.set = SetData
         self.get = GetData
         self.addCharacter = NewChar
-        self.loadCharacters = LoadChars
+        --self.loadCharacters = LoadChars
         self.hasPermission = HasPermission
-        --self.char = false
-        --self.spawn = SpawnCharacter
+        self.char = false
+        self.spawn = SpawnCharacter
         obj.profiles[source] = self
-        obj.previousId[self.identifiers.token] = nil
+        --obj.tempid[self.identifiers.token] = nil
         self.notify = function(select, data)
             obj:notify(self.source, select, data)
         end
-        GlobalState.playersCount += 1
+        -- GlobalState.playersCount += 1 -- that will be moved
         return self
     end
     return false, err
