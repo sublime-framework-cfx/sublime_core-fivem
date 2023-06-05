@@ -208,16 +208,17 @@ local function SpawnCharacter(self)
     return self.char
 end
 
+---@param _self table sl object
 ---@param source integer
 ---@param username string
 ---@param password string
 ---@param external? boolean
 ---@return table | false
-local function CreateProfileObj(obj, source, username, password, external)
-    local self <const> = {}
+local function CreateProfileObj(_self, source, username, password, external)
+    local self = {}
 
     self.source = source
-    self.identifiers = obj.getIdentifiersFromId(source)
+    self.identifiers = _self.getIdentifiersFromId(source)
 
     password = password:gsub('%s+', '') ---@todo more check about password (because for some reason profile nui isn't loaded from that or user)
 
@@ -243,10 +244,10 @@ local function CreateProfileObj(obj, source, username, password, external)
         self.hasPermission = HasPermission
         self.char = false
         self.spawn = SpawnCharacter
-        obj.profiles[source] = self
+        _self.profiles[source] = self
         --obj.tempid[self.identifiers.token] = nil
         self.notify = function(select, data)
-            obj:notify(self.source, select, data)
+            _self:notify(self.source, select, data)
         end
         -- GlobalState.playersCount += 1 -- that will be moved
         return self
@@ -254,12 +255,24 @@ local function CreateProfileObj(obj, source, username, password, external)
     return false, err
 end
 
-local function GetProfile(source)
-    return (source == true and sl.profiles) or (sl.profiles[source]) or false
+---@param source boolean | integer
+---@return boolean | table
+local function GetProfile(self, source)
+    return (source == true and self.profiles) or (self.profiles[source]) or false
 end
 
-sl.createProfileObj = CreateProfileObj
-sl.getProfileFromId = GetProfile
+function sl:getProfileFromId(source)
+    return GetProfile(self, source)
+end
+
+---@param source integer
+---@param username string
+---@param password string
+---@param external? boolean
+---@return table | false
+function sl:createProfileObj(source, username, password, external)
+    return CreateProfileObj(self, source, username, password, external)
+end
 
 ---@param spawned? boolean
 ---@return table
@@ -282,8 +295,8 @@ function sl:getPlayers(spawned)
     return self.profiles
 end
 
-function sl.getCharFromId(source) ---@todo
-    local profil <const> = GetProfile(source)
-    if not profil then return false end
-    return profil.char
+---@param source integer
+---@return table | false
+function sl:getCharFromId(source) ---@todo
+    return GetProfile(self, source)?.char or false
 end
