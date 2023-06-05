@@ -60,8 +60,8 @@ MySQL.ready(function()
             if not exist then
                 MySQL.query.await(sql.create)
             end
-        end return
+        end return sl.databaseName
     end
 
-    error('Database not found', 3)
+    return false
 end)
