@@ -80,9 +80,11 @@ local function SendWebhookDiscord(self, types, ...)
     return error("Invalid types of webhook", 1)
 end
 
-sl.webhook = SendWebhookDiscord
+function sl:webhook(types, ...)
+    return SendWebhookDiscord(self, types, ...)
+end
 
-if config.played_from ~= 'shared' then return end
+if config.playing_from ~= 'shared' then return end
 
 ---@todo need more implementation about webhook send from client
 sl:onNet('webhook:received', function (source, types, ...)

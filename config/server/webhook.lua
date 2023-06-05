@@ -13,5 +13,5 @@ return {
         avatar = "https://avatars.githubusercontent.com/u/95303960?s=280&v=4"
     },
 
-    played_from = 'server' -- shared or server
+    playing_from = 'server' -- shared or server
 }
