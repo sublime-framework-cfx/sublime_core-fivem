@@ -17,7 +17,7 @@ end
 
 ---@param source integer
 ---@param encode? boolean
----@return table|string-json.encode : Only if encode is true
+---@return table|string<json>
 local function GetIdentifiersFromSource(source, encode) ---@todo
     local listId = { steam = true, license = true, xbl = true, ip = true, discord = true, live = true }
     local identifiers = {}
@@ -30,5 +30,10 @@ local function GetIdentifiersFromSource(source, encode) ---@todo
     return encode and json.encode(identifiers) or identifiers
 end
 
-sl.getIdentifiersFromId = GetIdentifiersFromSource
-sl.getIdentifierFromId = GetIdentifierFromSource
+function sl:getIdentifiersFromId(source, encode)
+    return GetIdentifiersFromSource(source, encode)
+end
+
+function sl:getIdentifierFromId(source, key)
+    return GetIdentifierFromSource(source, key)
+end
