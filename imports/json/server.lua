@@ -6,7 +6,7 @@ local SaveResourceFile <const> = SaveResourceFile
 ---@param resourceName? string
 ---@return string
 local function Loadjson(filePath, resourceName)
-    local resource <const> = resourceName or sl.env
+    local resource <const> = resourceName or sl.env or sl.name
     local filename <const> = filePath
     local str <const> = json.decode(LoadResourceFile(resource, ("%s.json"):format(filename)))
     if not str then
