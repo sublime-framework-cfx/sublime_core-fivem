@@ -1,3 +1,8 @@
+---@create sql schema
+local name = require 'server.sql'
+if not name then return error("Database not found", 3) end
+name = nil
+
 ---@load modules.important
 require 'server.modules.utils.getIdentifier'
 
@@ -8,11 +13,8 @@ require 'server.modules.handlers.events'
 require 'server.modules.nui.notify'
 
 ---@load modules.main
-require 'server.modules.main.sql'
+mysql = require 'server.modules.main.mysql'
 require 'server.modules.main.security'
-
 require 'server.modules.main.class.profil'
-
----@load modules.?
 require 'server.modules.main.main'
 require 'server.modules.main.profiles'
