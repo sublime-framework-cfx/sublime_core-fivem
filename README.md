@@ -3,7 +3,7 @@
 
 ---------
 
-<img width="750" align='center' alt="BACKGROUND SUBLIME" src="https://raw.githubusercontent.com/SUP2Ak/logo-banner/main/sublime_gif.gif" />
+<img width="800" height="400" align='center' alt="BACKGROUND SUBLIME" src="https://raw.githubusercontent.com/SUP2Ak/logo-banner/main/sublime_gif.gif" />
 
 Nouveau framework FiveM pour tout type de serveur.
 
