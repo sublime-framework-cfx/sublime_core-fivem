@@ -15,6 +15,6 @@ require 'server.modules.nui.notify'
 ---@load modules.main
 mysql = require 'server.modules.main.mysql'
 require 'server.modules.main.security'
-require 'server.modules.main.class.profil'
 require 'server.modules.main.main'
+require 'server.modules.main.class.profile'
 require 'server.modules.main.profiles'
