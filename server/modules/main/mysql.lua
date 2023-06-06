@@ -22,11 +22,11 @@ function mysql.updateProfile(user)
     return MySQL.update.await(update_profile, { user.username, user.password, json.encode(user.stats or {}), json.encode(user.metadata or {}), user.id })
 end
 
-local load_character <const> = 'SELECT * FROM characters WHERE user = ?' -- used to show character selection
+local load_characters <const> = 'SELECT * FROM characters WHERE user = ?' -- used to show character selection
 ---@param userId integer
 ---@return table
-function mysql.loadCharacter(userId)
-    return MySQL.query.await(load_character, { userId })
+function mysql.loadCharacters(userId)
+    return MySQL.query.await(load_characters, { userId })
 end
 
 local change_temp_id <const> = 'UPDATE profils SET tempId = ? WHERE id = ?' -- used to change temp id
@@ -44,12 +44,20 @@ function mysql.checkUserExist(user)
     return MySQL.scalar.await(check_user_exist, { user })
 end
 
+local init_profile <const> = 'SELECT * FROM profils WHERE user = ? AND password = ?'
+---@param username string
+---@param password string
+---@return table
+function mysql.initProfile(username, password)
+    return MySQL.single.await(init_profile, { username, password })
+end
+
 ---utils if you doesn't want rewrite same code in external resource, use it like this: 
 ---local mysql <const> = sl:mysql()
 ---local exist <const> = mysql.checkUserExist('sup2ak')
 ---@return table
 function sl:mysql()
-    mysql.name = self.databaseName
+    mysql.name = sl.databaseName
     return mysql
 end
 
