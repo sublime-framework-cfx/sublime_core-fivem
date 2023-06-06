@@ -7,8 +7,8 @@ local GetCurrentResourceName <const>, AddEventHandler <const> = GetCurrentResour
 local export = exports[sl_core]
 local service <const>, joaat <const> = (IsDuplicityVersion() and 'server') or 'client', joaat
 
-local function FormatedEvent(name, from)
-    return ('%s:%s:%s'):format('__sl__', from or service, joaat(name))
+local function FormatEvent(self, name, from)
+    return ("__sl__:%s:%s"):format(from or service, joaat(name))
 end
 
 if not _VERSION:find('5.4') then
@@ -68,8 +68,9 @@ sl = setmetatable({
     cache = service == 'client' and {},
     config = {},
     await = Citizen.Await,
+    hashEvent = FormatEvent,
     onCache = service == 'client' and function(key, cb)
-        AddEventHandler(FormatedEvent(('cache:%s'):format(key)), cb)
+        AddEventHandler(FormatEvent(nil, ('cache:%s'):format(key)), cb)
     end
 },
 { 
@@ -80,7 +81,7 @@ sl = setmetatable({
 if sl.service == 'client' then
     setmetatable(sl.cache, {
         __index = function(self, key)
-            AddEventHandler(FormatedEvent(('cache:%s'):format(key)), function(value)
+            AddEventHandler(FormatEvent(('cache:%s'):format(key)), function(value)
                 self[key] = value
                 return self[key]
             end)
