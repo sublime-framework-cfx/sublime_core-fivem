@@ -25,6 +25,11 @@ end)
 
 function sl:openLogin()
     if p then return end
+    local AlreadyLogin <const> = callback.sync('callback:login', false, nil)
+    if AlreadyLogin then 
+        Wait(3000)    
+        return AlreadyLogin 
+    end
     local d = {}
     d.username = GetResourceKvpString('sl:username') or nil
     d.password = GetResourceKvpString('sl:password') or nil
