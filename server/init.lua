@@ -13,7 +13,6 @@ require 'server.modules.handlers.events'
 require 'server.modules.nui.notify'
 
 ---@load modules.main
-mysql = require 'server.modules.main.mysql'
 require 'server.modules.main.security'
 require 'server.modules.main.main'
 require 'server.modules.main.class.profile'
