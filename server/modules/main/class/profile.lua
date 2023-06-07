@@ -30,22 +30,13 @@
 ---@field stats table
 ---@field isDead boolean
 
+local mysql <const> = require 'server.modules.main.mysql'
 local power <const> = require 'config.server.permission'.power
-local CreateCharObj <const> = require 'server.class.character'
-local sql <const> = require 'server.modules.handlers.sql'
-
-sl.profiles = {}
+local CreateCharObj <const> = require 'server.modules.main.class.character'
 
 ---@return boolean|void
 local function InitProfileFromDb(self, from)
-    local row = nil
-    ---@todo more change about tempid
-    if from == 'loading' then
-        row = MySQL.single.await('SELECT * FROM profils WHERE previousId = ?', {self.identifiers.token})
-    else
-        row = MySQL.single.await('SELECT * FROM profils WHERE user = ? AND password = ?', {self.username, self.password})
-    end
-
+    local row <const> = mysql.initProfile(self.username, self.password)
     if not row or not next(row) then return false end
 
     self.id = row.id
@@ -62,9 +53,9 @@ end
 
 ---@return boolean
 local function Disconnected(self)
-    sql.changeTempId(nil, self.id)
+    mysql.changeTempId(nil, self.id)
     sl.profiles[self.source] = nil
-    -- GlobalState.playersCount -= 1 -- that will be moved
+    GlobalState.playersCount -= 1 -- that will be moved? maybe not
     return true
 end
 
@@ -82,8 +73,7 @@ end
 
 ---@return loadNuiProfiles
 local function LoadNuiProfiles(self)
-    local query <const> = sql.loadCharacter(self.id)
-
+    local query <const> = mysql.loadCharacters(self.id)
     if query == '[]' then return false end
 
     local data = {}
@@ -113,7 +103,7 @@ end
 
 ---@return void
 local function UpdateDb(self)
-    local update <const> = sql.updateProfile(self)
+    local update <const> = mysql.updateProfile(self)
     if update then 
         print('Update profil: '..self.username)
     else
@@ -142,7 +132,7 @@ end
 ---@param data AddCharProps
 ---@return boolean
 local function NewChar(self, data)
-    local insert <const> = sql.createNewCharacter(self.id, data)
+    local insert <const> = mysql.createNewCharacter(self.id, data)
     if insert then
         return true
     end
@@ -215,12 +205,13 @@ end
 ---@param external? boolean
 ---@return table | false
 local function CreateProfileObj(_self, source, username, password, external)
+    local p = promise.new()
     local self = {}
 
     self.source = source
-    self.identifiers = _self.getIdentifiersFromId(source)
+    self.identifiers = _self:getIdentifiersFromId(source)
 
-    password = password:gsub('%s+', '') ---@todo more check about password (because for some reason profile nui isn't loaded from that or user)
+    password = password:gsub('%s+', '_') ---@todo more check about password (because for some reason profile nui isn't loaded from that or user)
 
     self.username = username
     self.password = joaat(password)
@@ -228,37 +219,43 @@ local function CreateProfileObj(_self, source, username, password, external)
 
     local can, err = pcall(InitProfileFromDb, self, external)
 
-    if can then
-        local bag <const> =  Player(self.source).state
-        bag:set('username', username, true)
+    if not can then p:reject(err) end
+    local bag <const> =  Player(self.source).state
+    bag:set('username', username, true)
 
-        self.remove = Disconnected
-        self.save = UpdateDb
-        self.loadNuiProfiles = LoadNuiProfiles
-        self.setMetadata = SetMetadata
-        self.getMetadata = GetMetadata
-        self.set = SetData
-        self.get = GetData
-        self.addCharacter = NewChar
-        --self.loadCharacters = LoadChars
-        self.hasPermission = HasPermission
-        self.char = false
-        self.spawn = SpawnCharacter
-        _self.profiles[source] = self
-        --obj.tempid[self.identifiers.token] = nil
-        self.notify = function(select, data)
-            _self:notify(self.source, select, data)
-        end
-        -- GlobalState.playersCount += 1 -- that will be moved
-        return self
+    self.remove = Disconnected
+    self.save = UpdateDb
+    self.loadNuiProfiles = LoadNuiProfiles
+    self.setMetadata = SetMetadata
+    self.getMetadata = GetMetadata
+    self.set = SetData
+    self.get = GetData
+    self.addCharacter = NewChar
+    --self.loadCharacters = LoadChars
+    self.hasPermission = HasPermission
+    self.char = false
+    self.spawn = SpawnCharacter
+    _self.profiles[self.source] = self
+    --obj.tempid[self.identifiers.token] = nil
+    self.notify = function(select, data)
+        _self:notify(self.source, select, data)
     end
-    return false, err
+    print(_self.profiles, sl.profiles, 'is profile? from obj')
+    GlobalState.playersCount += 1 -- that will be moved
+    p:resolve(self)
+    return _self.await(p)
 end
 
 ---@param source boolean | integer
 ---@return boolean | table
 local function GetProfile(self, source)
-    return (source == true and self.profiles) or (self.profiles[source]) or false
+    local p = promise.new()
+    if not self.profiles then
+        self.profiles = sl.profiles ---@debug call from external resource
+    end
+
+    p:resolve(source == true and sl.profiles or sl.profiles[source] or nil)
+    return sl.await(p)
 end
 
 function sl:getProfileFromId(source)
