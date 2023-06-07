@@ -48,14 +48,15 @@ function sl:on(name, cb, cooldown)
         RegisterCooldown(name, cooldown)
     end
 
-    local eventHandler = function(...)
+    local function EventHandler(...)
         local eventCooldown = IsEventCooldown(name)
         if eventCooldown and eventCooldown:onCooldown() then
             return warn('Ignoring event', name, 'because of cooldown'..'\n')
         end
         cb(...)
     end
-    return AddEventHandler(self:hashEvent(name), eventHandler)
+
+    return AddEventHandler(self:hashEvent(name), EventHandler)
 end
 
 ---@param name string
@@ -69,14 +70,16 @@ function sl:onNet(name, cb, cooldown)
     if type(cooldown) == 'number' then
         RegisterCooldown(name, cooldown)
     end
-    local eventHandler = function(...)
+
+    local function EventHandler(...)
         local eventCooldown = IsEventCooldown(name)
         if eventCooldown and eventCooldown:onCooldown() then
             return warn('Ignoring event', name, 'because of cooldown'..'\n')
         end
         cb(...)
     end
-    return RegisterNetEvent(self:hashEvent(name), eventHandler)
+
+    return RegisterNetEvent(self:hashEvent(name), EventHandler)
 end
 
 ---@param name string
