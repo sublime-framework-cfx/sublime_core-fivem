@@ -56,6 +56,7 @@ local NetworkClearClockTimeOverride <const> = NetworkClearClockTimeOverride
 
 local p <const> = require 'imports.promise.shared'
 local hidePlayer, playerLoaded, charSpawned = true, false, false
+local AwaitLogin = nil
 
 p.new(function(resolve)
     while not cache.playerid or not NetworkIsPlayerActive(cache.playerid) do
@@ -70,6 +71,25 @@ p.new(function(resolve)
 end):Then(function()
     sl:emitNet('playerLoaded')
 end)
+
+--Citizen.CreateThreadNow(function()
+--    local can <const> = sl.await(p.async(function(resolve)
+--        while not cache.playerid or not NetworkIsPlayerActive(cache.playerid) do
+--            Wait(500)
+--        end
+--        while not IsScreenFadedOut do
+--            DoScreenFadeOut(0)
+--            Wait(250)
+--        end
+--        Wait(250)
+--        print(true, 'TRUUUUUUUUUUUUUUUUE')
+--        resolve(true)
+--    end))
+--    if can then
+--        print('??xD')
+--        sl:emitNet('playerLoaded')
+--    end
+--end)
 
 local function PlayerPeview(toggle)
     if toggle then
@@ -113,8 +133,10 @@ local function PlayerPeview(toggle)
 end
 
 sl:onNet('playerLoaded', function()
+    if AwaitLogin then return end
+    AwaitLogin = true
     local default <const> = require 'config.client.firstspawn'
-
+    local inLoadingScreen = GetIsLoadingScreenActive()
     if not playerLoaded then
         RequestModel(default.model)
         while not HasModelLoaded(default.model) do
@@ -131,10 +153,11 @@ sl:onNet('playerLoaded', function()
     PlayerPeview(true)
 
     local success <const> = sl.await(p.async(function(resolve)
-        SendLoadingScreenMessage(json.encode({loginOpen = true}))
+        if inLoadingScreen then SendLoadingScreenMessage(json.encode({loginOpen = true})) end
         local login <const> = sl:openLogin()
         if login then
-            SendLoadingScreenMessage(json.encode({fullyLoaded = true}))
+            if inLoadingScreen then SendLoadingScreenMessage(json.encode({fullyLoaded = true})) end
+            AwaitLogin = nil
         end
         FreezeEntityPosition(cache.ped, true)
         SetEntityCoordsNoOffset(cache.ped, default.coords.x, default.coords.y, default.coords.z, true, true, false)
@@ -145,10 +168,12 @@ sl:onNet('playerLoaded', function()
     if success then
         Wait(3500)
         
-        if GetIsLoadingScreenActive() then
+        if inLoadingScreen then
             ShutdownLoadingScreenNui()
             ShutdownLoadingScreen()
         end
+
+        inLoadingScreen = nil
 
         NetworkStartSoloTutorialSession()
         SetPlayerControl(cache.playerid, true, 0) -- maybe false ?
