@@ -1,6 +1,8 @@
+---@todo: more documentation soon in this code
+
 local RegisterNetEvent <const>, AddEventHandler <const>, TriggerEvent <const>, joaat <const> = RegisterNetEvent, AddEventHandler, TriggerEvent, joaat
 
-sl.token = require 'server.modules.packages.tokenizer'
+sl.token = require 'modules.packages.server.tokenizer' -- @return string uuid (randomly generated when resource start)
 
 local timers = {}
 
