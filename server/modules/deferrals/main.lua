@@ -1,16 +1,17 @@
 local cards <const> = require(('server.modules.deferrals.cards.%s'):format(sl.lang))
+local mysql <const> = require 'server.modules.main.mysql'
 
-local function RegisterCard(d, callback, _source)
+local function RegisterCard(d, cb, _source)
     Wait(50)
     d.presentCard(cards.register, function(rdata, raw)
-        if rdata.submit_type == 'cancel' then callback(d) end
+        if rdata.submit_type == 'cancel' then cb(d) end
         if rdata.submit_type == 'register' then
             local username, password, cpassword = rdata.username, rdata.password, rdata.confirm_password
 
             if not username or not password or not cpassword then
                 d.update(translate('d_missing_fields'))
                 Wait(3000)
-                return RegisterCard(d, callback, _source)
+                return RegisterCard(d, cb, _source)
             end
 
             password = joaat(password:gsub('%s+', '_'))
@@ -20,22 +21,22 @@ local function RegisterCard(d, callback, _source)
             if password ~= cpassword then
                 d.update(translate('d_passwords_not_match'))
                 Wait(3000)
-                return RegisterCard(d, callback, _source)
+                return RegisterCard(d, cb, _source)
             end
 
             ---@todo SQL: Add more security checks about identifier want create multiple account if you don't authorized to do that
-            local user_exist = MySQL.scalar.await('SELECT 1 FROM `profils` WHERE `user` = ?', {username})
+            local user_exist <const> = mysql.checkUserExist(username)
             if user_exist then
                 d.update(translate('d_user_already_exist'))
                 Wait(3000)
-                return RegisterCard(d, callback)
+                return RegisterCard(d, cb)
             end
 
-            local success = MySQL.insert.await('INSERT INTO profils (user, password, createdBy) VALUES (?, ?, ?)', {username, tostring(password), sl.getIdentifiersFromId(_source, true)})
+            local success = MySQL.insert.await('INSERT INTO profils (user, password, createdBy) VALUES (?, ?, ?)', {username, tostring(password), sl:getIdentifiersFromId(_source, true)})
             if success then
                 d.update(translate('d_account_created'))
                 Wait(3000)
-                return callback(d, _source)
+                return cb(d, _source)
             end
         end
     end)
@@ -67,9 +68,10 @@ local function HomeCard(d, _source)
                 return HomeCard(d, _source)
             end
 
-            local token <const> = sl.getIdentifierFromId(_source, 'token')
-            MySQL.update.await('UPDATE profils SET identifiers = ?, previousId = ? WHERE `user` = ? AND `password` = ?', {sl.getIdentifiersFromId(_source, true), token, username, password})
-            sl.previousId[token] = true
+            MySQL.update.await('UPDATE profils SET identifiers = ? WHERE `user` = ? AND `password` = ?', {sl:getIdentifiersFromId(_source, true), username, password})
+            sl.tempId[_source] = _source
+            sl:createProfileObj(_source, username, data.password)
+            Wait(500)
             d.done()
         elseif data.submitId == 'register' then
             Wait(50)
