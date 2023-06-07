@@ -22,7 +22,7 @@ end
 ---@param dataLength? integer
 ---@return boolean
 local function Writejson(filePath, data, resourceName, dataLength)
-    local resource <const> = resourceName or sl.env
+    local resource <const> = resourceName or sl.env or sl.name
     local lenght <const> = dataLength or -1
     local filename <const> = filePath
     local writeFile <const> = SaveResourceFile(resource, ("%s.json"):format(filename), json.encode(data, {indent = true}), lenght)

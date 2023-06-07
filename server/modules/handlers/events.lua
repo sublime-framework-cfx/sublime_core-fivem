@@ -47,7 +47,7 @@ local function RegisterCooldown(name, timer, global)
 end
 
 function sl:eventHandler(name, token, source, cb, cooldown, global, ...)
-    if not token or token ~= self.token then return warn(("This player id : %s have execute event %s without token! (identifier: %s)"):format(source, name, self.getIdentifierFromId(source, 'license'))) end
+    if not token or token ~= self.token then return warn(("This player id : %s have execute event %s without token! (identifier: %s)"):format(source, name, self:getIdentifierFromId(source, 'license'))) end
     if cooldown and not global then
         local eventCooldown = IsEventCooldown(name, source)
         if eventCooldown and eventCooldown:onCooldown() then

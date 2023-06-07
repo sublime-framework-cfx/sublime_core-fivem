@@ -35,14 +35,25 @@ sl = setmetatable({
     service = service, ---@type string<'client' | 'server'>
     name = sl_core, ---@type string<'sublime_core'>
     game = GetGameName(), ---@type string<'fivem' | 'redm'>
-    env = GetCurrentResourceName(),
+    env = sl_core, ---@type string<'sublime_core'>
     hashEvent = FormatEvent,
     await = await,
     lang = GetConvar('sl:locale', 'fr') ---@type string<'fr' | 'en' | unknown>
 }, {
     __newindex = function(self, name, func)
-    rawset(self, name, func)
-    exports(name, func)
+    local function method(...)
+        local invoking = GetInvokingResource()
+        if invoking then
+            self.env = invoking
+        end
+        local args = {...}
+        table.remove(args, 1)
+
+        return func(self, table.unpack(args))
+    end
+
+    rawset(self, name, method)
+    exports(name, method)
 end})
 
 require = load_module('require', 'shared').load ---@load require over write

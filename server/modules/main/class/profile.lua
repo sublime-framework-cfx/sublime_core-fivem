@@ -250,12 +250,12 @@ end
 ---@return boolean | table
 local function GetProfile(self, source)
     local p = promise.new()
-    if not self.profiles then
-        self.profiles = sl.profiles ---@debug call from external resource
-    end
+    --if not self.profiles then
+    --    self.profiles = sl.profiles ---@debug call from external resource
+    --end
 
-    p:resolve(source == true and sl.profiles or sl.profiles[source] or nil)
-    return sl.await(p)
+    p:resolve(source == true and self.profiles or self.profiles[source] or nil)
+    return self.await(p)
 end
 
 function sl:getProfileFromId(source)

@@ -66,7 +66,6 @@ sl = setmetatable({
     env = GetCurrentResourceName(),
     lang = GetConvar('sl:locale', 'fr'),
     cache = service == 'client' and {},
-    config = {},
     await = Citizen.Await,
     hashEvent = FormatEvent,
     onCache = service == 'client' and function(key, cb)
@@ -91,27 +90,27 @@ if sl.service == 'client' then
         end
     })
 
-    setmetatable(sl.config, {
-        __index = function(self, key)
-            local value = rawget(self, key)
-            if not value then
-                value = export:getConfig(key)
-                rawset(self, key, value)
-            end
-            return value
-        end
-    })
+    --setmetatable(sl.config, {
+    --    __index = function(self, key)
+    --        local value = rawget(self, key)
+    --        if not value then
+    --            value = export:getConfig(key)
+    --            rawset(self, key, value)
+    --        end
+    --        return value
+    --    end
+    --})
 elseif sl.service == 'server' then
-    setmetatable(sl.config, {
-        __index = function(self, key)
-            local value = rawget(self, key)
-            if not value then
-                value = export:getConfig(key)
-                rawset(self, key, value)
-            end
-            return value
-        end
-    })
+    --setmetatable(sl.config, {
+    --    __index = function(self, key)
+    --        local value = rawget(self, key)
+    --        if not value then
+    --            value = export:getConfig(key)
+    --            rawset(self, key, value)
+    --        end
+    --        return value
+    --    end
+    --})
 
     MySQL = setmetatable({}, {
         __index = function(self, key)
