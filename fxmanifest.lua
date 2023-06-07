@@ -13,21 +13,23 @@ loadscreen 'client/modules/loadscreen/index.html' -- loadscreen
 loadscreen_manual_shutdown "yes" -- enable manual shutdown
 loadscreen_cursor 'yes' -- enable cursor
 
-server_script 'package/dist/server/server.js' -- need to be init first
+--server_script 'package/dist/server/server.js' -- need to be init first
 shared_scripts {'init.lua', 'shared/init.lua'} -- need to be init first
 
-server_script 'server/init.lua'
-client_script 'client/init.lua'
+--server_script 'server/init.lua'
+--client_script 'client/init.lua'
 
 ui_page 'web/build/index.html'
 
 files {
     'obj.lua',
     'locales/*',
-    'config/client/*.lua',
-    'config/shared/*.lua',
-    'client/modules/**',
-    'shared/modules/**',
+    --'config/client/*.lua',
+    --'config/shared/*.lua',
+    --'client/modules/**',
+    --'shared/modules/**',
+    'modules/**/shared/*.lua',
+    'modules/**/client/*.lua',
     'imports/**/shared.lua',    
     'imports/**/client.lua',
     'web/build/index.html',
