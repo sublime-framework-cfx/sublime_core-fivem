@@ -1,29 +1,6 @@
 local sl_core <const>, service <const> = 'sublime_core', (IsDuplicityVersion() and 'server') or 'client'
 local LoadResourceFile <const>, IsDuplicityVersion <const>, GetGameName <const>, joaat <const>, await <const>, GetCurrentResourceName <const> = LoadResourceFile, IsDuplicityVersion, GetGameName, joaat, Citizen.Await, GetCurrentResourceName
 
----@param index string
----@param service string<'client' | 'server'>
----@return any
-local function load_module(index, service)
-    local dir <const> = ("imports/%s"):format(index)
-    local chunk <const> = LoadResourceFile(sl_core, ('%s/%s.lua'):format(dir, service))
-    local shared <const> = LoadResourceFile(sl_core, ('%s/shared.lua'):format(dir))
-    local func, err
-
-    if chunk or shared then
-        if shared then
-            func, err = load(shared, ('@@%s/%s/%s'):format(sl_core, index, 'shared'))
-        else
-            func, err = load(chunk, ('@@%s/%s/%s'):format(sl_core, index, service))
-        end
-
-        if not func or err then return error(("Error to load module\n- From : %s\n- Module : %s\n- Service : %s\n - Error : %s"):format(dir, index, service, err), 3) end
-
-        local result = func()
-        return result
-    end
-end
-
 ---@param name string
 ---@param from? string<'client' | 'server'> default is sl.service
 ---@return string
@@ -31,32 +8,127 @@ local function FormatEvent(self, name, from)
     return ("__sl__:%s:%s"):format(from or self.service, joaat(name))
 end
 
+
+local function methodLocal(self, func, ...)
+    if not ... then return func end
+    local env = (...).env
+    if self.env == sl_core then
+        return func(...)
+    end
+    self.env = not GetInvokingResource() and sl_core or self.env
+    return func(...)
+end
+
+local function methodExport(self, func, ...)
+    if not ... then return func end
+    local env = (...).env or GetInvokingResource()
+    rawset(sl, 'env', env)
+    local args = {...}
+    args[1] = sl
+    return func(table.unpack(args))
+end
+
+declare = setmetatable({}, {
+    __call = function(self, func)
+        local name
+        for k, v in pairs(sl) do
+            if v == func then
+                name = k
+                break
+            end 
+        end
+        if not name then return error("Cannot determine function name in sl object") end
+        self[name] = func
+    end,
+    __newindex = function(self, name, value)
+        if type(value) == 'function' then
+            rawset(self, name, function(...)
+                return methodExport(self, value, ...)
+            end)
+            exports(name, self[name])
+        else
+            rawset(self, name, value)
+        end
+    end
+})
+
 sl = setmetatable({
     service = service, ---@type string<'client' | 'server'>
     name = sl_core, ---@type string<'sublime_core'>
     game = GetGameName(), ---@type string<'fivem' | 'redm'>
-    env = sl_core, ---@type string<'sublime_core'>
+    env = sl_core, ---@type string<'resource_name?'>
     hashEvent = FormatEvent,
     await = await,
     lang = GetConvar('sl:locale', 'fr') ---@type string<'fr' | 'en' | unknown>
 }, {
-    __newindex = function(self, name, func)
-    local function method(...)
-        local invoking = GetInvokingResource()
-        if invoking then
-            self.env = invoking
+    __newindex = function(self, name, value)
+        if type(value) == 'function' then
+            rawset(self, name, function(...)
+                return methodLocal(self, value, ...)
+            end)
+        else
+            rawset(self, name, value)
         end
-        local args = {...}
-        table.remove(args, 1)
+    end
+})
 
-        return func(self, table.unpack(args))
+local loaded = {}
+
+package = {
+    loaded = setmetatable({}, {
+        __index = loaded,
+        __newindex = function() end,
+        __metatable = false,
+    }),
+    path = './?.lua;'
+}
+
+local _require = require
+
+function require(modname)
+
+    local module = loaded[modname]
+    if not module then
+        if module == false then
+            error(("^1circular-dependency occurred when loading module '%s'^0"):format(modname), 2)
+        end
+
+        local success, result = pcall(_require, modname)
+
+        if success then
+            loaded[modname] = result
+            return result
+        end
+
+        local modpath = modname:gsub('%.', '/')
+        local paths = { string.strsplit(';', package.path) }
+        for i = 1, #paths do
+            local scriptPath = paths[i]:gsub('%?', modpath):gsub('%.+%/+', '')
+            local resourceFile = LoadResourceFile(sl_core, scriptPath)
+            if resourceFile then
+                loaded[modname] = false
+                scriptPath = ('@@%s/%s'):format(sl_core, scriptPath)
+
+                local chunk, err = load(resourceFile, scriptPath)
+
+                if err or not chunk then
+                    loaded[modname] = nil
+                    return error(err or ("unable to load module '%s'"):format(modname), 3)
+                end
+
+                module = chunk(modname) or true
+                loaded[modname] = module
+
+                return module
+            end
+        end
+
+        return error(("module '%s' not found"):format(modname), 2)
     end
 
-    rawset(self, name, method)
-    exports(name, method)
-end})
+    return module
+end
 
-require = load_module('require', 'shared').load ---@load require over write
 require('imports.locales.shared').init() ---@load translation
 
 if sl.service == 'server' then
