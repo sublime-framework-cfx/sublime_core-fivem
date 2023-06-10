@@ -101,3 +101,8 @@ function sl:emit(name, ...) -- @ TriggerEvent
     if type(name) ~= 'string' then return end
     TriggerEvent(self:hashEvent(name), self.token, ...)
 end
+
+declare(sl.emitNet)
+declare(sl.emit)
+declare(sl.on)
+declare(sl.onNet)

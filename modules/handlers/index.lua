@@ -1,8 +1,19 @@
-require(('modules.handlers.%s.events'):format(sl.service))
+return {
+    shared = {
+        'config',
+        'translation',
+    },
 
-if sl.service == 'client' then
-    require(('modules.handlers.%s.nui'):format(sl.service))
+    server = {
+        'events',
+        'identifiers',
+        'webhook',
+    },
 
-elseif sl.service == 'server' then
-    ---@todo more modules soon like command ...
-end 
+    client = {
+        'events',
+        'cache',
+        'nui',
+        --'statebags',
+    }
+}

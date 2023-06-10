@@ -86,6 +86,7 @@ package = {
 local _require = require
 
 function require(modname)
+    --print('require', modname)
 
     local module = loaded[modname]
     if not module then
@@ -115,7 +116,7 @@ function require(modname)
                     loaded[modname] = nil
                     return error(err or ("unable to load module '%s'"):format(modname), 3)
                 end
-
+                
                 module = chunk(modname) or true
                 loaded[modname] = module
 

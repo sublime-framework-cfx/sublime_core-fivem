@@ -23,6 +23,7 @@ local cusorPosition <const> = {
 ---@param value? SendReactValue
 ---@param options? SendReactOptions
 local function SendReactMessage(self, visible, value, options)
+    print(json.encode(value, {indent = true}))
     if type(visible) == 'boolean' then
         
         ---@todo reset focus options when visible is false and focus active = true
@@ -85,3 +86,7 @@ sl.resetFocus = ResetFocus
     SetNuiFocus(true, true)
     SetNuiFocusKeepInput(true)
 --]]
+
+declare(sl.sendReactMessage)
+declare(sl.registerReactCallback)
+declare(sl.resetFocus)
