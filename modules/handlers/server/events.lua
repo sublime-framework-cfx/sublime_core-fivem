@@ -66,12 +66,16 @@ function sl:eventHandler(name, token, source, cb, cooldown, global, ...)
     cb(source, ...)
 end
 
-function sl:on(name, cb, cooldown, global)
+function sl:on(name, cb, cooldown)
     if type(name) ~= 'string' then return end
     if cb and (type(cb) ~= 'table' and type(cb) ~= 'function') then return end
 
     local eventHandler = function(token, ...)
-        return self:eventHandler(name, token, source, cb, cooldown, global, ...)
+        local eventCooldown = IsEventCooldown(name)
+        if eventCooldown and eventCooldown:onCooldown() then
+            return warn('Ignoring event : '..name, 'because of global cooldown'..'\n')
+        end
+        cb(...)
     end
     return AddEventHandler(self:hashEvent(name), eventHandler)
 end
