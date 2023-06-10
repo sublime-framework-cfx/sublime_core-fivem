@@ -4,7 +4,7 @@
   "homepage": "web/build",
   "private": true,
   "dependencies": {
-    "@emotion/react": "^11.10.8",
+    "@emotion/react": "^11.11.1",
     "@fortawesome/fontawesome-svg-core": "^6.4.0",
     "@fortawesome/free-brands-svg-icons": "^6.4.0",
     "@fortawesome/free-regular-svg-icons": "^6.4.0",
@@ -21,7 +21,7 @@
     "@testing-library/user-event": "^14.4.3",
     "@types/jest": "^29.5.2",
     "@types/node": "^20.2.5",
-    "@types/react": "^18.2.8",
+    "@types/react": "^18.2.9",
     "@types/react-dom": "^18.2.1",
     "@types/react-syntax-highlighter": "^15.5.7",
     "dayjs": "^1.11.8",
