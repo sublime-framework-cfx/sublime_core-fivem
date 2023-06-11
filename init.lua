@@ -8,50 +8,6 @@ local function FormatEvent(self, name, from)
     return ("__sl__:%s:%s"):format(from or self.service, joaat(name))
 end
 
-
-local function methodLocal(self, func, ...)
-    if not ... then return func end
-    local env = (...).env
-    if self.env == sl_core then
-        return func(...)
-    end
-    self.env = not GetInvokingResource() and sl_core or self.env
-    return func(...)
-end
-
-local function methodExport(self, func, ...)
-    if not ... then return func end
-    local env = (...).env or GetInvokingResource()
-    rawset(sl, 'env', env)
-    local args = {...}
-    args[1] = sl
-    return func(table.unpack(args))
-end
-
-declare = setmetatable({}, {
-    __call = function(self, func)
-        local name
-        for k, v in pairs(sl) do
-            if v == func then
-                name = k
-                break
-            end 
-        end
-        if not name then return error("Cannot determine function name in sl object") end
-        self[name] = func
-    end,
-    __newindex = function(self, name, value)
-        if type(value) == 'function' then
-            rawset(self, name, function(...)
-                return methodExport(self, value, ...)
-            end)
-            exports(name, self[name])
-        else
-            rawset(self, name, value)
-        end
-    end
-})
-
 sl = setmetatable({
     service = service, ---@type string<'client' | 'server'>
     name = sl_core, ---@type string<'sublime_core'>
@@ -62,12 +18,9 @@ sl = setmetatable({
     lang = GetConvar('sl:locale', 'fr') ---@type string<'fr' | 'en' | unknown>
 }, {
     __newindex = function(self, name, value)
+        rawset(self, name, value)
         if type(value) == 'function' then
-            rawset(self, name, function(...)
-                return methodLocal(self, value, ...)
-            end)
-        else
-            rawset(self, name, value)
+            exports(name, value)
         end
     end
 })
