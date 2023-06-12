@@ -10,7 +10,7 @@ local version <const> = GetResourceMetadata(sl.env, 'version', 0)
 ---@param isBeta? boolean
 ---@param perso? fun(resp: table)
 local function Checker(url, webhook, timer, isBeta, perso)
-    local j <const> = sl.json or require'imports.json.server'
+    local j <const> = require'imports.json.server'
     local message = j.load(('locales/%s'):format(sl.lang), sl.name)
 
     local from <const> = url
