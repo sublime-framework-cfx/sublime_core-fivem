@@ -1,5 +1,5 @@
 local data = {} ---@type { [string]: string}
-local j <const> = sl.json or require(('imports.json.%s'):format(sl.service))
+local j <const> = require(('imports.json.%s'):format(sl.service))
 
 ---@param str string
 ---@param ... any
