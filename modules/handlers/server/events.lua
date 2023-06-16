@@ -4,6 +4,10 @@ local RegisterNetEvent <const>, AddEventHandler <const>, TriggerEvent <const>, j
 
 sl.token = require 'modules.packages.server.tokenizer' -- @return string uuid (randomly generated when resource start)
 
+callback.register(joaat('token'), function(source)
+    return sl.token
+end)
+
 local timers = {}
 
 ---@param name string
@@ -48,8 +52,15 @@ local function RegisterCooldown(name, timer, global)
     end
 end
 
-function sl:eventHandler(name, token, source, cb, cooldown, global, ...)
-    if not token or token ~= self.token then return warn(("This player id : %s have execute event %s without token! (identifier: %s)"):format(source, name, self:getIdentifierFromId(source, 'license'))) end
+---@param name string
+---@param token? string
+---@param source? integer
+---@param cb fun(source: integer, ...: any)
+---@param cooldown? number
+---@param global? boolean
+---@param ... any
+local function EventHandler(name, token, source, cb, cooldown, global, ...)
+    if (source and source > 0) and (not token or token ~= sl.token) then return warn(("This player id : %s have execute event %s without token! (identifier: %s)"):format(source, name, sl.getIdentifierFromId(source, 'license'))) end
     if cooldown and not global then
         local eventCooldown = IsEventCooldown(name, source)
         if eventCooldown and eventCooldown:onCooldown() then
@@ -66,9 +77,17 @@ function sl:eventHandler(name, token, source, cb, cooldown, global, ...)
     cb(source, ...)
 end
 
+--- sl:on @ AddEventHandler
+---@param name string
+---@param cb fun(source: integer, ...: any)
+---@param cooldown? number
 function sl:on(name, cb, cooldown)
     if type(name) ~= 'string' then return end
     if cb and (type(cb) ~= 'table' and type(cb) ~= 'function') then return end
+
+    --if sl.debug then
+    --    ---@todo: add debug log
+    --end
 
     local eventHandler = function(token, ...)
         local eventCooldown = IsEventCooldown(name)
@@ -80,33 +99,35 @@ function sl:on(name, cb, cooldown)
     return AddEventHandler(self:hashEvent(name), eventHandler)
 end
 
+--- sl:onNet @ RegisterNetEvent
+---@param name string
+---@param cb fun(source: integer, ...: any)
+---@param cooldown? number
+---@param globa? boolean
 function sl:onNet(name, cb, cooldown, global)
     if type(name) ~= 'string' then return end
     if cb and (type(cb) ~= 'table' and type(cb) ~= 'function') then return RegisterNetEvent(self:hashEvent(name)) end
 
     local eventHandler = function(token, ...)
-        return self:eventHandler(name, token, source, cb, cooldown, global, ...)
+        return EventHandler(name, token, source, cb, cooldown, global, ...)
     end
+
     return RegisterNetEvent(self:hashEvent(name), eventHandler)
 end
 
-callback.register(joaat('token'), function(source)
-    return sl.token
-end)
-
 local TriggerClientEvent <const> = TriggerClientEvent
 
+---@param name string
+---@param source integer
+---@param ... any
 function sl:emitNet(name, source, ...) -- @ TriggerClientEvent
     if type(name) ~= 'string' then return end
     TriggerClientEvent(self:hashEvent(name, 'client'), source, ...)
 end
 
+---@param name string
+---@param ... any
 function sl:emit(name, ...) -- @ TriggerEvent
     if type(name) ~= 'string' then return end
     TriggerEvent(self:hashEvent(name), self.token, ...)
 end
-
-declare(sl.emitNet)
-declare(sl.emit)
-declare(sl.on)
-declare(sl.onNet)
