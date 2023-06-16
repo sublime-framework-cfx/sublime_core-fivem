@@ -22,7 +22,7 @@ local cusorPosition <const> = {
 ---@param visible? boolean
 ---@param value? SendReactValue
 ---@param options? SendReactOptions
-local function SendReactMessage(self, visible, value, options)
+local function SendReactMessage(visible, value, options)
     print(json.encode(value, {indent = true}))
     if type(visible) == 'boolean' then
         
@@ -64,7 +64,7 @@ end
 ---@param name string
 ---@param cb fun(data: any, cb: fun(...: any))
 ---@param visible? boolean
-local function RegisterReactCallback(self, name, cb, visible)
+local function RegisterReactCallback(name, cb, visible)
     RegisterNUICallback(name, function(...)
         if visible then
             SendReactMessage(false)
@@ -86,7 +86,3 @@ sl.resetFocus = ResetFocus
     SetNuiFocus(true, true)
     SetNuiFocusKeepInput(true)
 --]]
-
-declare(sl.sendReactMessage)
-declare(sl.registerReactCallback)
-declare(sl.resetFocus)
