@@ -1,6 +1,7 @@
-local PerformHttpRequest <const>, config <const> = PerformHttpRequest, sl:getConfig('webhook')
+local PerformHttpRequest <const>, config <const> = PerformHttpRequest, require 'config.server.webhook'
 local toUpper <const> = require('imports.string.shared').firstToUpper
-string.to_utf8 = require ('imports.utf8.shared').to_utf8
+
+string.to_utf8 = require('imports.utf8.shared').to_utf8
 assert(os.setlocale(config.localization))
 
 ---@class WebhookDataProps
@@ -23,11 +24,11 @@ assert(os.setlocale(config.localization))
 ---@param url string
 ---@param embeds WebhookEmbedProps
 ---@param data WebhookDataProps
-local function embed(self, url, embeds, data)
+local function embed(url, embeds, data)
     local date <const>, c <const> = {
         letter = ("\n%s %s"):format(toUpper(os.date("%A %d")), toUpper(os.date("%B %Y : [%H:%M:%S]"))):to_utf8(),
         numeric = ("\n%s"):format(os.date("[%d/%m/%Y] - [%H:%M:%S]"))
-    }, config or self:getConfig('webhook')
+    }, config or sl.getConfig('webhook')
 
     url = c.channel[url] or url
 
@@ -57,8 +58,8 @@ end
 ---@param url string
 ---@param text string
 ---@param data WebhookDataProps.bot_name
-local function message(self, url, text, data)
-    local c <const> = config or self:getConfig('webhook')
+local function message(url, text, data)
+    local c <const> = config or sl.getConfig('webhook')
 
     url = c.channel[url] or url
 
@@ -71,25 +72,21 @@ end
 ---@param types string
 ---@param ... any
 ---@return void
-local function SendWebhookDiscord(self, types, ...)
+local function SendWebhookDiscord(types, ...)
     if types == 'embed' then
-        return embed(self, ...)
+        return embed(...)
     elseif types == 'message' then
-        return message(self, ...)
+        return message(...)
     end
     return error("Invalid types of webhook", 1)
 end
 
-function sl:webhook(types, ...)
-    return SendWebhookDiscord(self, types, ...)
-end
+sl.webhook = SendWebhookDiscord
 
 if config.playing_from ~= 'shared' then return end
 
 ---@todo need more implementation about webhook send from client
 sl:onNet('webhook:received', function (source, types, ...)
     warn(source, 'play webhook from client')
-    sl:webhook(types, ...)
+    sl.webhook(types, ...)
 end)
-
-declare(sl.webhook)
