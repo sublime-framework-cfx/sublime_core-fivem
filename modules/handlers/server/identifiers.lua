@@ -30,13 +30,5 @@ local function GetIdentifiersFromSource(source, encode) ---@todo
     return encode and json.encode(identifiers) or identifiers
 end
 
-function sl:getIdentifiersFromId(source, encode)
-    return GetIdentifiersFromSource(source, encode)
-end
-
-function sl:getIdentifierFromId(source, key)
-    return GetIdentifierFromSource(source, key)
-end
-
-declare(sl.getIdentifiersFromId)
-declare(sl.getIdentifierFromId)
+sl.getIdentifiersFromId = GetIdentifiersFromSource
+sl.getIdentifierFromId = GetIdentifierFromSource
