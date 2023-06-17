@@ -52,13 +52,38 @@ function mysql.initProfile(username, password)
     return MySQL.single.await(init_profile, { username, password })
 end
 
+local create_profile <const> = 'INSERT INTO profils (user, password, createdBy) VALUES (?, ?, ?)'
+---@param username string
+---@param password string
+---@param createdBy string
+---@return boolean
+function mysql.createProfile(username, password, createdBy)
+    return MySQL.insert.await(create_profile, { username, password, createdBy })
+end
+
+local login_to_profile <const> = 'SELECT `id` FROM `profils` WHERE `user` = ? AND `password` = ?'
+---@param username string
+---@param number string
+---@return number
+function mysql.loginToProfile(username, password)
+    return MySQL.scalar.await(login_to_profile, { username, password })
+end
+
+local update_profile_identifiers <const> = 'UPDATE profils SET identifiers = ? WHERE `id` = ?'
+---@param identifiers string
+---@param userId integer
+function mysql.updateProfileIdentifiers(identifiers, userId)
+    return MySQL.update.await(update_profile_identifiers, { identifiers, userId })
+end
+
 ---utils if you doesn't want rewrite same code in external resource, use it like this: 
----local mysql <const> = sl:mysql()
+---local mysql <const> = sl.mysql()
 ---local exist <const> = mysql.checkUserExist('sup2ak')
 ---@return table
-function sl:mysql()
-    mysql.name = sl.databaseName
+function sl.mysql()
     return mysql
 end
+
+mysql.name = sl.databaseName
 
 return mysql
