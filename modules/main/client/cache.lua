@@ -67,5 +67,3 @@ end, 750)
 function sl.getCache(key)
     return cache[key]
 end
-
-declare(sl.getCache)
