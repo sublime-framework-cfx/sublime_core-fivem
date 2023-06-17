@@ -28,5 +28,3 @@ local function GetTranslation(...)
 end
 
 sl.getTranslation = GetTranslation
-
-declare(sl.getTranslation)
