@@ -1,8 +1,8 @@
 local p
 
-local function Alert(self, data)
+local function Alert(data)
     
-    self:sendReactMessage(true, {
+    sl.sendReactMessage(true, {
         action = 'sl:alert:show',
         data = data
     }, {
@@ -10,15 +10,15 @@ local function Alert(self, data)
     })
 
     p = promise.new()
-    return self.await(p)
+    return sl.await(p)
 end
 
-function sl:showAlert(data)
+function sl.showAlert(data)
     if p then return end
-    return Alert(self, data)
+    return Alert(data)
 end
 
-sl:registerReactCallback('sl:alert:submit', function(data, cb)
+sl.registerReactCallback('sl:alert:submit', function(data, cb)
     cb(1)
     if p then p:resolve(data) end p = nil
 end, true)

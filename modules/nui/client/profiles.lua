@@ -56,13 +56,13 @@ end
 
 --- Function ---
 
-function sl:openProfile(cam, preview)
+function sl.openProfile(cam, preview)
     Promise = promise.new()
     local profiles <const> = callback.sync('callback:getProfilesNui')
     Charlist = profiles.chars
     if not profiles then return end
     StartPreview(cam, preview)
-    self:sendReactMessage(true, {
+    sl.sendReactMessage(true, {
         action = 'sl:profiles:opened',
         data = profiles
     }, {
@@ -88,7 +88,7 @@ sl:onNet('refresh:profile', function(key, value)
         Charlist = {}
         Charlist = value
     end
-    sl:sendReactMessage(true, {
+    sl.sendReactMessage(true, {
         action = 'sl:update:profile',
         data = {
             key = key,
@@ -102,17 +102,17 @@ end)
 
 --- Nui callback ---
 
-sl:registerReactCallback('sl:profiles:onSelect', function(data, cb) ---@todo
+sl.registerReactCallback('sl:profiles:onSelect', function(data, cb) ---@todo
     local selected <const> = callback.sync('callback:selectProfilesNui', data)
     if not selected then return end
-    sl:sendReactMessage(true, {
+    sl.sendReactMessage(true, {
         action = 'sl:profiles:update:selected',
         data = selected
     })
 end)
 
 -- Char selector
-sl:registerReactCallback('sl:profile:callback:charSelect', function(data, cb)
+sl.registerReactCallback('sl:profile:callback:charSelect', function(data, cb)
     cb(1)
     local index = data + 1
     if index == lastIndex then return end
@@ -129,7 +129,7 @@ sl:registerReactCallback('sl:profile:callback:charSelect', function(data, cb)
     ped = createPed.preview(pedInfo.model, default.coords, 'anim@mp_player_intcelebrationmale@wave', 'wave')
 end)
 
-sl:registerReactCallback('sl:profiles:onSubmit', function(data, cb)
+sl.registerReactCallback('sl:profiles:onSubmit', function(data, cb)
     cb(1)
     if data.submit == 'disconnect' then
         sl:emitNet('profiles:onSubmit', 'disconnect')
@@ -137,7 +137,7 @@ sl:registerReactCallback('sl:profiles:onSubmit', function(data, cb)
         local models <const> = callback.sync('callback:profiles:can', false, data.submit)
         if models then
             if ped then ped = ped:remove() end
-            local input = sl:openModal('custom', {
+            local input = sl.openModal('custom', {
                 title = 'New Character',
                 transition = {
                     name= 'skew-up',
@@ -159,7 +159,7 @@ sl:registerReactCallback('sl:profiles:onSubmit', function(data, cb)
                 end
             end)
             if not input then return end
-            local modelSelected <const> = require('_old.configg.shared.models')[input[4]]
+            local modelSelected <const> = require('config.shared.models')[input[4]]
             onCharacter = {
                 firstname = input[1],
                 lastname = input[2],
@@ -176,7 +176,7 @@ sl:registerReactCallback('sl:profiles:onSubmit', function(data, cb)
 end)
 
 ---@todo implement this to update the profile list profiles / char
-sl:registerReactCallback('sl:profiles:onEdit', function(data, cb)
+sl.registerReactCallback('sl:profiles:onEdit', function(data, cb)
     cb(1)
     if data.edit == 'profile' then
         if data.key == 'logo' then
@@ -188,7 +188,7 @@ sl:registerReactCallback('sl:profiles:onEdit', function(data, cb)
                 { type = 'password', placeholder = 'Password' },
                 { type = 'password', placeholder = 'Confirm Password' }
             }
-            local input = sl:openModal('custom', {
+            local input = sl.openModal('custom', {
                 title = 'Edit Profile',
                 options = options
             })

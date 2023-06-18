@@ -25,12 +25,12 @@ local p
 ---@param callback fun(index: number, value: any): void
 ---@return table|nil
 ---@type ModalCustom
-local function Custom(self, data, callback) 
+local function Custom(data, callback) 
     if type(data) ~= 'table' then return end
     if type(data.title) ~= 'string' then return end
     onCallback = callback
 
-    self:sendReactMessage(true, {
+    sl.sendReactMessage(true, {
         action = 'sl:modal:opened-custom',
         data = {
             title = data.title,
@@ -44,16 +44,16 @@ local function Custom(self, data, callback)
     })
 
     p = promise.new()
-    return self.await(p)
+    return sl.await(p)
 end
 
 ---@param data DataConfirmProps
 ---@return boolean
 ---@type ModalConfirm
-local function Confirm(self, data)
+local function Confirm(data)
     if type(data) ~= 'table' then return end
 
-    self:sendReactMessage(true, {
+    sl.sendReactMessage(true, {
         action = 'sl:modal:opened-confirm',
         data = data
     }, {
@@ -61,37 +61,37 @@ local function Confirm(self, data)
     })
 
     p = promise.new()
-    return self.await(p)
+    return sl.await(p)
 end
 
 ---@param types custom | confirm as string
 ---@param data table
 ---@param callback fun(index: number, value: any)
 ---@return table|boolean|nil
-function sl:openModal(types, data, callback)
+function sl.openModal(types, data, callback)
     if p or type(types) ~= 'string' then return end
 
     if types == 'custom' then
-        return Custom(self, data, callback)
+        return Custom(data, callback)
     elseif types == 'confirm' then
-        return Confirm(self, data)
+        return Confirm(data)
     end
 end
 
 ---@param data boolean
-sl:registerReactCallback('sl:modal:confirm', function(data, cb)
+sl.registerReactCallback('sl:modal:confirm', function(data, cb)
     if p then p:resolve(data) end p = nil
     cb(1)
 end, true)
 
 ---@param data { index: number, value: any }
-sl:registerReactCallback('sl:modal:submit', function(data, cb)
+sl.registerReactCallback('sl:modal:submit', function(data, cb)
     cb(1)
     if p then p:resolve(data) end p, onCallback = nil, nil
 end, true)
 
 ---@param data { index: number, value: any }
-sl:registerReactCallback('sl:modal:callback', function(data, cb)
+sl.registerReactCallback('sl:modal:callback', function(data, cb)
     cb(1)
     onCallback(data.index, data.value)
 end)

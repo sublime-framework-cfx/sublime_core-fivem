@@ -1,7 +1,5 @@
-local function notify(self, source, select, data)
-    self:emitNet('notify', source, select, data)
+local function notify(source, select, data)
+    sl:emitNet('notify', source, select, data)
 end
 
 sl.notify = notify
-
-declare(sl.notify)
