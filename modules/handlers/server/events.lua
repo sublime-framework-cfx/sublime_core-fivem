@@ -60,7 +60,7 @@ end
 ---@param global? boolean
 ---@param ... any
 local function EventHandler(name, token, source, cb, cooldown, global, ...)
-    if (source and source > 0) and (not token or token ~= sl.token) then return warn(("This player id : %s have execute event %s without token! (identifier: %s)"):format(source, name, sl.getIdentifierFromId(source, 'license'))) end
+    if (source and source ~= '') and (not token or token ~= sl.token) then return warn(("This player id : %s have execute event %s without token! (identifier: %s)"):format(source, name, sl.getIdentifierFromId(source, 'license'))) end
     if cooldown and not global then
         local eventCooldown = IsEventCooldown(name, source)
         if eventCooldown and eventCooldown:onCooldown() then
