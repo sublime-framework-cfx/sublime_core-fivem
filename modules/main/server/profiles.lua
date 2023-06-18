@@ -1,5 +1,6 @@
 local change <const> = require 'config.server.permission'.profiles
 local mysql <const> = require 'modules.mysql.server.function'
+local SublimePlayer <const> = require 'modules.main.server.class.profile' ---@type SublimePlayer
 
 sl:onNet('profiles:edit', function(source, key, value)
     local profile <const> = sl:getProfileFromId(source)
@@ -90,18 +91,24 @@ callback.register('callback:profiles:can', function(source, data)
 end)
 
 callback.register('callback:getProfilesNui', function(source, data, cache)
-    local player <const> = sl:getProfileFromId(source)
+    local player <const> = sl.getPlayerFromId(source)
     if not player then return false end
     return not cache and player:loadNuiProfiles()
 end)
 
 callback.register('callback:login', function(source, data)
-    print(data, source)
     if not data then
-        local player <const> = sl:getProfileFromId(source)
+        local player <const> = sl.getPlayerFromId(source)
         return player?.username or false
     else
-        local profile <const> = sl:createProfileObj(source, data.username, data.password)
-        return profile?.username or false
+        local player <const> = SublimePlayer.new({
+            source = source,
+            username = data.username,
+        })
+        if player:init(data.username, data.password) then
+            sl.players[source] = player
+            return player.username
+        end
+        return false
     end
 end)
