@@ -16,6 +16,7 @@ local SetPedKeepTask <const> = SetPedKeepTask
 local RequestAnimDict <const> = RequestAnimDict
 local HasAnimDictLoaded <const> = HasAnimDictLoaded
 local TaskPlayAnim <const> = TaskPlayAnim
+local SetModelAsNoLongerNeeded <const> = SetModelAsNoLongerNeeded
 
 -- native not used for now but soon
 local SetBlockingOfNonTemporaryEvents <const> = SetBlockingOfNonTemporaryEvents
@@ -67,6 +68,7 @@ local function New(model, coords, data)
         end
 
         self.ped = CreatePed(nil, self.model, self.vec4.x, self.vec4.y, self.vec4.z, self.vec4.w, data?.network or true, false)
+        SetModelAsNoLongerNeeded(self.model)
 
         if DoesEntityExist(self.ped) then
             SetBlockingOfNonTemporaryEvents(self.ped, data?.blockevent or true)
@@ -113,6 +115,8 @@ local function NewPreview(model, coords, animDict, animName)
         SetPedHearingRange(self.ped, 0.0)
         SetPedAlertness(self.ped, 0)
         SetPedKeepTask(self.ped, true)
+
+        SetModelAsNoLongerNeeded(self.model)
 
         if animDict and animName then
             RequestAnimDict(animDict)
