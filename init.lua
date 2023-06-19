@@ -87,16 +87,16 @@ require('imports.locales.shared').init() ---@load translation
 
 if sl.service == 'server' then
 print([[
-^6###############################################################################
-^6# ^2ssss   u  u  bbbbb   l    iii mm   mm  eeee      cccc   ooo   rrrrrr  eeee  ^6#
-^6# ^2s      u  u  b    b  l     i  mmm mmm ee   e    c      o   o  rrr    ee   e ^6#
-^6# ^2 sss   u  u  bbbbb   l     i  mm m mm eeeee     c      o   o  rr     eeeee  ^6#
-^6# ^2    s  u  u  b    b  l     i  mm   mm ee    ^7...^2 c      o   o  rr     ee     ^6#
-^6# ^2ssss   uuuu  bbbbbb  llll iii mm   mm  eeee ^7...^2  cccc   ooo   rr      eeee  ^6#
-^6#                                                                             ^6#
-^6#       ^7Github: ^4https://github.com/sublime-framework-cfx/sublime_core         ^6#
-^6#                                                                             ^6#
-^6###############################################################################
+^6#####################################################################################
+^6#^2                _       _   _                                                      ^6#
+^6#^2               | |     | | (_)                                                     ^6#
+^6#^2  ___   _   _  | |__   | |  _   _ __ ___     ___        ___    ___    _ __    ___  ^6#
+^6#^2 / __| | | | | | '_ \  | | | | | '_ ` _ \   / _ \      / __|  / _ \  | '__|  / _ \ ^6#
+^6#^2 \__ \ | |_| | | |_) | | | | | | | | | | | |  __/^7  _ ^2 | (__  | (_) | | |    |  __/ ^6#
+^6#^2 |___/  \__,_| |_.__/  |_| |_| |_| |_| |_|  \___|^7 (_)^2  \___|  \___/  |_|     \___| ^6#
+^6#                                                                                   ^6#
+^6#^2           ^7Github: ^4https://github.com/sublime-framework-cfx/sublime_core           ^6#
+^6#####################################################################################
 ]])
     require('imports.version.server').check('github', nil, 500) ---@load version check && check update
     require('imports.mysql.server').init() ---@load oxmysql
