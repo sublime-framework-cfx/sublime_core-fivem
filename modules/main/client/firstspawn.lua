@@ -52,13 +52,10 @@ local ClearOverrideWeather <const> = ClearOverrideWeather
 local NetworkOverrideClockTime <const> = NetworkOverrideClockTime
 local SetWeatherTypeNow <const> = SetWeatherTypeNow
 local NetworkClearClockTimeOverride <const> = NetworkClearClockTimeOverride
--- local SetNuiFocus <const> = SetNuiFocus
 
 local p <const> = require 'imports.promise.shared'
 local hidePlayer, playerLoaded, charSpawned = true, false, false
 local AwaitLogin = nil
-
-print('started module?')
 
 p.new(function(resolve)
     while not cache.playerid or not NetworkIsPlayerActive(cache.playerid) do
@@ -74,25 +71,7 @@ end):Then(function()
     sl:emitNet('playerLoaded')
 end)
 
---Citizen.CreateThreadNow(function()
---    local can <const> = sl.await(p.async(function(resolve)
---        while not cache.playerid or not NetworkIsPlayerActive(cache.playerid) do
---            Wait(500)
---        end
---        while not IsScreenFadedOut do
---            DoScreenFadeOut(0)
---            Wait(250)
---        end
---        Wait(250)
---        print(true, 'TRUUUUUUUUUUUUUUUUE')
---        resolve(true)
---    end))
---    if can then
---        print('??xD')
---        sl:emitNet('playerLoaded')
---    end
---end)
-
+---@todo: need some rework
 local function PlayerPeview(toggle)
     if toggle then
         hidePlayer = true
@@ -108,7 +87,6 @@ local function PlayerPeview(toggle)
                 --DisableAllControlActions(0)
                 ThefeedHideThisFrame()
                 HideHudAndRadarThisFrame()
-
                 -- + control thread ?
 
                 Wait(0)
@@ -140,7 +118,6 @@ sl:onNet('playerLoaded', function()
     local default <const> = require 'config.client.firstspawn'
     local inLoadingScreen = GetIsLoadingScreenActive()
     if not playerLoaded then
-        print('locked?')
         RequestModel(default.model)
         while not HasModelLoaded(default.model) do
             Wait(100)
@@ -157,12 +134,13 @@ sl:onNet('playerLoaded', function()
 
     local success <const> = sl.await(p.async(function(resolve)
         if inLoadingScreen then SendLoadingScreenMessage(json.encode({loginOpen = true})) end
-        local login <const> = sl:openLogin()
-        print('login?')
+        local login <const> = sl.openLogin()
+
         if login then
             if inLoadingScreen then SendLoadingScreenMessage(json.encode({fullyLoaded = true})) end
             AwaitLogin = nil
         end
+
         FreezeEntityPosition(cache.ped, true)
         SetEntityCoordsNoOffset(cache.ped, default.coords.x, default.coords.y, default.coords.z, true, true, false)
         StartPlayerTeleport(cache.playerid, default.coords.x, default.coords.y, default.coords.z, default.coords.w, false, true, false)
@@ -198,7 +176,7 @@ sl:onNet('playerLoaded', function()
         local cam = CreateCameraWithParams('DEFAULT_SCRIPTED_CAMERA', offset.x, offset.y, offset.z, 0.0, 0.0, 0.0, 30.0, false, 0)
         SetCamActive(cam, true)
         RenderScriptCams(true, true, 0.0, true, true)
-        local spawn <const> = sl:openProfile(cam, hidePlayer)
+        local spawn <const> = sl.openProfile(cam)
 
         if spawn then
             ---@todo: spawn player
@@ -213,7 +191,7 @@ sl:onNet('playerLoaded', function()
             cam = nil
 
             ---@debug
-            sl:resetFocus()
+            sl.resetFocus()
             PlayerPeview(false)
             SetPlayerModel(PlayerId(), spawn.model) 
             cache.ped = PlayerPedId()
