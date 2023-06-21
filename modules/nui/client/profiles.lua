@@ -1,23 +1,20 @@
-
-print('loaded?')
 local createPed <const> = require 'imports.npc.client'
 local default <const> = require 'config.client.firstspawn'
 local lastIndex, Charlist, ped, onCharacter, pedInfo  = 0, {}
 local Promise
 ---------------------------------------------------------
 
-local function StartPreview(cam, preview)
-    local mouseX = 0.0
-    local mouseY = 0.0
-    local rotationSpeed = 2.0
-    local rotationAngle = 0.0
-
+local function StartPreview(cam)
     SetPlayerControl(cache.playerid, true, 0)
     FreezeEntityPosition(cache.ped, true)
 
     CreateThread(function()
+        local mouseX = 0.0
+        local mouseY = 0.0
+        local rotationSpeed = 2.0
+        local rotationAngle = 0.0
         local camDistance = 5.0 -- Distance initiale entre la caméra et le personnage
-        while preview do
+        while Promise do
             Wait(0)
             DisableControlAction(0, 24, true) -- Désactiver les attaques
             ---@todo: ajout de plus de control a desactiver plus tards ...
@@ -56,12 +53,12 @@ end
 
 --- Function ---
 
-function sl.openProfile(cam, preview)
+function sl.openProfile(cam)
     Promise = promise.new()
     local profiles <const> = callback.sync('callback:getProfilesNui')
     Charlist = profiles.chars
     if not profiles then return end
-    StartPreview(cam, preview)
+    StartPreview(cam)
     sl.sendReactMessage(true, {
         action = 'sl:profiles:opened',
         data = profiles
@@ -79,6 +76,7 @@ RegisterCommand('spawn', function()
    --if not next(pedInfo) or not Promise then return end
    if ped then ped = ped:remove() end
    Promise:resolve(pedInfo)
+   Promise = nil
 end)
 
 --- Event ---
@@ -133,6 +131,10 @@ sl.registerReactCallback('sl:profiles:onSubmit', function(data, cb)
     cb(1)
     if data.submit == 'disconnect' then
         sl:emitNet('profiles:onSubmit', 'disconnect')
+    elseif data.submit == 'spawn' then
+        if ped then ped = ped:remove() end
+        Promise:resolve(pedInfo)
+        Promise = nil
     elseif data.submit == 'newChar' then
         local models <const> = callback.sync('callback:profiles:can', false, data.submit)
         if models then
@@ -209,7 +211,6 @@ sl.registerReactCallback('sl:profiles:onEdit', function(data, cb)
         -- sl.emitNet('characters:edit', data.key, data.value)
     end
 end)
-print('loaded?')
 --- Resource Stop ---
 
 AddEventHandler('onResourceStop', function(resourceName)
