@@ -13,14 +13,15 @@ import {
   Box,
   useMantineTheme,
   rem,
-  Container/*, Modal, TextInput, /*Button, Stack*/,
+  Container /*, Modal, TextInput, /*Button, Stack*/,
 } from '@mantine/core';
 //import { DateInput } from '@mantine/dates';
 //import { useConfig } from '../../providers/ConfigProvider';
 import { useNuiEvent } from '../../hooks/useNuiEvent';
 import { User, UserProps, CharsList, CharListProps } from './components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';;
+import { faPlus, faCheck } from '@fortawesome/free-solid-svg-icons';
+import AnimatedButton from '../modal/components/buttons';
 //import { debugData } from '../../utils/debugData';
 
 interface LoadProfilsProps {
@@ -146,21 +147,32 @@ export const MainProfilesMenu: React.FC = () => {
     setOpened(true);
   });
 
-  useNuiEvent<{key: string, value: string | CharListProps[]}>('sl:update:profile', (Data) => {
-    switch (Data.key) {
-      case 'username':
-        setData({ ...data, username: Data.value as string});
-        break;
-      case 'characters':
-        setChars(Data.value as CharListProps[]);
-        break;
-      default: break;
+  useNuiEvent<{ key: string; value: string | CharListProps[] }>(
+    'sl:update:profile',
+    (Data) => {
+      switch (Data.key) {
+        case 'username':
+          setData({ ...data, username: Data.value as string });
+          break;
+        case 'characters':
+          setChars(Data.value as CharListProps[]);
+          break;
+        default:
+          break;
+      }
     }
-  });
+  );
 
   const handleSubmit = async () => {
     await new Promise((resolve) => setTimeout(resolve, 200));
-    fetchNui('sl:profiles:onSubmit', {submit: 'newChar'});
+    fetchNui('sl:profiles:onSubmit', { submit: 'newChar' });
+  };
+
+  const handleSpawn = async () => {
+    setActiveIndexChar(-1);
+    setOpened(false);
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    fetchNui('sl:profiles:onSubmit', { submit: 'spawn' });
   };
 
   return (
@@ -194,7 +206,12 @@ export const MainProfilesMenu: React.FC = () => {
                 }}
               >
                 {chars.map((char, index) => (
-                  <CharsList chars={char} index={index} activeIndex={activeIndexChar} setActiveIndex={setActiveIndexChar} />
+                  <CharsList
+                    chars={char}
+                    index={index}
+                    activeIndex={activeIndexChar}
+                    setActiveIndex={setActiveIndexChar}
+                  />
                 ))}
                 <UnstyledButton
                   sx={{
@@ -248,7 +265,18 @@ export const MainProfilesMenu: React.FC = () => {
         }
       >
         {/*Main compoenent to add char 3d view + stats rect*/}
-        <Text color='white'>..... wip</Text>
+        {opened && activeIndexChar > -1 && (
+          <>
+            <Text color='white'>..... Work in Progress! .....</Text>
+            <AnimatedButton
+              iconAwesome={faCheck}
+              text='Spawn (debug)'
+              onClick={handleSpawn}
+              color='green'
+              args={true}
+            />
+          </>
+        )}
       </AppShell>
     </Container>
   );
