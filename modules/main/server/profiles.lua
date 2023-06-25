@@ -1,6 +1,6 @@
 local change <const> = require 'config.server.permission'.profiles
 local mysql <const> = require 'modules.mysql.server.function'
-local SublimePlayer <const> = require 'modules.main.server.class.profile' ---@type SublimePlayer
+local SublimePlayer <const> = require 'modules.main.server.class.player' ---@type SublimePlayer
 
 sl:onNet('profiles:edit', function(source, key, value)
     local profile <const> = sl:getProfileFromId(source)
