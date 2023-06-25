@@ -1,4 +1,4 @@
-local SublimePlayer <const> = require 'modules.main.server.class.profile' ---@type SublimePlayer
+local SublimePlayer <const> = require 'modules.main.server.class.player' ---@type SublimePlayer
 local GetPlayerEndpoint <const> = GetPlayerEndpoint
 local config <const>, connectingPlayers, mysql <const> = require 'config.server.setting', {}, require 'modules.mysql.server.function'
 sl.tempId, sl.players, GlobalState.playersCount = {}, {}, 0
