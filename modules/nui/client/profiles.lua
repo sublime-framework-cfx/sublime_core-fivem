@@ -1,5 +1,5 @@
 local createPed <const> = require 'imports.npc.client'
-local default <const> = require 'config.client.firstspawn'
+local default <const> = require 'config.shared.firstspawn'
 local lastIndex, Charlist, ped, onCharacter, pedInfo  = 0, {}
 local Promise
 ---------------------------------------------------------

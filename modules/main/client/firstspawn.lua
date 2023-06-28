@@ -115,7 +115,7 @@ end
 sl:onNet('playerLoaded', function()
     if AwaitLogin then return end
     AwaitLogin = true
-    local default <const> = require 'config.client.firstspawn'
+    local default <const> = require 'config.shared.firstspawn'
     local inLoadingScreen = GetIsLoadingScreenActive()
     if not playerLoaded then
         RequestModel(default.model)
