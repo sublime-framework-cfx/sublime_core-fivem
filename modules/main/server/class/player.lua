@@ -1,9 +1,8 @@
 local mysql <const> = require 'modules.mysql.server.function'
-local CreateCharObj <const> = require 'modules.main.server.class.character'
+local SublimeCharacter <const> = require 'modules.main.server.class.character'
 local power <const> = require 'config.server.permission'.power
-
-local SublimePlayer = {}
-local playerExports = {}
+local defaultSpawn <const> = require 'config.shared.firstspawn'.defaultSpawn
+local SublimePlayer, playerExports = {}, {}
 
 setmetatable(SublimePlayer, {
     __newindex = function(self, key, value)
@@ -79,12 +78,38 @@ function SublimePlayer:get(key)
     return self[key]
 end
 
+function SublimePlayer:setMetadata(key, value, replicated)
+    self.metadata[key] = value
+
+    if replicated then
+        self:emitNet('setPlayerMetadata', key, value) ---@todo: not implemented yet
+    end
+end
+
+function SublimePlayer:getMetadata(key)
+    return self.metadata[key]
+end
+
 function SublimePlayer:notify(select, data)
     sl.notify(self.source, select, data)
 end
 
-function SublimePlayer:getIdentifiersFromId(source)
-    return GetPlayerIdentifiers(source)
+---@param filter? table
+---@return table
+function SublimePlayer:getIdentifiersFromId(filter --[[@todo]])
+    if not next(self.identifiers) then
+        self.identifiers = sl.getIdentifiersFromId(self.source)
+    end
+    return self.identifiers
+end
+
+---@param key string
+---@return string
+function SublimePlayer:getIdentifierFromId(key)
+    if not next(self.identifiers) then
+        self.identifiers = sl.getIdentifiersFromId(self.source)
+    end
+    return self.identifiers[key]
 end
 
 function SublimePlayer:kick(reason)
@@ -92,17 +117,29 @@ function SublimePlayer:kick(reason)
     DropPlayer(self.source, reason)
 end
 
-function SublimePlayer:save()
+function SublimePlayer:save(withChar)
     local update <const> = mysql.updateProfile(self)
-    if update then 
-        print('Update profil: '..self.username)
+    if update then
+        if withChar then
+            local char = self.getChar()
+            char:save()
+            print(("Update char: %s"):format(char.name))
+        end
+        print(("Update profile: %s"):format(self.username))
     else
-        print('Error update profil: '..self.username)
+        warn(("Error to update profile: %s"):format(self.username))
     end
 end
 
 function SublimePlayer:quit()
     self:save()
+    print('here? save?')
+    if self.char then
+        print('save char')
+        local char = sl.getCharacterFromId(self.source)
+        char:save()
+        --self.char.save()
+    end
     GlobalState.playersCount -= 1
     return nil, collectgarbage()
 end
@@ -134,6 +171,8 @@ function SublimePlayer:init(username, password)
     self.createdBy = json.decode(row.createdBy)
     self.metadata = json.decode(row.metadata) or {}
 
+    self.identifiers = sl.getIdentifiersFromId(self.source)
+
     GlobalState.playersCount += 1
     return true
 end
@@ -144,12 +183,13 @@ function SublimePlayer:loadNuiProfiles()
     if query == '[]' then return false end
 
     local data = {}
-    data.chars = {}
+    data.chars, self.charsIds = {}, {}
 
     for i = 1, #query do
         local char <const> = query[i]
 
         data.chars[i] = {
+            charid = char.charid, 
             firstname = char.firstname,
             lastname = char.lastname,
             sex = char.sex,
@@ -159,6 +199,8 @@ function SublimePlayer:loadNuiProfiles()
             ---@todo will be available soon
             -- country = char.country,
         }
+
+        self.charsIds[char.charid] = true
     end
 
     data.username = self.username
@@ -176,6 +218,50 @@ function SublimePlayer:addCharacter(data)
         return true
     end
     return false
+end
+
+function SublimePlayer:getChar()
+    return self.char and sl.getCharacterFromId(self.source) or false
+end
+
+function SublimePlayer:spawnChar(charId)
+    print('here?xD')
+    print(json.encode(self.charsIds))
+    if charId and self.charsIds and next(self.charsIds) then
+        print('here?')
+        local charData = mysql.loadCharacter(charId)
+        print('here?')
+        if not charData then return false end
+        print('here?')
+        local init = {
+            id = self.id,
+            source = self.source,
+            ped = GetPlayerPed(self.source),
+            charid = charData.charid,
+            firstname = charData.firstname,
+            lastname = charData.lastname,
+            height = charData.height,
+            sex = charData.sex,
+            isDead = charData.isDead,
+            dateofbirth = charData.dateofbirth,
+            model = charData.model,
+            instance = charData.instance,
+            metadata = json.decode(charData.metadata) or {},
+            status = json.decode(charData.status) or {},
+            inventory = json.decode(charData.inventory) or {},
+            skin = json.decode(charData.skin) or {},
+            name = ("%s %s"):format(charData.firstname, charData.lastname),
+            coords = vec4(charData.x or defaultSpawn.x, charData.y or defaultSpawn.y, charData.z or defaultSpawn.z, charData.w or defaultSpawn.w),
+        }
+
+        print(json.encode(init))
+        self.char = SublimeCharacter.new(init)
+
+        return self.char, init
+    else
+        return false -- will be changed later
+        ---@todo: request sql
+    end
 end
 
 local class = require 'modules.class.shared.main'
