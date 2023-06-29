@@ -217,4 +217,3 @@ AddEventHandler('onResourceStop', function(resourceName)
     if resourceName ~= sl.name then return end
     if ped then ped = ped:remove() end
 end)
-
