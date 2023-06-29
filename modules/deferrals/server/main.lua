@@ -1,6 +1,6 @@
 local cards <const> = require(('modules.deferrals.server.cards.%s'):format(sl.lang))
 local mysql <const> = require 'modules.mysql.server.function'
-local SublimePlayer <const> = require 'modules.main.server.class.profile' ---@type SublimePlayer
+local SublimePlayer <const> = require 'modules.main.server.class.player' ---@type SublimePlayer
 
 local function RegisterCard(d, cb, _source)
     Wait(50)
