@@ -29,6 +29,13 @@ function mysql.loadCharacters(userId)
     return MySQL.query.await(load_characters, { userId })
 end
 
+local load_character <const> = 'SELECT * FROM characters WHERE charid = ?' -- used to load character
+---@param charId integer
+---@return table
+function mysql.loadCharacter(charId)
+    return MySQL.single.await(load_character, { charId })
+end
+
 local change_temp_id <const> = 'UPDATE profils SET tempId = ? WHERE id = ?' -- used to change temp id
 ---@param value? number
 ---@param userId integer
@@ -74,6 +81,13 @@ local update_profile_identifiers <const> = 'UPDATE profils SET identifiers = ? W
 ---@param userId integer
 function mysql.updateProfileIdentifiers(identifiers, userId)
     return MySQL.update.await(update_profile_identifiers, { identifiers, userId })
+end
+
+local update_character <const> = 'UPDATE characters SET x = ?, y = ?, z = ?, w = ?, instance = ?, status = ?, isDead = ?, metadata = ? WHERE charid = ?'
+---@param parameters table
+---@return any
+function mysql.updateCharacter(parameters)
+    return MySQL.prepare.await(update_character, { parameters })
 end
 
 ---utils if you doesn't want rewrite same code in external resource, use it like this: 
