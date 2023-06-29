@@ -179,8 +179,6 @@ sl:onNet('playerLoaded', function()
         local spawn <const> = sl.openProfile(cam)
 
         if spawn then
-            ---@todo: spawn player
-            -- event server-side: playerSpawned
             charSpawned = true
             RenderScriptCams(false, false, 0, true, true)
             DestroyCam(cam, false)
@@ -192,24 +190,38 @@ sl:onNet('playerLoaded', function()
 
             ---@debug
             sl.resetFocus()
-            PlayerPeview(false)
-            SetPlayerModel(PlayerId(), spawn.model) 
+            SetPlayerModel(PlayerId(), spawn.model)
             cache.ped = PlayerPedId()
-            SetPedDefaultComponentVariation(cache.ped) 
             SetEntityAsMissionEntity(cache.ped, true, true) 
-            SetModelAsNoLongerNeeded(cache.ped)
-            SetEntityCollision(cache.ped, true, true)
-            SetEntityCoordsNoOffset(cache.ped, default.coords.x, default.coords.y, default.coords.z, true, true, false)
-            SetEntityHeading(cache.ped, default.coords.w)
-            FreezeEntityPosition(cache.ped, false)
-            SetEntityVisible(cache.ped, true)
             SetPlayerInvincible(cache.playerid, false)
             SetPlayerControl(cache.playerid, true, 0)
             ClearPlayerWantedLevel(cache.playerid)
-            NetworkResurrectLocalPlayer(default.coords.x, default.coords.y, default.coords.z, default.coords.w, true, false)
+            -- NetworkResurrectLocalPlayer(default.coords.x, default.coords.y, default.coords.z, default.coords.w, true, false)
             SetGameplayCamRelativeHeading(0)
+            SetModelAsNoLongerNeeded(spawn.model)
+            sl:emitNet('onCharacterSpawn', spawn.charid)
         else
             ---@todo: kick player / unload
         end
+    end
+end)
+
+---@param data table
+sl:onNet('onCharacterSpawn', function(data)
+    SetEntityVisible(cache.ped, true)
+    SetPedDefaultComponentVariation(cache.ped) -- change later when module skin is done
+
+    print(json.encode(data, {indent = true}))
+    SetEntityCollision(cache.ped, true, true)
+    SetEntityCoordsNoOffset(cache.ped, data.coords.x, data.coords.y, data.coords.z, true, true, false)
+    SetEntityHeading(cache.ped, data.coords.w)
+    FreezeEntityPosition(cache.ped, false)
+    PlayerPeview(false)
+end)
+
+---@param isDead boolean
+sl:onNet('onCharacterDeath', function(isDead)
+    if isDead then
+        SetEntityHealth(cache.ped, 0)
     end
 end)
