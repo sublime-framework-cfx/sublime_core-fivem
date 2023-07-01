@@ -217,11 +217,8 @@ sl:onNet('onCharacterSpawn', function(data)
     SetEntityHeading(cache.ped, data.coords.w)
     FreezeEntityPosition(cache.ped, false)
     PlayerPeview(false)
-end)
 
----@param isDead boolean
-sl:onNet('onCharacterDeath', function(isDead)
-    if isDead then
-        SetEntityHealth(cache.ped, 0)
-    end
+    -- if module.death then
+        require 'modules.main.client.death'
+    -- end
 end)
