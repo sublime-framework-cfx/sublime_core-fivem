@@ -9,11 +9,11 @@ sl:onNet('onCharacterSpawn', function(source, charId)
 
     player:emitNet('onCharacterSpawn', init)
 
-    Wait(100)
+    Wait(1000)
 
     if char.isDead then
         print(("Char %s is dead?: %s"):format(char.name, char.isDead))
-        -- player:emitNet('onCharacterDeath', char.isDead)
+        player:emitNet('onCharacterDeath', char.isDead)
     end
 
     -- if char.instance then
