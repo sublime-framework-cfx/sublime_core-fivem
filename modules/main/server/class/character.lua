@@ -5,18 +5,36 @@ local mysql <const> = require 'modules.mysql.server.function'
 local round <const> = require 'imports.math.shared'.round
 
 
-local SublimeCharacter = {}
+local SublimeCharacter, characterExports = {}, {}
 setmetatable(SublimeCharacter, {
     __newindex = function(self, key, value)
         rawset(self, key, value)
+        characterExports[key] = true
     end
 })
+
+function sl.getCharacterExports()
+    return characterExports
+end
+
+function sl.callCharacterMethod(source, method, ...)
+    local player = sl.getCharacterFromId(source)
+
+    if player then
+        return player[method](player, ...)
+    end
+end
 
 ---@param source integer
 ---@return boolean | table
 function sl.getCharacterFromId(source)
     local player <const> = sl.getPlayerFromId(source)
     return player.char
+end
+
+---@return table
+function SublimeCharacter:getPlayer()
+    return self.player
 end
 
 ---@param heading? boolean
@@ -29,7 +47,7 @@ function SublimeCharacter:getCoords(heading, notUpdate)
         self.coords = vec4(self.coords.x, self.coords.y, self.coords.z, GetEntityHeading(self.ped))
     end
 
-    print('coords', self.coords.x, self.coords.y, self.coords.z, self.coords.w, GetEntityHeading(self.ped))
+    --print('coords', self.coords.x, self.coords.y, self.coords.z, self.coords.w, GetEntityHeading(self.ped))
     return heading and self.coords or vec3(self.coords.x, self.coords.y, self.coords.z)
 end
 
