@@ -37,6 +37,29 @@ function SublimeCharacter:getPlayer()
     return self.player
 end
 
+function SublimeCharacter:emitNet(eventName, ...)
+    return sl:emitNet(eventName, self.source, ...)
+end
+
+---@param key string
+---@param value any
+---@param replicated boolean
+---@return boolean
+function SublimeCharacter:set(key, value, replicated)
+    self[key] = value
+    if replicated then
+        self:emitNet('setCharacterData', key, value)
+        -- Player(self.source).state:set(key, value, true)
+    end
+    return self[key] == value
+end
+
+---@param key string
+---@return any
+function SublimeCharacter:get(key)
+    return self[key]
+end
+
 ---@param heading? boolean
 ---@param update? boolean
 function SublimeCharacter:getCoords(heading, notUpdate)
@@ -52,13 +75,11 @@ function SublimeCharacter:getCoords(heading, notUpdate)
 end
 
 function SublimeCharacter:prepareSave()
-    local coords <const> = self:getCoords(true)
-
     return {
-        round(coords.x, 3),
-        round(coords.y, 3),
-        round(coords.z, 3),
-        round(coords.w, 3),
+        round(self.coords.x, 3),
+        round(self.coords.y, 3),
+        round(self.coords.z, 3),
+        round(self.coords.w, 3),
         self.instance or 0,
         json.encode(self.status) or {},
         self.isDead,
