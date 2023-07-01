@@ -3,11 +3,11 @@ local mysql <const> = require 'modules.mysql.server.function'
 local SublimePlayer <const> = require 'modules.main.server.class.player' ---@type SublimePlayer
 
 sl:onNet('profiles:edit', function(source, key, value)
-    local profile <const> = sl:getProfileFromId(source)
-    if not profile then return end
-    if profile:hasPermission(change[key]) then
+    local player <const> = sl.getPlayerFromId(source)
+    if not player then return end
+    if player:hasPermission(change[key]) then
         if key == 'logo' then
-            profile:setMetadata(key, value)
+            player:setMetadata(key, value)
         else
             if key == 'username' then
                 local exist <const> = mysql.checkUserExist(value)
@@ -16,24 +16,24 @@ sl:onNet('profiles:edit', function(source, key, value)
                     return
                 end
             end
-            profile:set(key, key == 'password' and joaat(value) or value)
+            player:set(key, key == 'password' and joaat(value) or value)
             if key ~= 'password' then
                 sl:emitNet('refresh:profile', source, key, value)
             end
         end
     else
-        warn(('User %s don\'t have permission to change this value. (%s)'):format(profile.username, key))
+        warn(('User %s don\'t have permission to change this value. (%s)'):format(player.username, key))
     end
 end)
 
 sl:onNet('profiles:onSubmit', function(source, key, data)
-    local player <const> = sl:getProfileFromId(source)
+    local player <const> = sl.getPlayerFromId(source)
     if key == 'disconnect' then
         player:kick("Merci d'avoir joué sur notre serveur !") ---@todo translate it
     elseif key == 'newCharValid' then
         local add = player:addCharacter(data)
         if add then
-            local char <const> = player:loadCharacters()
+            local char <const> = player:loadNuiProfiles()
             if not char then
                 -- notify error
                 print('error', 'not load char')
@@ -68,10 +68,10 @@ sl:onNet('login:submit', function(source, key, value)
 end, 60000)
 
 callback.register('callback:profiles:can', function(source, data)
-    local player <const> = sl:getProfileFromId(source)
+    local player <const> = sl.getPlayerFromId(source)
     if not player then return false end
     if data == 'newChar' then
-        local listModel <const>, models = require '_old.configg.shared.models', {}
+        local listModel <const>, models = require 'config.shared.models', {}
         local keys = {}
         for k,v in  pairs(listModel) do
             if player:hasPermission(v.perm) then
