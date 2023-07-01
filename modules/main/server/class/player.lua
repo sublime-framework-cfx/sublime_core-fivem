@@ -220,19 +220,19 @@ function SublimePlayer:addCharacter(data)
     return false
 end
 
-function SublimePlayer:getChar()
-    return self.char and sl.getCharacterFromId(self.source) or false
+function SublimePlayer:getCharacter()
+    return self.char -- and sl.getCharacterFromId(self.source) or false
+end
+
+function SublimePlayer:loadChars()
+    return mysql.loadCharacters(self.id)
 end
 
 function SublimePlayer:spawnChar(charId)
-    print('here?xD')
-    print(json.encode(self.charsIds))
     if charId and self.charsIds and next(self.charsIds) then
-        print('here?')
         local charData = mysql.loadCharacter(charId)
-        print('here?')
         if not charData then return false end
-        print('here?')
+
         local init = {
             id = self.id,
             source = self.source,
@@ -254,9 +254,7 @@ function SublimePlayer:spawnChar(charId)
             coords = vec4(charData.x or defaultSpawn.x, charData.y or defaultSpawn.y, charData.z or defaultSpawn.z, charData.w or defaultSpawn.w),
         }
 
-        print(json.encode(init))
         self.char = SublimeCharacter.new(init)
-
         return self.char, init
     else
         return false -- will be changed later
