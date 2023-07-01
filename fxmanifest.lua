@@ -23,8 +23,8 @@ ui_page 'web/build/index.html'
 files {
     'obj.lua',
     'locales/*',
+    'data/*.json',
     'config/modules.lua',
-
     'config/client/*.lua',
     'config/shared/*.lua',
     --'client/modules/**',
