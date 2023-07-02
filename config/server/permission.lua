@@ -1,5 +1,5 @@
 local LoadJson <const> = require 'imports.json.server'.load
-return LoadJson('data/permission')
+return LoadJson('data/server/permission')
 
 -- permission.json
 

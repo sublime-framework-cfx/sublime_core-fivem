@@ -1,4 +1,2 @@
-return {
-    useDeferral = true,
-    useWhitelist = false, -- This is not implemented yet 
-}
+local LoadJson <const> = require 'imports.json.server'.load
+return LoadJson('data/server/connect')
