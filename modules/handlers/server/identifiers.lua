@@ -1,29 +1,26 @@
-local GetPlayerIdentifiers <const>, GetPlayerToken <const> = GetPlayerIdentifiers, GetPlayerToken
+local GetPlayerIdentifiers <const>, GetPlayerIdentifierByType<const>, GetPlayerToken <const> = GetPlayerIdentifiers, GetPlayerIdentifierByType, GetPlayerToken
+local identifiersApproved<const> = { steam = true, license = true, xbl = true, ip = true, discord = true, live = true }
 
 ---@param source integer
 ---@param key? string
 ---@return unknown
 local function GetIdentifierFromSource(source, key) ---@todo move in module
-    local listId = { steam = true, license = true, xbl = true, ip = true, discord = true, live = true }
-    if key ~= 'token' then
-        for _,v in ipairs(GetPlayerIdentifiers(source)) do
-            if listId[key] and listId[v:match('([^:]+)')] then
-                return v:gsub('([^:]+):', '')
-            end
-        end
+    if key == "token" or not identifiersApproved[key] then
+        return GetPlayerToken(source)
     end
-    return GetPlayerToken(source)
+    local identifier = GetPlayerIdentifierByType(source, key)
+    return (identifier and identifier:gsub('([^:]+):', '') or nil) 
 end
 
 ---@param source integer
 ---@param encode? boolean
 ---@return table|string<json>
 local function GetIdentifiersFromSource(source, encode) ---@todo
-    local listId = { steam = true, license = true, xbl = true, ip = true, discord = true, live = true }
     local identifiers = {}
     for _,v in ipairs(GetPlayerIdentifiers(source)) do
-        if listId[v:match('([^:]+)')] then
-            identifiers[v:match('([^:]+)')] = v:gsub('([^:]+):', '')
+        local keyIdentifier = v:match('([^:]+)')
+        if identifiersApproved[keyIdentifier] then
+            identifiers[keyIdentifier] = v:gsub('([^:]+):', '')
         end
     end
     identifiers.token = GetPlayerToken(source)
