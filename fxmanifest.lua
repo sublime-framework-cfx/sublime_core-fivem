@@ -1,9 +1,9 @@
 fx_version 'cerulean'
-games {'gta5', 'rdr3'} -- Work only on FiveM for now.. but it's planned to be ported on RedM
+game 'gta5'
 lua54 'yes'
 use_experimental_fxv2_oal 'yes'
 
-name 'sublime_core'
+name 'sublime_core [FiveM]'
 author 'SUBLiME'
 version '0.0.0'
 repository 'https://github.com/sublime-framework-cfx/sublime_core'
