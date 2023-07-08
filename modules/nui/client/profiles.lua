@@ -70,17 +70,7 @@ function sl.openProfile(cam)
     return sl.await(Promise)
 end
 
---- DEBUG ---
-
-RegisterCommand('spawn', function()
-   --if not next(pedInfo) or not Promise then return end
-   if ped then ped = ped:remove() end
-   Promise:resolve(pedInfo)
-   Promise = nil
-end)
-
 --- Event ---
-
 sl:onNet('refresh:profile', function(key, value)
     if key == 'characters' then
         Charlist = {}
@@ -99,7 +89,6 @@ sl:onNet('refresh:profile', function(key, value)
 end)
 
 --- Nui callback ---
-
 sl.registerReactCallback('sl:profiles:onSelect', function(data, cb) ---@todo
     local selected <const> = callback.sync('callback:selectProfilesNui', data)
     if not selected then return end

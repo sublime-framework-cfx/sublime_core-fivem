@@ -1,8 +1,8 @@
 sl:onNet('onCharacterSpawn', function(source, charId)
     local player <const> = sl.getPlayerFromId(source)
     if not player then return end
-    print(('Player %s is spawning character %s'):format(player.name, charId))
-    print(type(charId))
+    --print(('Player %s is spawning character %s'):format(player.name, charId))
+    --print(type(charId))
     local char, init = player:spawnChar(charId)
 
     if not char then return end

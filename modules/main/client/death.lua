@@ -33,8 +33,3 @@ sl:onNet('onCharacterDeath', function(playerDead)
     local heading = GetEntityHeading(cache.ped)
     NetworkResurrectLocalPlayer(coords.x, coords.y, coords.z, heading, true, false)
 end)
-
----@todo will be removed
-RegisterCommand('revive', function()
-    sl:emitNet('onCharacterDeath', false)
-end)
