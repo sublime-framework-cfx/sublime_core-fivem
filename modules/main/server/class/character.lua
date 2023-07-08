@@ -34,7 +34,7 @@ end
 
 ---@return table
 function SublimeCharacter:getPlayer()
-    return self.player
+    return sl.getPlayerFromId(self.source)
 end
 
 function SublimeCharacter:emitNet(eventName, ...)
