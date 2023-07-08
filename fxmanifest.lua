@@ -5,7 +5,7 @@ use_experimental_fxv2_oal 'yes'
 
 name 'sublime_core [FiveM]'
 author 'SUBLiME'
-version '0.0.0'
+version '0.0.1'
 repository 'https://github.com/sublime-framework-cfx/sublime_core'
 description 'Un framework pour tout type de serveur'
 
@@ -28,8 +28,6 @@ files {
     'config/modules.lua',
     'config/client/*.lua',
     'config/shared/*.lua',
-    --'client/modules/**',
-    --'shared/modules/**',
     'modules/**/index.lua',
     'modules/**/shared/**',
     'modules/**/client/**',
@@ -40,7 +38,7 @@ files {
 }
 
 dependencies {
-    '/server:6461', -- requires at least server build 6461 (txAdmin v6)
+    '/server:6551', -- requires at least server build 6551 (txAdmin v6.0.1)
     '/onesync', -- requires onesync enabled
     'oxmysql', -- requires oxmysql resource
 }
