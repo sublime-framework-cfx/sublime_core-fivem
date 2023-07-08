@@ -36,10 +36,10 @@ sl:onNet('profiles:onSubmit', function(source, key, data)
             local char <const> = player:loadNuiProfiles()
             if not char then
                 -- notify error
-                print('error', 'not load char')
+                print('error', 'not load char') 
                 return 
             end
-            sl:emitNet('refresh:profile', source, 'characters', char)
+            sl:emitNet('refresh:profile', source, 'characters', char.chars)
         end
     end
 end)
