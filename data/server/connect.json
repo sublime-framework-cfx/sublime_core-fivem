@@ -1,4 +1,4 @@
 {
-    "useDefferal": true,
-    "useWhitelist": true
+    "useDeferral": true,
+    "useWhitelist": false
 }
