@@ -24,3 +24,11 @@ for i = 1, #folders do
 end
 
 folders = nil
+
+local devmod = GetConvar('sl:devmod', 'false') == 'true'
+
+if devmod then
+    require(('modules.devmod.%s.main'):format(sl.service))
+end
+
+devmod = nil
