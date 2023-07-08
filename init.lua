@@ -1,5 +1,5 @@
 local sl_core <const>, service <const> = 'sublime_core', (IsDuplicityVersion() and 'server') or 'client'
-local LoadResourceFile <const>, IsDuplicityVersion <const>, GetGameName <const>, joaat <const>, await <const>, GetCurrentResourceName <const> = LoadResourceFile, IsDuplicityVersion, GetGameName, joaat, Citizen.Await, GetCurrentResourceName
+local LoadResourceFile <const>, IsDuplicityVersion <const>, joaat <const>, await <const>, GetCurrentResourceName <const> = LoadResourceFile, IsDuplicityVersion, joaat, Citizen.Await, GetCurrentResourceName
 
 ---@param name string
 ---@param from? string<'client' | 'server'> default is sl.service
@@ -11,7 +11,6 @@ end
 sl = setmetatable({
     service = service, ---@type string<'client' | 'server'>
     name = sl_core, ---@type string<'sublime_core'>
-    game = GetGameName(), ---@type string<'fivem' | 'redm'>
     env = sl_core, ---@type string<'resource_name?'>
     hashEvent = FormatEvent,
     await = await,
