@@ -121,7 +121,7 @@ function SublimePlayer:save(withChar)
     local update <const> = mysql.updateProfile(self)
     if update then
         if withChar then
-            local char = self.getChar()
+            local char <const> = self:getCharacter()
             char:save()
             print(("Update char: %s"):format(char.name))
         end
@@ -133,12 +133,9 @@ end
 
 function SublimePlayer:quit()
     self:save()
-    print('here? save?')
     if self.char then
-        print('save char')
-        local char = sl.getCharacterFromId(self.source)
+        local char <const> = self:getCharacter()
         char:save()
-        --self.char.save()
     end
     GlobalState.playersCount -= 1
     return nil, collectgarbage()
