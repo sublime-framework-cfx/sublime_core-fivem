@@ -13,7 +13,7 @@ loadscreen 'modules/loadscreen/client/index.html' -- loadscreen
 loadscreen_manual_shutdown "yes" -- enable manual shutdown
 loadscreen_cursor 'yes' -- enable cursor
 
-server_script 'package/dist/server/server.js' -- need to be init first
+-- server_script 'package/dist/server/server.js' -- need to be init first
 shared_script 'init.lua'
 server_script 'modules/init.lua'
 client_script 'modules/init.lua'

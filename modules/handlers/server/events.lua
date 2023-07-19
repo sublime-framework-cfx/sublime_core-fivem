@@ -2,7 +2,7 @@
 
 local RegisterNetEvent <const>, AddEventHandler <const>, TriggerEvent <const>, joaat <const> = RegisterNetEvent, AddEventHandler, TriggerEvent, joaat
 
-sl.token = require 'modules.packages.server.tokenizer' -- @return string uuid (randomly generated when resource start)
+sl.token = require 'imports.string.shared'.uuid() -- @return string uuid (randomly generated when resource start)
 
 callback.register(joaat('token'), function(source)
     return sl.token
