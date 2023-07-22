@@ -1,6 +1,6 @@
 local config, LoadJson <const>  = {}, require 'imports.json.client'.load
 
-config.population = LoadJson('data/client/setting/population') -- or false
+config.population = LoadJson 'data.client.setting.population' -- or false
 
 return config
 

@@ -1,7 +1,7 @@
 local active <const> = true
 local LoadJson <const> = active and require 'imports.json.server'.load
 
-return active and LoadJson('data/server/webhook')
+return active and LoadJson 'data.server.webhook'
 
 --[[
 return active and {
