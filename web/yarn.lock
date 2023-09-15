@@ -1761,12 +1761,12 @@
     react-remove-scroll "^2.5.5"
     react-textarea-autosize "8.3.4"
 
-"@mantine/dates@^6.0.19":
-  version "6.0.19"
-  resolved "https://registry.yarnpkg.com/@mantine/dates/-/dates-6.0.19.tgz#bd21473be47239722af7929a537f36d0d89d9875"
-  integrity sha512-+5t3ljSHuvADJeq2PkxzyLsyWQGsCCg7evz6PDdGyxkVknn9wzBMM9UZZVyB22H5c7qieDi0yoO2gQIXJzhxQg==
+"@mantine/dates@^6.0.20":
+  version "6.0.20"
+  resolved "https://registry.yarnpkg.com/@mantine/dates/-/dates-6.0.20.tgz#d5029c29a102830ab7f0f0040b0a30ea9540832a"
+  integrity sha512-pLxMRdHkLzswqhgJFyQE+Tyf5UuyOeed+FOpFxUzxmv9tHD2kKjr7CwfXSIv8utPF6RRKY9QYErFAGve1/Gg6g==
   dependencies:
-    "@mantine/utils" "6.0.19"
+    "@mantine/utils" "6.0.20"
 
 "@mantine/form@^6.0.19":
   version "6.0.19"
@@ -1809,10 +1809,10 @@
   resolved "https://registry.npmjs.org/@mantine/utils/-/utils-6.0.10.tgz"
   integrity sha512-Lo4VUn3+/kqhdjSoPzUFbxXEjMxj5vS4pqRjKRGtJsTwHiMFNcm8u4cIESzMBAEsoaBrI1dGE4WttwOJhjUaSw==
 
-"@mantine/utils@6.0.19":
-  version "6.0.19"
-  resolved "https://registry.yarnpkg.com/@mantine/utils/-/utils-6.0.19.tgz#0197fccc5649259787d5468228139f8815909803"
-  integrity sha512-duvtnaW1gDR2gnvUqnWhl6DMW7sN0HEWqS8Z/BbwaMi75U+Xp17Q72R9JtiIrxQbzsq+KvH9L9B/pxMVwbLirg==
+"@mantine/utils@6.0.20":
+  version "6.0.20"
+  resolved "https://registry.yarnpkg.com/@mantine/utils/-/utils-6.0.20.tgz#c331040c62050edf3a513f3cfb702f3170597c10"
+  integrity sha512-9vsSskPtFyfPW2DOad6brLl9x4MnZtlyhszyoZOyMgXf/vdQbThKhL6PpqUbmlalwQpnCObbkEwVydugeh2dyQ==
 
 "@nicolo-ribaudo/eslint-scope-5-internals@5.1.1-v1":
   version "5.1.1-v1"
