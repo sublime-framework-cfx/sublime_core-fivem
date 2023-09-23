@@ -5,7 +5,7 @@ use_experimental_fxv2_oal 'yes'
 
 name 'sublime_core [FiveM]'
 author 'SUBLiME'
-version '0.0.1'
+version '0.0.2'
 repository 'https://github.com/sublime-framework-cfx/sublime_core'
 description 'Un framework pour tout type de serveur'
 
