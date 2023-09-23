@@ -38,7 +38,7 @@ files {
 }
 
 dependencies {
-    '/server:6551', -- requires at least server build 6551 (txAdmin v6.0.1)
+    '/server:6704', -- requires at least server build 6551 (txAdmin v6.0.1)
     '/onesync', -- requires onesync enabled
     'oxmysql', -- requires oxmysql resource
 }

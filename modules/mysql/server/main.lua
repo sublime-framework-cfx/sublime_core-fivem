@@ -44,7 +44,7 @@ MySQL.ready(function()
                         `skin` longtext NOT NULL DEFAULT '[]',
                         `isDead` tinyint(1) NOT NULL DEFAULT 0,
                         `metadata` longtext NOT NULL DEFAULT '[]',
-                        `model` VARCHAR(120) NULL DEFAULT,
+                        `model` VARCHAR(120) NULL DEFAULT NULL,
                         PRIMARY KEY (`charid`) USING BTREE,
                         INDEX `FK_characters_profils` (`user`) USING BTREE,
                         CONSTRAINT `FK_characters_profils` FOREIGN KEY (`user`) REFERENCES `%s`.`profils` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
