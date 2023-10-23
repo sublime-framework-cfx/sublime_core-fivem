@@ -11,7 +11,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.4.2",
     "@fortawesome/react-fontawesome": "fortawesome/react-fontawesome",
     "@mantine/core": "^6.0.9",
-    "@mantine/dates": "^7.1.3",
+    "@mantine/dates": "^7.1.5",
     "@mantine/form": "^7.1.5",
     "@mantine/hooks": "^6.0.9",
     "@mantine/modals": "^6.0.9",
