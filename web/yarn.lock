@@ -1848,10 +1848,10 @@
     react-remove-scroll "^2.5.5"
     react-textarea-autosize "8.3.4"
 
-"@mantine/dates@^7.4.0":
-  version "7.4.0"
-  resolved "https://registry.yarnpkg.com/@mantine/dates/-/dates-7.4.0.tgz#ad8368329d0dc995588fde59c85fb42ba1a860f9"
-  integrity sha512-KNRVMSUW4sIk8U5SM2+4PRLqndWNaMtTabENPZUVA/Zl99yk6tDsNsu/CuinE1K5LQo9H6RJho0FRGzmzEsTwA==
+"@mantine/dates@^7.4.1":
+  version "7.4.1"
+  resolved "https://registry.yarnpkg.com/@mantine/dates/-/dates-7.4.1.tgz#be8e33a83dcaa924b60aa37e8f6503b02fae12ec"
+  integrity sha512-a7DNeJmLCgnFbd9NAEQ/LP998zLFPu8IWVjtJY/YJ4OUIDLEPi56OzuopA3epVzGkMcEvL4Ak78Z23KfZPJepg==
   dependencies:
     clsx "2.0.0"
 
