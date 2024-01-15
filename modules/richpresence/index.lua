@@ -1,5 +1,0 @@
-return {
-    client = {
-        'discord'
-    }
-}

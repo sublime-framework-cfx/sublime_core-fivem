@@ -1,1 +1,0 @@
----@todo: add return function to get the inventory of a player with SublimeCharacter Object
