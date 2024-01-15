@@ -68,7 +68,7 @@ function require(modname)
                     loaded[modname] = nil
                     return error(err or ("unable to load module '%s'"):format(modname), 3)
                 end
-                
+
                 module = chunk(modname) or true
                 loaded[modname] = module
 
@@ -85,7 +85,7 @@ end
 require('imports.locales.shared').init() ---@load translation
 
 if sl.service == 'server' then
-print([[
+    print([[
 ^6#####################################################################################
 ^6#^2                _       _   _                                                      ^6#
 ^6#^2               | |     | | (_)                                                     ^6#
@@ -110,48 +110,48 @@ local intervals = {}
 ---@param interval? number
 ---@param ... any
 function SetInterval(cb, interval, ...)
-	interval = interval or 0
+    interval = interval or 0
 
     if type(interval) ~= 'number' then
         return error(('Interval must be a number. Received %s'):format(json.encode(interval --[[@as unknown]])))
     end
 
-	local cbType = type(cb)
+    local cbType = type(cb)
 
-	if cbType == 'number' and intervals[cb] then
-		intervals[cb] = interval or 0
-		return
-	end
+    if cbType == 'number' and intervals[cb] then
+        intervals[cb] = interval or 0
+        return
+    end
 
     if cbType ~= 'function' then
         return error(('Callback must be a function. Received %s'):format(cbType))
     end
 
-	local args, id = { ... }
+    local args, id = { ... }
 
-	Citizen.CreateThreadNow(function(ref)
-		id = ref
-		intervals[id] = interval or 0
-		repeat
-			interval = intervals[id]
-			Wait(interval)
-			cb(table.unpack(args))
-		until interval < 0
-		intervals[id] = nil
-	end)
+    Citizen.CreateThreadNow(function(ref)
+        id = ref
+        intervals[id] = interval or 0
+        repeat
+            interval = intervals[id]
+            Wait(interval)
+            cb(table.unpack(args))
+        until interval < 0
+        intervals[id] = nil
+    end)
 
-	return id
+    return id
 end
 
 ---@param id number
 function ClearInterval(id)
     if type(id) ~= 'number' then
         return error(('Interval id must be a number. Received %s'):format(json.encode(id --[[@as unknown]])))
-	end
+    end
 
     if not intervals[id] then
         return error(('No interval exists with id %s'):format(id))
-	end
+    end
 
-	intervals[id] = -1
+    intervals[id] = -1
 end
