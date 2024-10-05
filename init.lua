@@ -56,10 +56,10 @@ function require(modname)
         local paths = { string.strsplit(';', package.path) }
         for i = 1, #paths do
             local scriptPath = paths[i]:gsub('%?', modpath):gsub('%.+%/+', '')
-            local resourceFile = LoadResourceFile(supv_core, scriptPath)
+            local resourceFile = LoadResourceFile(sublime_core, scriptPath)
             if resourceFile then
                 loaded[modname] = false
-                scriptPath = ('@@%s/%s'):format(supv_core, scriptPath)
+                scriptPath = ('@@%s/%s'):format(sublime_core, scriptPath)
 
                 local chunk, err = load(resourceFile, scriptPath)
 
@@ -84,6 +84,8 @@ end
 -- require('imports.locales.shared').init() ---@load translation
 
 if sublime.service == 'server' then
+    sublime.players = {}
+
     print([[
 ^6#####################################################################################
 ^6#^2                _       _   _                                                      ^6#
