@@ -4,6 +4,6 @@ return {
     },
 
     server = {
-        -- 'player',
+        'players',
     },
 }
