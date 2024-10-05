@@ -13,7 +13,7 @@ local function NewInstance(self, obj)
 
     setmetatable(obj, self)
 
-    if self.Init then obj:Init() end
+    if self.init then obj:init() end
 
     if obj.export then
         self.__export[obj.export] = obj
@@ -27,43 +27,62 @@ end
 ---@param exportMethod? boolean
 ---@return table
 function sublime.class(name, super, exportMethod)
-    local self = {
-        __name = name,
-        New = NewInstance
-    }
+    if not name then return end
+    if super or exportMethod then
+        local self = {
+            __name = name,
+            new = NewInstance
+        }
 
-    self.__index = self
+        self.__index = self
 
-    if exportMethod and not super then
-        self.__exportMethod = {}
-        self.__export = {}
+        if exportMethod and not super then
+            self.__exportMethod = {}
+            self.__export = {}
 
-        setmetatable(self, {
+            setmetatable(self, {
+                __newindex = function(_, key, value)
+                    rawset(_, key, value)
+                    self.__exportMethod[key] = true
+                end
+            })
+
+            exports('GetExportMethod', function()
+                return self.__exportMethod
+            end)
+
+            exports('CallExportMethod', function(name, method, ...)
+                local export <const> = self.__export[name]
+                return export[method](export, ...)
+            end)
+        end
+
+        return super and setmetatable(self, {
+            __index = super,
             __newindex = function(_, key, value)
                 rawset(_, key, value)
-                self.__exportMethod[key] = true
+                if type(value) == 'function' then
+                    self.__exportMethod[key] = true
+                end
             end
-        })
+        }) or self
+    else
+        local self = {
+            __index = name
+        }
 
-        exports('GetExportMethod', function()
-            return self.__exportMethod
-        end)
-
-        exports('CallExportMethod', function(name, method, ...)
-            local export <const> = self.__export[name]
-            return export[method](export, ...)
-        end)
-    end
-    
-    return super and setmetatable(self, {
-        __index = super,
-        __newindex = function(_, key, value)
-            rawset(_, key, value)
-            if type(value) == 'function' then
-                self.__exportMethod[key] = true
+        function self.new(obj)
+            if obj.private then
+                setmetatable(obj.private, mt_pvt)
             end
+
+            if self.init then obj:init() end
+
+            return setmetatable(obj, self)
         end
-    }) or self
+
+        return self
+    end
 end
 
 return sublime.class
