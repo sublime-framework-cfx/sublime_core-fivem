@@ -48,11 +48,11 @@ local function CallModule(self, index, ...)
             local function method(...)
                 return export[index](nil, ...)
             end
-            
+
             if not ... then
                 self[index] = method
             end
-            
+
             return method
         end
     end
@@ -93,8 +93,9 @@ if sublime.service == 'client' then
 
     _ENV.player = player
 elseif sublime.service == 'server' then
+    local MySQL = {}
 
-    MySQL = setmetatable({}, {
+    setmetatable(MySQL, {
         __index = function(self, key)
             local value = rawget(self, key)
             if not value then
@@ -104,6 +105,8 @@ elseif sublime.service == 'server' then
             return value
         end
     })
+
+    _ENV.MySQL = MySQL
 end
 
 require = sublime.require()
