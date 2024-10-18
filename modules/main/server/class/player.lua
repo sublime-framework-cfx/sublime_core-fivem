@@ -49,6 +49,28 @@ function PlayerObject:getName()
     return self.private.name
 end
 
+---@param key string support nested keys separated by dots '.', exemple: 'metadata.name'
+---@return unknown?
+function PlayerObject:get(key)
+    assert(key and type(key) == 'string', 'Invalid key: '..key)
+
+    if key:find('.') then
+        local keys <const> = {('.'):strsplit(key)}
+        local value = self.private
+        for i = 1, #keys do
+            local key <const> = keys[i]
+            value = value[key]
+            if not value then
+                return nil
+            end
+        end
+
+        return value
+    end
+
+    return self.private[key]
+end
+
 local class <const> = require 'modules.handlers.shared.class'
 return class.new(PlayerObject)
 
